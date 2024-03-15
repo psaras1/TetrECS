@@ -50,6 +50,8 @@ public class Game {
   private IntegerProperty multiplier;
 
   private int lines;
+  private int intersectingBlocks;
+  private int uniqueClearedBlocks;
 
 
   /**
@@ -62,6 +64,8 @@ public class Game {
     this.lines = 0;
     this.cols = cols;
     this.rows = rows;
+    this.intersectingBlocks = 0;
+    this.uniqueClearedBlocks = 0;
 
     //These should default to 0 score, level 0, 3 lives and 1 x multiplier respectively.
     this.score = new SimpleIntegerProperty(0);
@@ -92,6 +96,9 @@ public class Game {
 
   public void setScore(int score) {
     this.score.set(score);
+  }
+  public void setMultiplier(int multiplier) {
+    this.multiplier.set(multiplier);
   }
 
   /**
@@ -172,13 +179,23 @@ public class Game {
         }
       }
     }
-    int intersectingBlocks = rowsFull.size()*colsFull.size();
-    int uniqueClearedBlocks = rowsFull.size()*rows+colsFull.size()*cols-intersectingBlocks;
-
+    this.intersectingBlocks = rowsFull.size()*colsFull.size();
+    //uniqueClearedBlocks = total blocks cleared - intersecting blocks
+    this.uniqueClearedBlocks = rowsFull.size()*rows+colsFull.size()*cols-intersectingBlocks;
     this.lines = rowsFull.size() + colsFull.size();
-    score(this.lines, uniqueClearedBlocks);
     logger.info("Number of blocks cleared: {}", uniqueClearedBlocks);
-
+    //If no rows or columns are full, the multiplier is reset to 1
+    if (rowsFull.isEmpty()&&colsFull.isEmpty()){
+      score(this.lines, uniqueClearedBlocks);
+      setMultiplier(1);
+      logger.info("Multiplier changed to: {}", multiplier.get());
+    }
+    //If there are full rows or columns, the multiplier is incremented by 1
+    else{
+      score(this.lines, uniqueClearedBlocks);
+      setMultiplier(multiplier.get()+1);
+      logger.info("Multiplier changed to: {}", multiplier.get());
+    }
   }
 
   /**

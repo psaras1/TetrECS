@@ -21,6 +21,9 @@ public class ChallengeScene extends BaseScene {
 
     private static final Logger logger = LogManager.getLogger(MenuScene.class);
     protected Game game;
+    /*
+    * Labels for the game stats
+     */
     private Label scoreLabel;
     private Label levelLabel;
     private Label livesLabel;
@@ -39,6 +42,9 @@ public class ChallengeScene extends BaseScene {
         this.multiplierLabel = new Label();
         logger.info("Creating Challenge Scene");
     }
+    /**
+     * Bind the properties of the game to the UI
+     */
     public void bindProperties(){
         scoreLabel.textProperty().bind(Bindings.concat("Score: ",game.getScore().asString()));
         levelLabel.textProperty().bind(Bindings.concat("Level: ",game.getLevel().asString()));
