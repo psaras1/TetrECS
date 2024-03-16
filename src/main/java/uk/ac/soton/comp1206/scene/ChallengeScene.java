@@ -63,7 +63,7 @@ public class ChallengeScene extends BaseScene {
         setupGame();
 //        Implement background music in the game scene
         this.gameMusic.playBackgroundMusic("/music/game.wav");
-        bindProperties();
+       bindProperties();
 
 
         root = new GamePane(gameWindow.getWidth(),gameWindow.getHeight());

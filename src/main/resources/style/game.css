@@ -216,7 +216,21 @@ TextField {
     -fx-pref-height:40px ;
     -fx-pref-width:100px;
 }
+
 .play-button:hover{
     -fx-background-color: aqua;
+    -fx-text-fill: black;
+}
+.menu-button{
+    -fx-background-color: aqua;
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-pref-height:40px ;
+    -fx-pref-width:100px;
+    -fx-border-color: black;
+}
+.menu-button:hover{
+    -fx-background-color: white;
     -fx-text-fill: black;
 }

@@ -46,7 +46,7 @@ public class MenuScene extends BaseScene {
         root.getChildren().add(menuPane);
 
 //        Implement background music on the Menu
-        this.menuMusic.playBackgroundMusic("/music/menu.mp3");
+        menuMusic.playBackgroundMusic("/music/menu.mp3");
 
         var mainPane = new BorderPane();
         menuPane.getChildren().add(mainPane);
@@ -65,19 +65,28 @@ public class MenuScene extends BaseScene {
         var playButton = new Button("Play");
         var multiplayerButton = new Button("Multiplayer");
         var chatButton = new Button("Chat");
+        var instructionsButton = new Button("Instructions");
+        instructionsButton.getStyleClass().add("play-button");
         multiplayerButton.getStyleClass().add("play-button");
         multiplayerButton.setMaxWidth(150);
+        instructionsButton.setMaxWidth(150);
         chatButton.getStyleClass().add("play-button");
         playButton.getStyleClass().add("play-button");
 
         VBox buttons = new VBox();
-        buttons.getChildren().addAll(playButton, multiplayerButton, chatButton);
+        buttons.getChildren().addAll(playButton, multiplayerButton, chatButton,instructionsButton);
         buttons.setAlignment(Pos.CENTER);
         buttons.setSpacing(20);
         mainPane.setCenter(buttons);
 
-        //Bind the button action to the startGame method in the menu
-        playButton.setOnAction(this::startGame);
+
+        //Calls startChallenge and stops the menu music
+        playButton.setOnAction(actionEvent -> {
+            menuMusic.stopBackgroundMusic();
+            gameWindow.startChallenge();
+        });
+        //Bind the button action to the showInstructions method in the menu
+        instructionsButton.setOnAction(this::showInstructions);
     }
 
     /**
@@ -85,7 +94,7 @@ public class MenuScene extends BaseScene {
      */
     @Override
     public void initialise() {
-
+        logger.info("Initialising " + this.getClass().getName());
     }
 
     /**
@@ -93,9 +102,16 @@ public class MenuScene extends BaseScene {
      *  Stops menu music and starts the game
      * @param event event
      */
-    private void startGame(ActionEvent event) {
-        this.menuMusic.stopBackgroundMusic();
-        gameWindow.startChallenge();
+//    private void startGame(ActionEvent event) {
+//        gameWindow.startChallenge();
+//    }
+
+    /**
+     * Handle when the Instructions button is pressed
+     * @param event
+     */
+    private void showInstructions(ActionEvent event) {
+        gameWindow.loadScene(new InstructionsScene(gameWindow));
     }
 
 }
