@@ -100,6 +100,9 @@ public class Game {
   public void setMultiplier(int multiplier) {
     this.multiplier.set(multiplier);
   }
+  public void incrementLevel() {
+    this.level.set(level.get() + 1);
+  }
 
   /**
    * Start the game
@@ -205,6 +208,12 @@ public class Game {
    */
     public void score(int lines, int blocks){
       setScore(score.get() + (lines * blocks * 10 * multiplier.get()));
+      logger.info("Score changed to: {}", score.get());
+      //The level should increase per 1000 points
+      if(score.get() >= 1000*level.get()){
+        incrementLevel();
+        logger.info("Level changed to: {}", level.get());
+      }
     }
 
   /**
