@@ -63,7 +63,7 @@ public class App extends Application {
     }
 
     /**
-     * Shutdown the game
+     *  Shutdown the game
      */
     public void shutdown() {
         logger.info("Shutting down");

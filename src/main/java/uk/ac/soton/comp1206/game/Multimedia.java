@@ -12,12 +12,6 @@ import javafx.util.Duration;
 public class Multimedia {
   private  MediaPlayer audioPlayer;
   private  MediaPlayer musicPlayer;
-
-  public Multimedia() {
-    musicPlayer = new MediaPlayer(new Media(getClass().getResource("/music/menu.mp3").toExternalForm()));
-//    The background music should loop
-    musicPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-  }
   /**
    * Play a sound from a file
    * @param file the file to play
@@ -29,25 +23,17 @@ public class Multimedia {
   /**
    * Handles background music
    */
-  public void playBackgroundMusic() {
+  public void playBackgroundMusic(String file) {
+    musicPlayer = new MediaPlayer(new Media(getClass().getResource(file).toExternalForm()));
+//    The background music should loop
+    musicPlayer.setCycleCount(MediaPlayer.INDEFINITE);
     musicPlayer.play();
   }
   /**
    * Background music fades out instead of stopping abruptly
    */
   public void stopBackgroundMusic() {
-    final Timeline timeline = new Timeline();
-    KeyFrame keyFrame = new KeyFrame(Duration.seconds(0.18), e -> {
-      if (musicPlayer.getVolume() > 0.07) {
-        musicPlayer.setVolume(musicPlayer.getVolume() - 0.07);
-      } else {
-        musicPlayer.stop();
-        timeline.stop();
-      }
-    });
-    timeline.getKeyFrames().add(keyFrame);
-    timeline.setCycleCount(Timeline.INDEFINITE);
-    timeline.play();
+    musicPlayer.stop();
   }
 
 }

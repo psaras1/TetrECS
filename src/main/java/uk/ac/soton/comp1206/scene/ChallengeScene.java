@@ -1,5 +1,6 @@
 package uk.ac.soton.comp1206.scene;
 
+import java.util.ArrayList;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.game.Game;
+import uk.ac.soton.comp1206.game.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -21,6 +23,7 @@ public class ChallengeScene extends BaseScene {
 
     private static final Logger logger = LogManager.getLogger(MenuScene.class);
     protected Game game;
+    private Multimedia gameMusic = new Multimedia();
     /*
     * Labels for the game stats
      */
@@ -28,7 +31,6 @@ public class ChallengeScene extends BaseScene {
     private Label levelLabel;
     private Label livesLabel;
     private Label multiplierLabel;
-    private HBox stats;
 
     /**
      * Create a new Single Player challenge scene
@@ -59,12 +61,10 @@ public class ChallengeScene extends BaseScene {
     public void build() {
         logger.info("Building " + this.getClass().getName());
         setupGame();
+//        Implement background music in the game scene
+        this.gameMusic.playBackgroundMusic("/music/game.wav");
         bindProperties();
-        //To set all text of labels to white, TODO shorten this
-        scoreLabel.setStyle("-fx-text-fill: white;");
-        levelLabel.setStyle("-fx-text-fill: white;");
-        livesLabel.setStyle("-fx-text-fill: white;");
-        multiplierLabel.setStyle("-fx-text-fill: white;");
+
 
         root = new GamePane(gameWindow.getWidth(),gameWindow.getHeight());
 
@@ -82,6 +82,17 @@ public class ChallengeScene extends BaseScene {
         mainPane.setTop(stats);
         stats.getChildren().addAll(scoreLabel, levelLabel, livesLabel, multiplierLabel);
 
+        //Style the stats through an array list to avoid repetition
+        ArrayList<Label> labels = new ArrayList<>();
+        labels.add(scoreLabel);
+        labels.add(levelLabel);
+        labels.add(livesLabel);
+        labels.add(multiplierLabel);
+        for(Label label : labels){
+            //Style the labels
+            label.setStyle("-fx-border-color: white; -fx-border-width: 2; -fx-text-fill: white; -fx-padding: 10;"
+                + " -fx-border-radius: 5;-fx-font-family: 'Arial'; -fx-font-weight: bold;");
+        }
 
 
 
