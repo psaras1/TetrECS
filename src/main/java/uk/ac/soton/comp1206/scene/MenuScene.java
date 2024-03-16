@@ -6,6 +6,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp1206.game.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -15,6 +16,7 @@ import uk.ac.soton.comp1206.ui.GameWindow;
 public class MenuScene extends BaseScene {
 
     private static final Logger logger = LogManager.getLogger(MenuScene.class);
+    private Multimedia music = new Multimedia();
 
     /**
      * Create a new menu scene
@@ -30,6 +32,7 @@ public class MenuScene extends BaseScene {
      */
     @Override
     public void build() {
+
         logger.info("Building " + this.getClass().getName());
 
         root = new GamePane(gameWindow.getWidth(),gameWindow.getHeight());
@@ -39,6 +42,9 @@ public class MenuScene extends BaseScene {
         menuPane.setMaxHeight(gameWindow.getHeight());
         menuPane.getStyleClass().add("menu-background");
         root.getChildren().add(menuPane);
+
+//        Implement background music on the Menu
+        this.music.playBackgroundMusic();
 
         var mainPane = new BorderPane();
         menuPane.getChildren().add(mainPane);
@@ -67,9 +73,11 @@ public class MenuScene extends BaseScene {
 
     /**
      * Handle when the Start Game button is pressed
+     *  Stops menu music and starts the game
      * @param event event
      */
     private void startGame(ActionEvent event) {
+        this.music.stopBackgroundMusic();
         gameWindow.startChallenge();
     }
 
