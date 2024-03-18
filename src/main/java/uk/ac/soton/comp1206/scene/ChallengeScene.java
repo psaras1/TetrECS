@@ -10,7 +10,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBoard;
+import uk.ac.soton.comp1206.component.PieceBoard;
 import uk.ac.soton.comp1206.game.Game;
+import uk.ac.soton.comp1206.game.GamePiece;
+import uk.ac.soton.comp1206.game.Grid;
 import uk.ac.soton.comp1206.game.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -31,6 +34,7 @@ public class ChallengeScene extends BaseScene {
     private Label levelLabel;
     private Label livesLabel;
     private Label multiplierLabel;
+    private PieceBoard currentPiece, nextPiece;
 
     /**
      * Create a new Single Player challenge scene
@@ -101,15 +105,33 @@ public class ChallengeScene extends BaseScene {
         challengePane.getChildren().add(mainPane);
 
 
-        //Handle block on gameboard grid being clicked
+
         board.setOnBlockClick(this::blockClicked); //calls blockClicked from GameBoard class
+
+        //Create a mute button
         var muteButton=createMuteButton(gameMusic,"/music/game.wav");
         AnchorPane muteButtonPane = new AnchorPane();
         muteButtonPane.getChildren().add(muteButton);
         AnchorPane.setRightAnchor(muteButton, 5.0);
         muteButtonPane.setPickOnBounds(false);
         root.getChildren().add(muteButtonPane);
+
+        var leftContainer = new VBox();
+        currentPiece = new PieceBoard(100,100);
+        nextPiece = new PieceBoard(100, 100);
+        leftContainer.getChildren().addAll(currentPiece);
+        mainPane.setLeft(leftContainer);
+
     }
+    /**
+     * Update the game board with the next piece
+     * @param piece the next piece
+     */
+  protected void nextPiece(GamePiece piece) {
+    currentPiece.displayPiece(piece);
+
+  }
+
 
     /**
      * Handle when a block is clicked
@@ -136,6 +158,8 @@ public class ChallengeScene extends BaseScene {
     public void initialise() {
         logger.info("Initialising Challenge");
         game.start();
+        //Set the next piece listener
+        game.setNextPieceListener(this::nextPiece);
     }
 
 }

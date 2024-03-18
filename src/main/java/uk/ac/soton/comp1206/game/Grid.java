@@ -196,4 +196,15 @@ public class Grid {
 
   }
 
+  /**
+   * Clean the grid by setting all values to 0
+   */
+  public void clean() {
+    for (var y = 0; y < rows; y++) {
+      for (var x = 0; x < cols; x++) {
+        set(x, y, 0);
+      }
+    }
+  }
+
 }

@@ -6,7 +6,9 @@ import java.util.HashSet;
 import java.util.Random;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBlockCoordinate;
 import uk.ac.soton.comp1206.component.GameBoard;
+import uk.ac.soton.comp1206.event.NextPieceListener;
 
 /**
  * The Game class handles the main logic, state and properties of the TetrECS game. Methods to
@@ -23,6 +26,7 @@ import uk.ac.soton.comp1206.component.GameBoard;
 public class Game {
 
   private static final Logger logger = LogManager.getLogger(Game.class);
+  protected NextPieceListener nextPieceListener = null;
   private Random random = new Random(); //Allows us to generate a random number in order to get random pieces/shapes
 
   /**
@@ -76,6 +80,11 @@ public class Game {
     //Create a new grid model to represent the game state
     this.grid = new Grid(cols, rows);
   }
+  public void setNextPieceListener(NextPieceListener listener) {
+    nextPieceListener = listener;
+  }
+
+
 
   //Add bindable properties for the score, level, lives and multiplier to the Game class, with appropriate accessor methods.
   public IntegerProperty getScore() {
@@ -121,6 +130,9 @@ public class Game {
   public GamePiece nextPiece() {
     currentPiece = spawnPiece();
     logger.info("The next piece is: {}", currentPiece);
+    if(nextPieceListener!=null){
+      nextPieceListener.nextPiece(currentPiece);
+    }
     return currentPiece;
   }
 
