@@ -1,9 +1,13 @@
 package uk.ac.soton.comp1206.scene;
 
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import org.apache.logging.log4j.LogManager;
@@ -49,6 +53,7 @@ public class MenuScene extends BaseScene {
         menuMusic.playBackgroundMusic("/music/menu.mp3");
 
         var mainPane = new BorderPane();
+        menuPane.setStyle("-fx-background-color: transparent;");
         menuPane.getChildren().add(mainPane);
 
         //Awful title
@@ -87,7 +92,17 @@ public class MenuScene extends BaseScene {
         });
         //Bind the button action to the showInstructions method in the menu
         instructionsButton.setOnAction(this::showInstructions);
+
+        //Mute button implementation
+        var muteButton=createMuteButton(menuMusic,"/music/menu.mp3");
+        AnchorPane muteButtonPane = new AnchorPane();
+        muteButtonPane.getChildren().add(muteButton);
+        AnchorPane.setRightAnchor(muteButton, 5.0);
+        muteButtonPane.setPickOnBounds(false);
+        root.getChildren().add(muteButtonPane);
+
     }
+
 
     /**
      * Initialise the menu

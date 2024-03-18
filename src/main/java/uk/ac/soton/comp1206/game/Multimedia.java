@@ -36,4 +36,8 @@ public class Multimedia {
     musicPlayer.stop();
   }
 
+  public boolean isPlaying() {
+    return musicPlayer.getStatus() == MediaPlayer.Status.PLAYING;
+  }
+
 }

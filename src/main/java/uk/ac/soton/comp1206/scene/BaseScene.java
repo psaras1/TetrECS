@@ -1,7 +1,11 @@
 package uk.ac.soton.comp1206.scene;
 
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import uk.ac.soton.comp1206.game.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -51,6 +55,28 @@ public abstract class BaseScene {
      */
     public Scene getScene() {
         return this.scene;
+    }
+    /**
+     * Create a mute button(more convenient to use as a method, to be used in other scenes too)
+     * @return Button object
+     */
+    public Button createMuteButton(Multimedia music,String path){
+        Image muteImage = new Image(getClass().getResource("/images/mute.png").toString());
+        Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
+        ImageView muteImageView = new ImageView(muteImage);
+        var muteButton = new Button("",muteImageView);
+        muteImageView.setFitHeight(10);
+        muteImageView.setFitWidth(10);
+        muteButton.setOnAction(actionEvent -> {
+            if(!music.isPlaying()){
+                music.playBackgroundMusic(path);
+                muteImageView.setImage(muteImage);
+            }else{
+                music.stopBackgroundMusic();
+                muteImageView.setImage(unmuteImage);
+            }
+        });
+        return muteButton;
     }
 
 }

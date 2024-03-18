@@ -7,12 +7,13 @@
 }
 
 .menu-background {
-    -fx-background-image: url("../images/1.jpg");
+    -fx-background-image: url("../images/AlienLandscape.png");
     -fx-background-size: cover;
+    -fx-background-color: transparent;
 }
 
 .challenge-background {
-    -fx-background-image: url("../images/2.jpg");
+    -fx-background-image: url("../images/AlienLandscape.png");
     -fx-background-size: cover;
 }
 

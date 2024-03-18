@@ -73,7 +73,7 @@ public class ChallengeScene extends BaseScene {
         var challengePane = new StackPane();
         challengePane.setMaxWidth(gameWindow.getWidth());
         challengePane.setMaxHeight(gameWindow.getHeight());
-        challengePane.getStyleClass().add("menu-background");
+        challengePane.getStyleClass().add("challenge-background");
         root.getChildren().add(challengePane);
 //        Build the User Interface
         var stats = new HBox(135);
@@ -95,7 +95,7 @@ public class ChallengeScene extends BaseScene {
         }
 
 
-
+        //Create the game board
         var board = new GameBoard(game.getGrid(),gameWindow.getWidth()/2,gameWindow.getWidth()/2);
         mainPane.setCenter(board);
         challengePane.getChildren().add(mainPane);
@@ -103,6 +103,12 @@ public class ChallengeScene extends BaseScene {
 
         //Handle block on gameboard grid being clicked
         board.setOnBlockClick(this::blockClicked); //calls blockClicked from GameBoard class
+        var muteButton=createMuteButton(gameMusic,"/music/game.wav");
+        AnchorPane muteButtonPane = new AnchorPane();
+        muteButtonPane.getChildren().add(muteButton);
+        AnchorPane.setRightAnchor(muteButton, 5.0);
+        muteButtonPane.setPickOnBounds(false);
+        root.getChildren().add(muteButtonPane);
     }
 
     /**
