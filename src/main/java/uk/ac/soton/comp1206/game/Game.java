@@ -26,7 +26,8 @@ import uk.ac.soton.comp1206.event.NextPieceListener;
 public class Game {
 
   private static final Logger logger = LogManager.getLogger(Game.class);
-  protected NextPieceListener nextPieceListener = null;
+  //declare a listener for when the next piece is generated
+  protected NextPieceListener nextPieceListener;
   private Random random = new Random(); //Allows us to generate a random number in order to get random pieces/shapes
 
   /**
@@ -80,10 +81,15 @@ public class Game {
     //Create a new grid model to represent the game state
     this.grid = new Grid(cols, rows);
   }
+
+  /**
+   * Set the listener for when the next piece is generated
+   *
+   * @param listener
+   */
   public void setNextPieceListener(NextPieceListener listener) {
     nextPieceListener = listener;
   }
-
 
 
   //Add bindable properties for the score, level, lives and multiplier to the Game class, with appropriate accessor methods.
@@ -106,9 +112,11 @@ public class Game {
   public void setScore(int score) {
     this.score.set(score);
   }
+
   public void setMultiplier(int multiplier) {
     this.multiplier.set(multiplier);
   }
+
   public void incrementLevel() {
     this.level.set(level.get() + 1);
   }
@@ -130,7 +138,7 @@ public class Game {
   public GamePiece nextPiece() {
     currentPiece = spawnPiece();
     logger.info("The next piece is: {}", currentPiece);
-    if(nextPieceListener!=null){
+    if (nextPieceListener != null) {
       nextPieceListener.nextPiece(currentPiece);
     }
     return currentPiece;
@@ -194,39 +202,40 @@ public class Game {
         }
       }
     }
-    this.intersectingBlocks = rowsFull.size()*colsFull.size();
+    this.intersectingBlocks = rowsFull.size() * colsFull.size();
     //uniqueClearedBlocks = total blocks cleared - intersecting blocks
-    this.uniqueClearedBlocks = rowsFull.size()*rows+colsFull.size()*cols-intersectingBlocks;
+    this.uniqueClearedBlocks = rowsFull.size() * rows + colsFull.size() * cols - intersectingBlocks;
     this.lines = rowsFull.size() + colsFull.size();
     logger.info("Number of blocks cleared: {}", uniqueClearedBlocks);
     //If no rows or columns are full, the multiplier is reset to 1
-    if (rowsFull.isEmpty()&&colsFull.isEmpty()){
+    if (rowsFull.isEmpty() && colsFull.isEmpty()) {
       score(this.lines, uniqueClearedBlocks);
       setMultiplier(1);
       logger.info("Multiplier changed to: {}", multiplier.get());
     }
     //If there are full rows or columns, the multiplier is incremented by 1
-    else{
+    else {
       score(this.lines, uniqueClearedBlocks);
-      setMultiplier(multiplier.get()+1);
+      setMultiplier(multiplier.get() + 1);
       logger.info("Multiplier changed to: {}", multiplier.get());
     }
   }
 
   /**
    * Handles scoring
-   * @param lines passed from afterPiece method
+   *
+   * @param lines  passed from afterPiece method
    * @param blocks passed from afterPiece method
    */
-    public void score(int lines, int blocks){
-      setScore(score.get() + (lines * blocks * 10 * multiplier.get()));
-      logger.info("Score changed to: {}", score.get());
-      //The level should increase per 1000 points
-      if(score.get() >= 1000*level.get()){
-        incrementLevel();
-        logger.info("Level changed to: {}", level.get());
-      }
+  public void score(int lines, int blocks) {
+    setScore(score.get() + (lines * blocks * 10 * multiplier.get()));
+    logger.info("Score changed to: {}", score.get());
+    //The level should increase per 1000 points
+    if (score.get() >= 1000 * level.get()) {
+      incrementLevel();
+      logger.info("Level changed to: {}", level.get());
     }
+  }
 
   /**
    * Initialise a new game and set up anything that needs to be done at the start
@@ -255,16 +264,6 @@ public class Game {
       //playErrorSound(); //to be fixed
     }
 
-//        //Doesn't change UI at all, it's taken care of by grid
-//        //Get the new value for this block(Logic)
-//        int previousValue = grid.get(x,y);
-//        int newValue = previousValue + 1;
-//        if (newValue  > GamePiece.PIECES) {
-//            newValue = 0; //clears the block
-//        }
-//
-//        //Update the grid with the new value
-//        grid.set(x,y,newValue);
   }
 
   /**
