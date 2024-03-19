@@ -116,6 +116,12 @@ public class Game {
   public void setMultiplier(int multiplier) {
     this.multiplier.set(multiplier);
   }
+  public  void setLevel(int level) {
+    this.level.set(level);
+  }
+  public void setLives(int lives) {
+    this.lives.set(lives);
+  }
 
   public void incrementLevel() {
     this.level.set(level.get() + 1);

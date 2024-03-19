@@ -93,30 +93,29 @@ public class InstructionsScene extends BaseScene {
     mainPane.setTop(top);
 
     //Grid for piece options
-    var displayBox = new VBox();
-    displayBox.setAlignment(Pos.CENTER);
-    displayBox.setSpacing(10);
-    var pieceLabel = new Label("Available Pieces:");
-    pieceLabel.setStyle("-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
-    displayBox.getChildren().add(pieceLabel);
+    GridPane gridPane = new GridPane();
+    gridPane.setAlignment(Pos.CENTER);
+    gridPane.setHgap(10);
+    gridPane.setVgap(10);
 
-    //Generating a new hbox, for each row(i) and a new PieceBoard for each piece(j)
-    //A game piece is generated for each pieceBoard through i*5+j (0-14)
     for (int i = 0; i < 3; i++) {
-      var hbox = new HBox();
-      hbox.setAlignment(Pos.CENTER);
-      displayBox.getChildren().add(hbox);
-      hbox.setAlignment(Pos.CENTER);
-      hbox.setSpacing(10);
       for (int j = 0; j < 5; j++) {
-        var pieceBoard = new PieceBoard(55, 55);
+        var pieceBoard = new PieceBoard(60, 60);
         GamePiece gamePiece = GamePiece.createPiece(i * 5 + j);
         pieceBoard.displayPiece(gamePiece);
-        hbox.getChildren().add(pieceBoard);
+        gridPane.add(pieceBoard, j, i);
       }
     }
-    displayBox.setPrefSize(paneWidth, paneHeight / 2);
-    mainPane.setBottom(displayBox);
+    gridPane.setPrefSize(paneWidth, paneHeight / 2);
+    var  optionsLabel = new Label("Piece Options:");
+    optionsLabel.setStyle("-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
+    var bottom = new VBox();
+    bottom.setAlignment(Pos.CENTER);
+    bottom.getChildren().addAll(optionsLabel, gridPane);
+
+    gridPane.setPrefSize(paneWidth, paneHeight / 2);
+    bottom.setSpacing(5);
+    mainPane.setBottom(bottom);
 
     root.getChildren().add(mainPane);
   }

@@ -165,6 +165,12 @@ public class ChallengeScene extends BaseScene {
     //Start new game
     game = new Game(5, 5);
   }
+  public void shutdownGame() {
+    game.setScore(0);
+    game.setMultiplier(1);
+    game.setLevel(0);
+    game.setLives(1);
+  }
 
   /**
    * Initialise the scene and start the game
@@ -175,6 +181,15 @@ public class ChallengeScene extends BaseScene {
     //Set the next piece listener
     game.setNextPieceListener(this::nextPiece); //next piece passed as GamePiece to interface
     game.start();
+    scene.setOnKeyPressed(e -> {
+      switch (e.getCode()) {
+        case ESCAPE:
+          logger.info("Escape pressed, returning to menu");
+          shutdownGame();
+          gameMusic.stopBackgroundMusic();
+          gameWindow.startMenu();
+      }
+    });
 
   }
 
