@@ -151,6 +151,24 @@ public class GameBlock extends Canvas {
         gc.setStroke(Color.BLACK);
         gc.strokeRect(0,0,width,height);
     }
+    private void paintColorWithCircle(Paint colour) {
+        var gc = getGraphicsContext2D();
+
+        //Clear
+        gc.clearRect(0,0,width,height);
+
+        //Colour fill
+        gc.setFill(colour);
+        gc.fillRect(0,0, width, height);
+
+        //Border
+        gc.setStroke(Color.BLACK);
+        gc.strokeRect(0,0,width,height);
+
+        //Draw a gray circle in the middle of the block
+        gc.setFill(Color.GRAY);
+        gc.fillOval(width/2 - 10, height/2 - 10, 20, 20);
+    }
 
     /**
      * Get the column of this block

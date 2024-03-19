@@ -1,5 +1,7 @@
 package uk.ac.soton.comp1206.component;
 
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import uk.ac.soton.comp1206.game.GamePiece;
 /**
  * A PieceBoard represents the current piece the player is controlling
@@ -33,6 +35,5 @@ public class PieceBoard extends GameBoard{
         }
       }
     }
-
 
 }

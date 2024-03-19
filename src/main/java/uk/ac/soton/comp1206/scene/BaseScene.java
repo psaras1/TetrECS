@@ -65,8 +65,8 @@ public abstract class BaseScene {
         Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
         ImageView muteImageView = new ImageView(muteImage);
         var muteButton = new Button("",muteImageView);
-        muteImageView.setFitHeight(10);
-        muteImageView.setFitWidth(10);
+        muteImageView.setFitHeight(30);
+        muteImageView.setFitWidth(30);
         muteButton.setOnAction(actionEvent -> {
             if(!music.isPlaying()){
                 music.playBackgroundMusic(path);
@@ -76,6 +76,8 @@ public abstract class BaseScene {
                 muteImageView.setImage(unmuteImage);
             }
         });
+        //Set the background of the button to be transparent
+        muteButton.setBackground(null);
         return muteButton;
     }
 

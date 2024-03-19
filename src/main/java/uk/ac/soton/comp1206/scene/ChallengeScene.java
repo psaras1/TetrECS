@@ -113,10 +113,12 @@ public class ChallengeScene extends BaseScene {
     var muteButton = createMuteButton(gameMusic, "/music/game.wav");
     AnchorPane muteButtonPane = new AnchorPane();
     muteButtonPane.getChildren().add(muteButton);
-    AnchorPane.setRightAnchor(muteButton, 5.0);
+    AnchorPane.setLeftAnchor(muteButton, 5.0);
+    AnchorPane.setBottomAnchor(muteButton, 5.0);
     muteButtonPane.setPickOnBounds(false);
     root.getChildren().add(muteButtonPane);
 
+    //PieceBoard object, displayes current piece
     var leftContainer = new VBox();
     currentPiece = new PieceBoard(100, 100);
     leftContainer.getChildren().addAll(currentPiece);
@@ -164,7 +166,7 @@ public class ChallengeScene extends BaseScene {
   public void initialise() {
     logger.info("Initialising Challenge");
     //Set the next piece listener
-    game.setNextPieceListener(this::nextPiece);
+    game.setNextPieceListener(this::nextPiece); //next piece passed as GamePiece to interface
     game.start();
 
   }

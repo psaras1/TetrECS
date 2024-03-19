@@ -97,7 +97,8 @@ public class MenuScene extends BaseScene {
         var muteButton=createMuteButton(menuMusic,"/music/menu.mp3");
         AnchorPane muteButtonPane = new AnchorPane();
         muteButtonPane.getChildren().add(muteButton);
-        AnchorPane.setRightAnchor(muteButton, 5.0);
+        AnchorPane.setLeftAnchor(muteButton, 5.0);
+        AnchorPane.setBottomAnchor(muteButton, 5.0);
         muteButtonPane.setPickOnBounds(false);
         root.getChildren().add(muteButtonPane);
 
