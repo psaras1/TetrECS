@@ -27,7 +27,7 @@ public class Game {
 
   private static final Logger logger = LogManager.getLogger(Game.class);
   //declare a listener for when the next piece is generated
-  protected NextPieceListener nextPieceListener;
+  private  NextPieceListener nextPieceListener = null;
   private Random random = new Random(); //Allows us to generate a random number in order to get random pieces/shapes
 
   /**
@@ -48,7 +48,7 @@ public class Game {
 
 
   //    Add bindable properties for the score, level, lives and multiplier to the Game class, with appropriate accessor methods.
-  private GamePiece currentPiece;
+  public GamePiece currentPiece, nextPiece;
   private IntegerProperty score;
   private IntegerProperty level;
   private IntegerProperty lives;
@@ -136,9 +136,11 @@ public class Game {
    * @return returns the random piece
    */
   public GamePiece nextPiece() {
-    currentPiece = spawnPiece();
+    currentPiece = nextPiece; //using the next piece as the current piece
+    nextPiece = spawnPiece(); //spawn a new piece, saving it for the next placement
     logger.info("The next piece is: {}", currentPiece);
     if (nextPieceListener != null) {
+      //call next piece method from NextPieceListener interface to update the preview of the current piece
       nextPieceListener.nextPiece(currentPiece);
     }
     return currentPiece;
@@ -242,6 +244,7 @@ public class Game {
    */
   public void initialiseGame() {
     logger.info("Initialising game");
+    this.nextPiece = spawnPiece();
     nextPiece(); //So the game starts with a piece
   }
 

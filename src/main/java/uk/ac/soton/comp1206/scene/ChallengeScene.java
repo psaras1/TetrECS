@@ -35,7 +35,7 @@ public class ChallengeScene extends BaseScene {
   private Label levelLabel;
   private Label livesLabel;
   private Label multiplierLabel;
-  private PieceBoard currentPiece;
+  private PieceBoard currentPiece,nextPiece;
 
   /**
    * Create a new Single Player challenge scene
@@ -78,6 +78,7 @@ public class ChallengeScene extends BaseScene {
     var mainPane = new BorderPane();
 
     var challengePane = new StackPane();
+
     challengePane.setMaxWidth(gameWindow.getWidth());
     challengePane.setMaxHeight(gameWindow.getHeight());
     challengePane.getStyleClass().add("challenge-background");
@@ -118,12 +119,17 @@ public class ChallengeScene extends BaseScene {
     muteButtonPane.setPickOnBounds(false);
     root.getChildren().add(muteButtonPane);
 
-    //PieceBoard object, displayes current piece
+    //PieceBoard object, displays current and incoming pieces
     var leftContainer = new VBox();
     currentPiece = new PieceBoard(100, 100);
-    leftContainer.getChildren().addAll(currentPiece);
+    var currentPieceLabel = new Label("Current Piece:");
+    nextPiece = new PieceBoard(80,80);
+    var nextPieceLabel = new Label("Next Piece:");
+    currentPieceLabel.setStyle("-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
+    nextPieceLabel.setStyle("-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
+    leftContainer.getChildren().addAll(currentPieceLabel,currentPiece, nextPieceLabel,nextPiece);
     leftContainer.setAlignment(Pos.CENTER);
-    leftContainer.setPadding(new Insets(10));
+    leftContainer.setPadding(new Insets(20));
     mainPane.setLeft(leftContainer);
 
   }
@@ -135,6 +141,7 @@ public class ChallengeScene extends BaseScene {
    */
   protected void nextPiece(GamePiece piece) {
     currentPiece.displayPiece(piece);
+    nextPiece.displayPiece(game.nextPiece);
 
   }
 

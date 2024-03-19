@@ -2,15 +2,20 @@ package uk.ac.soton.comp1206.scene;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp1206.component.PieceBoard;
+import uk.ac.soton.comp1206.game.GamePiece;
+import uk.ac.soton.comp1206.game.Grid;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -19,19 +24,20 @@ import uk.ac.soton.comp1206.ui.GameWindow;
  */
 
 public class InstructionsScene extends BaseScene {
+
   private static final Logger logger = LogManager.getLogger(InstructionsScene.class);
 
   private ImageView imageView;
 
   private BorderPane mainPane = new BorderPane();
-  public InstructionsScene(GameWindow gameWindow){
+
+  public InstructionsScene(GameWindow gameWindow) {
     super(gameWindow);
     logger.info("Creating Instructions Scene");
   }
 
   /**
-   * Initialise the scene
-   * If escape is pressed, return to the menu
+   * Initialise the scene If escape is pressed, return to the menu
    */
   @Override
   public void initialise() {
@@ -43,31 +49,74 @@ public class InstructionsScene extends BaseScene {
           gameWindow.startMenu();
       }
     });
-}
+  }
 
 
   @Override
   public void build() {
     logger.info("Building " + this.getClass().getName());
     //Create the instructions scene
-    imageView = new ImageView(InstructionsScene.class.getResource("/images/suggestedControls.png").toExternalForm());
-    imageView.setFitHeight(gameWindow.getHeight()-40);
-    imageView.setFitWidth(gameWindow.getWidth()-40);
+    imageView = new ImageView(
+        InstructionsScene.class.getResource("/images/suggestedControls.png").toExternalForm());
+    //Set the image to fit the top half of the window
+    imageView.setPreserveRatio(true);
+    imageView.setFitHeight(gameWindow.getHeight() / 2 - 40);
 
-    root = new GamePane(gameWindow.getWidth(),gameWindow.getHeight());
+    root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
     mainPane.setMaxWidth(gameWindow.getWidth());
     mainPane.setMaxHeight(gameWindow.getHeight());
     mainPane.getStyleClass().add("menu-background");
 
-    mainPane.setCenter(imageView);
+    VBox top = new VBox();
+    top.setAlignment(Pos.CENTER);
+    top.setSpacing(10);
+    var controlsLabel = new Label("Controls:");
+    controlsLabel.setStyle("-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
+
+
     //Add the instructions to the main pane
-    var optionsBar = new HBox();
-    optionsBar.setAlignment(Pos.CENTER);
-    mainPane.setTop(optionsBar);
+
     var escape = new Button("Menu");
     escape.setOnAction(e -> gameWindow.startMenu());
-    escape.getStyleClass().add("menu-button");
-    optionsBar.getChildren().add(escape);
+    escape.getStyleClass().add("play-button");
+    AnchorPane menuButton = new AnchorPane();
+    menuButton.getChildren().add(escape);
+    AnchorPane.setLeftAnchor(escape,5.0);
+    AnchorPane.setTopAnchor(escape,5.0);
+
+    top.getChildren().addAll(menuButton, controlsLabel, imageView);
+    top.setSpacing(10);
+    double paneHeight = gameWindow.getHeight();
+    double paneWidth = gameWindow.getWidth();
+    top.setMaxHeight(paneHeight);
+    top.setMaxWidth(paneWidth);
+    mainPane.setTop(top);
+
+    //Grid for piece options
+    var displayBox = new VBox();
+    displayBox.setAlignment(Pos.CENTER);
+    displayBox.setSpacing(10);
+    var pieceLabel = new Label("Available Pieces:");
+    pieceLabel.setStyle("-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
+    displayBox.getChildren().add(pieceLabel);
+
+    //Generating a new hbox, for each row(i) and a new PieceBoard for each piece(j)
+    //A game piece is generated for each pieceBoard through i*5+j (0-14)
+    for (int i = 0; i < 3; i++) {
+      var hbox = new HBox();
+      hbox.setAlignment(Pos.CENTER);
+      displayBox.getChildren().add(hbox);
+      hbox.setAlignment(Pos.CENTER);
+      hbox.setSpacing(10);
+      for (int j = 0; j < 5; j++) {
+        var pieceBoard = new PieceBoard(55, 55);
+        GamePiece gamePiece = GamePiece.createPiece(i * 5 + j);
+        pieceBoard.displayPiece(gamePiece);
+        hbox.getChildren().add(pieceBoard);
+      }
+    }
+    displayBox.setPrefSize(paneWidth, paneHeight / 2);
+    mainPane.setBottom(displayBox);
 
     root.getChildren().add(mainPane);
   }
