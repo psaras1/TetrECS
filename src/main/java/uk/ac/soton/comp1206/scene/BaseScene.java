@@ -4,6 +4,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import uk.ac.soton.comp1206.game.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
@@ -67,6 +69,20 @@ public abstract class BaseScene {
         var muteButton = new Button("",muteImageView);
         muteImageView.setFitHeight(30);
         muteImageView.setFitWidth(30);
+        muteButton.setOnKeyPressed(e -> {
+            switch (e.getCode()) {
+                case M:
+                    if(!music.isPlaying()){
+                        music.playBackgroundMusic(path);
+                        muteImageView.setImage(muteImage);
+                    }else{
+                        music.stopBackgroundMusic();
+                        muteImageView.setImage(unmuteImage);
+                    }
+            }
+        });
+
+
         muteButton.setOnAction(actionEvent -> {
             if(!music.isPlaying()){
                 music.playBackgroundMusic(path);

@@ -13,7 +13,6 @@ import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.component.PieceBoard;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.game.GamePiece;
-import uk.ac.soton.comp1206.game.Grid;
 import uk.ac.soton.comp1206.game.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -35,7 +34,7 @@ public class ChallengeScene extends BaseScene {
   private Label levelLabel;
   private Label livesLabel;
   private Label multiplierLabel;
-  private PieceBoard currentPiece,nextPiece;
+  private PieceBoard currentPiece, followingPiece;
 
   /**
    * Create a new Single Player challenge scene
@@ -120,17 +119,30 @@ public class ChallengeScene extends BaseScene {
     root.getChildren().add(muteButtonPane);
 
     //PieceBoard object, displays current and incoming pieces
+    //(Add another, smaller PieceBoard to show the following peice to the ChallengeScene)
     var leftContainer = new VBox();
     currentPiece = new PieceBoard(100, 100);
     var currentPieceLabel = new Label("Current Piece:");
-    nextPiece = new PieceBoard(80,80);
+    followingPiece = new PieceBoard(80, 80);
     var nextPieceLabel = new Label("Next Piece:");
-    currentPieceLabel.setStyle("-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
-    nextPieceLabel.setStyle("-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
-    leftContainer.getChildren().addAll(currentPieceLabel,currentPiece, nextPieceLabel,nextPiece);
+    currentPieceLabel.setStyle(
+        "-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
+    nextPieceLabel.setStyle(
+        "-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
+    leftContainer.getChildren().addAll(currentPieceLabel, currentPiece, nextPieceLabel,
+        followingPiece);
     leftContainer.setAlignment(Pos.CENTER);
     leftContainer.setPadding(new Insets(20));
     mainPane.setLeft(leftContainer);
+
+    currentPiece.setOnMouseClicked(e -> {
+      logger.info("Rotating piece{}", currentPiece);
+      game.rotateCurrentPiece();
+    });
+    followingPiece.setOnMouseClicked(e -> {
+      logger.info("Swapping pieces");
+      game.swapCurrentPiece();
+    });
 
   }
 
@@ -141,7 +153,7 @@ public class ChallengeScene extends BaseScene {
    */
   protected void nextPiece(GamePiece piece) {
     currentPiece.displayPiece(piece);
-    nextPiece.displayPiece(game.nextPiece);
+    followingPiece.displayPiece(game.followingPiece);
 
   }
 
@@ -165,6 +177,7 @@ public class ChallengeScene extends BaseScene {
     //Start new game
     game = new Game(5, 5);
   }
+
   public void shutdownGame() {
     game.setScore(0);
     game.setMultiplier(1);
@@ -180,6 +193,7 @@ public class ChallengeScene extends BaseScene {
     logger.info("Initialising Challenge");
     //Set the next piece listener
     game.setNextPieceListener(this::nextPiece); //next piece passed as GamePiece to interface
+    //(Update the NextPieceListener to pass the following piece as well, and use this to update the following piece board.)
     game.start();
     scene.setOnKeyPressed(e -> {
       switch (e.getCode()) {

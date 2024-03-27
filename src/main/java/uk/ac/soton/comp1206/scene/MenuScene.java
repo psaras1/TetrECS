@@ -86,10 +86,7 @@ public class MenuScene extends BaseScene {
 
 
         //Calls startChallenge and stops the menu music
-        playButton.setOnAction(actionEvent -> {
-            menuMusic.stopBackgroundMusic();
-            gameWindow.startChallenge();
-        });
+        playButton.setOnAction(this::startGame);
         //Bind the button action to the showInstructions method in the menu
         instructionsButton.setOnAction(this::showInstructions);
 
@@ -118,9 +115,10 @@ public class MenuScene extends BaseScene {
      *  Stops menu music and starts the game
      * @param event event
      */
-//    private void startGame(ActionEvent event) {
-//        gameWindow.startChallenge();
-//    }
+    private void startGame(ActionEvent event) {
+        menuMusic.stopBackgroundMusic();
+        gameWindow.startChallenge();
+    }
 
     /**
      * Handle when the Instructions button is pressed

@@ -1,21 +1,16 @@
 package uk.ac.soton.comp1206.game;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBlockCoordinate;
-import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.event.NextPieceListener;
 
 /**
@@ -27,7 +22,7 @@ public class Game {
 
   private static final Logger logger = LogManager.getLogger(Game.class);
   //declare a listener for when the next piece is generated
-  private  NextPieceListener nextPieceListener = null;
+  private NextPieceListener nextPieceListener = null;
   private Random random = new Random(); //Allows us to generate a random number in order to get random pieces/shapes
 
   /**
@@ -48,7 +43,7 @@ public class Game {
 
 
   //    Add bindable properties for the score, level, lives and multiplier to the Game class, with appropriate accessor methods.
-  public GamePiece currentPiece, nextPiece;
+  public GamePiece currentPiece, followingPiece, tempPiece;
   private IntegerProperty score;
   private IntegerProperty level;
   private IntegerProperty lives;
@@ -116,9 +111,11 @@ public class Game {
   public void setMultiplier(int multiplier) {
     this.multiplier.set(multiplier);
   }
-  public  void setLevel(int level) {
+
+  public void setLevel(int level) {
     this.level.set(level);
   }
+
   public void setLives(int lives) {
     this.lives.set(lives);
   }
@@ -142,13 +139,10 @@ public class Game {
    * @return returns the random piece
    */
   public GamePiece nextPiece() {
-    currentPiece = nextPiece; //using the next piece as the current piece
-    nextPiece = spawnPiece(); //spawn a new piece, saving it for the next placement
+    currentPiece = followingPiece; //using the next piece as the current piece
+    followingPiece = spawnPiece(); //spawn a new piece, saving it for the next placement
     logger.info("The next piece is: {}", currentPiece);
-    if (nextPieceListener != null) {
-      //call next piece method from NextPieceListener interface to update the preview of the current piece
-      nextPieceListener.nextPiece(currentPiece);
-    }
+    updateListener();
     return currentPiece;
   }
 
@@ -250,7 +244,7 @@ public class Game {
    */
   public void initialiseGame() {
     logger.info("Initialising game");
-    this.nextPiece = spawnPiece();
+    this.followingPiece = spawnPiece();
     nextPiece(); //So the game starts with a piece
   }
 
@@ -317,6 +311,29 @@ public class Game {
    */
   public int getRows() {
     return rows;
+  }
+
+  public void rotateCurrentPiece() {
+    currentPiece.rotate();
+    updateListener();
+  }
+
+  //Add a swapCurrentPiece method to swap the current and following pieces
+  public void swapCurrentPiece() {
+    tempPiece = currentPiece;
+    currentPiece = followingPiece;
+    followingPiece = tempPiece;
+    updateListener();
+  }
+
+  /**
+   * Update the listener to update the preview of the current piece
+   */
+  public void updateListener() {
+    if (nextPieceListener != null) {
+      //call next piece method from NextPieceListener interface to update the preview of the current piece
+      nextPieceListener.nextPiece(currentPiece);
+    }
   }
 
 

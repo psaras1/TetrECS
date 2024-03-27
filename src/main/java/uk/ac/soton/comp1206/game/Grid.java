@@ -197,7 +197,7 @@ public class Grid {
   }
 
   /**
-   * Clean the grid by setting all values to 0
+   * Clean the grid by setting all values to 0(used to reset the game)
    */
   public void clean() {
     for (var y = 0; y < rows; y++) {
