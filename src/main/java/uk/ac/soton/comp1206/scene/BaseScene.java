@@ -62,39 +62,39 @@ public abstract class BaseScene {
      * Create a mute button(more convenient to use as a method, to be used in other scenes too)
      * @return Button object
      */
-    public Button createMuteButton(Multimedia music,String path){
-        Image muteImage = new Image(getClass().getResource("/images/mute.png").toString());
-        Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
-        ImageView muteImageView = new ImageView(muteImage);
-        var muteButton = new Button("",muteImageView);
-        muteImageView.setFitHeight(30);
-        muteImageView.setFitWidth(30);
-        muteButton.setOnKeyPressed(e -> {
-            switch (e.getCode()) {
-                case M:
-                    if(!music.isPlaying()){
-                        music.playBackgroundMusic(path);
-                        muteImageView.setImage(muteImage);
-                    }else{
-                        music.stopBackgroundMusic();
-                        muteImageView.setImage(unmuteImage);
-                    }
-            }
-        });
-
-
-        muteButton.setOnAction(actionEvent -> {
-            if(!music.isPlaying()){
-                music.playBackgroundMusic(path);
-                muteImageView.setImage(muteImage);
-            }else{
-                music.stopBackgroundMusic();
-                muteImageView.setImage(unmuteImage);
-            }
-        });
-        //Set the background of the button to be transparent
-        muteButton.setBackground(null);
-        return muteButton;
-    }
+//    public Button createMuteButton(Multimedia music,String path){
+//        Image muteImage = new Image(getClass().getResource("/images/mute.png").toString());
+//        Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
+//        ImageView muteImageView = new ImageView(muteImage);
+//        var muteButton = new Button("",muteImageView);
+//        muteImageView.setFitHeight(30);
+//        muteImageView.setFitWidth(30);
+//        muteButton.setOnKeyPressed(e -> {
+//            switch (e.getCode()) {
+//                case M:
+//                    if(!music.isPlaying()){
+//                        music.playBackgroundMusic(path);
+//                        muteImageView.setImage(muteImage);
+//                    }else{
+//                        music.stopBackgroundMusic();
+//                        muteImageView.setImage(unmuteImage);
+//                    }
+//            }
+//        });
+//
+//
+//        muteButton.setOnAction(actionEvent -> {
+//            if(!music.isPlaying()){
+//                music.playBackgroundMusic(path);
+//                muteImageView.setImage(muteImage);
+//            }else{
+//                music.stopBackgroundMusic();
+//                muteImageView.setImage(unmuteImage);
+//            }
+//        });
+//        //Set the background of the button to be transparent
+//        muteButton.setBackground(null);
+//        return muteButton;
+//    }
 
 }

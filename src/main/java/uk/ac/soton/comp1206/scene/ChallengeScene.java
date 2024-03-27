@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,6 +38,12 @@ public class ChallengeScene extends BaseScene {
   private Label livesLabel;
   private Label multiplierLabel;
   private PieceBoard currentPiece, followingPiece;
+  public Image muteImage = new Image(getClass().getResource("/images/mute.png").toString());
+  public Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
+  public ImageView muteImageView = new ImageView(muteImage);
+
+  int coordX, coordY;
+  private GameBoard board;
 
   /**
    * Create a new Single Player challenge scene
@@ -103,20 +112,37 @@ public class ChallengeScene extends BaseScene {
     }
 
     //Create the game board
-    var board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 2, gameWindow.getWidth() / 2);
+    board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 2, gameWindow.getWidth() / 2);
     mainPane.setCenter(board);
+    //Implement it so that right clicking on the main GameBoard or left clicking on the current piece board rotates the next piece
+    board.setOnContextMenuRequested(e -> {
+      game.rotateCurrentPiece();
+    });
     challengePane.getChildren().add(mainPane);
 
     board.setOnBlockClick(this::blockClicked); //calls blockClicked from GameBoard class
 
     //Create a mute button
-    var muteButton = createMuteButton(gameMusic, "/music/game.wav");
+
+    var muteButton = new Button("",muteImageView);
+    muteImageView.setFitHeight(30);
+    muteImageView.setFitWidth(30);
     AnchorPane muteButtonPane = new AnchorPane();
     muteButtonPane.getChildren().add(muteButton);
     AnchorPane.setLeftAnchor(muteButton, 5.0);
     AnchorPane.setBottomAnchor(muteButton, 5.0);
     muteButtonPane.setPickOnBounds(false);
     root.getChildren().add(muteButtonPane);
+    muteButton.setBackground(null);
+    muteButton.setOnAction(actionEvent -> {
+      if(!gameMusic.isPlaying()){
+        gameMusic.playBackgroundMusic("/music/game.wav");
+        muteImageView.setImage(muteImage);
+      }else{
+        gameMusic.stopBackgroundMusic();
+        muteImageView.setImage(unmuteImage);
+      }
+    });
 
     //PieceBoard object, displays current and incoming pieces
     //(Add another, smaller PieceBoard to show the following peice to the ChallengeScene)
@@ -192,19 +218,52 @@ public class ChallengeScene extends BaseScene {
   public void initialise() {
     logger.info("Initialising Challenge");
     //Set the next piece listener
-    game.setNextPieceListener(this::nextPiece); //next piece passed as GamePiece to interface
     //(Update the NextPieceListener to pass the following piece as well, and use this to update the following piece board.)
+    game.setNextPieceListener(this::nextPiece); //next piece passed as GamePiece to interface
     game.start();
-    scene.setOnKeyPressed(e -> {
-      switch (e.getCode()) {
-        case ESCAPE:
+    keyboardControls();
+
+  }
+
+  /**
+   * Keyboard controls for the game
+   */
+  public void keyboardControls(){
+    board.setOnMouseMoved(e -> {
+      coordX = board.currentBlock.getX();
+      coordY = board.currentBlock.getY();
+    });
+    gameWindow.getScene().setOnKeyPressed(e1 ->{
+      logger.info("Key pressed: {}", e1.getCode());
+      switch (e1.getCode()){
+        //Go back to menu
+        case ESCAPE -> {
           logger.info("Escape pressed, returning to menu");
           shutdownGame();
           gameMusic.stopBackgroundMusic();
           gameWindow.startMenu();
+        }
+        //Move the current piece left
+        case M ->{
+          if (!gameMusic.isPlaying()) {
+            gameMusic.playBackgroundMusic("/music/game.wav");
+            muteImageView.setImage(muteImage);
+          } else {
+            gameMusic.stopBackgroundMusic();
+            muteImageView.setImage(unmuteImage);
+          }
+        }
+        //Rotate the current piece
+        case Q ->{
+          game.rotateCurrentPiece();
+        }
+        //Swap the current piece(TODO: Change to spacebar)
+        case Z ->{
+          game.swapCurrentPiece();
+
+        }
       }
     });
-
   }
 
 }

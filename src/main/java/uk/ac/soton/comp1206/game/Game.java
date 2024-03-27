@@ -264,7 +264,7 @@ public class Game {
       nextPiece(); //Once one piece has been placed, generate a new one
       afterPiece();
     } else {
-      //playErrorSound(); //to be fixed
+      playErrorSound();
     }
 
   }
@@ -272,19 +272,12 @@ public class Game {
   /**
    * Handles misplaced pieces by playing a sound(to be fixed)
    */
-  private void playErrorSound() {
-    try {
-      String negativeSoundPath = "/music/negative.mp3";
-      Media media = new Media(new File(negativeSoundPath).toURI().toString());
-      MediaPlayer negativePlayer = new MediaPlayer(media);
-
-      // Play the error sound once the media is ready
-      negativePlayer.setOnReady(negativePlayer::play);
-    } catch (Exception e) {
-      e.printStackTrace();
-      // Handle exceptions appropriately
-    }
-  }
+private void playErrorSound(){
+  String soundFile = getClass().getResource("/sounds/fail.wav").toExternalForm();
+  Media sound = new Media(soundFile);
+  MediaPlayer mediaPlayer = new MediaPlayer(sound);
+  mediaPlayer.play();
+}
 
   /**
    * Get the grid model inside this game representing the game state of the board

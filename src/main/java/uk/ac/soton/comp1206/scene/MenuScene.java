@@ -1,15 +1,12 @@
 package uk.ac.soton.comp1206.scene;
 
 import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.game.Multimedia;
@@ -23,6 +20,9 @@ public class MenuScene extends BaseScene {
 
     private static final Logger logger = LogManager.getLogger(MenuScene.class);
     private Multimedia menuMusic = new Multimedia();
+    public Image muteImage = new Image(getClass().getResource("/images/mute.png").toString());
+    public Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
+    public ImageView muteImageView = new ImageView(muteImage);
 
     /**
      * Create a new menu scene
@@ -91,12 +91,24 @@ public class MenuScene extends BaseScene {
         instructionsButton.setOnAction(this::showInstructions);
 
         //Mute button implementation
-        var muteButton=createMuteButton(menuMusic,"/music/menu.mp3");
+        var muteButton = new Button("",muteImageView);
+        muteImageView.setFitHeight(30);
+        muteImageView.setFitWidth(30);
+        muteButton.setBackground(null);
         AnchorPane muteButtonPane = new AnchorPane();
         muteButtonPane.getChildren().add(muteButton);
         AnchorPane.setLeftAnchor(muteButton, 5.0);
         AnchorPane.setBottomAnchor(muteButton, 5.0);
         muteButtonPane.setPickOnBounds(false);
+        muteButton.setOnAction(actionEvent -> {
+            if(!menuMusic.isPlaying()){
+                menuMusic.playBackgroundMusic("/music/menu.wav");
+                muteImageView.setImage(muteImage);
+            }else{
+                menuMusic.stopBackgroundMusic();
+                muteImageView.setImage(unmuteImage);
+            }
+        });
         root.getChildren().add(muteButtonPane);
 
     }
@@ -108,6 +120,7 @@ public class MenuScene extends BaseScene {
     @Override
     public void initialise() {
         logger.info("Initialising " + this.getClass().getName());
+        keyboardControlsMenu();
     }
 
     /**
@@ -126,6 +139,25 @@ public class MenuScene extends BaseScene {
      */
     private void showInstructions(ActionEvent event) {
         gameWindow.loadScene(new InstructionsScene(gameWindow));
+    }
+
+    /**
+     * Keyboard controls for the menu
+     */
+    public void keyboardControlsMenu(){
+        scene.setOnKeyPressed(e -> {
+            switch (e.getCode()) {
+                //Mute/Unmute music
+                case M:
+                    if(!menuMusic.isPlaying()){
+                        menuMusic.playBackgroundMusic("/music/menu.mp3");
+                        muteImageView.setImage(muteImage);
+                    }else{
+                        menuMusic.stopBackgroundMusic();
+                        muteImageView.setImage(unmuteImage);
+                    }
+            }
+        });
     }
 
 }

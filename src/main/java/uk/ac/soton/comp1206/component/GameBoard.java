@@ -56,6 +56,7 @@ public class GameBoard extends GridPane {
      */
     private BlockClickedListener blockClickedListener; //called by blockClicked method
 
+    public GameBlock currentBlock;
 
     /**
      * Create a new GameBoard, based off a given grid, with a visual width and height.
@@ -69,9 +70,11 @@ public class GameBoard extends GridPane {
         this.width = width;
         this.height = height;
         this.grid = grid;
-
         //Build the GameBoard
         build();
+        currentBlock = getBlock(0,0);
+
+
     }
 
     /**
