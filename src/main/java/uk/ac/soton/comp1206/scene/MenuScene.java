@@ -156,6 +156,7 @@ public class MenuScene extends BaseScene {
                         menuMusic.stopBackgroundMusic();
                         muteImageView.setImage(unmuteImage);
                     }
+                    break;
             }
         });
     }

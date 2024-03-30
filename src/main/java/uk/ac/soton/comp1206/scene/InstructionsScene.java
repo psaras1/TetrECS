@@ -47,6 +47,7 @@ public class InstructionsScene extends BaseScene {
         case ESCAPE:
           logger.info("Escape pressed, returning to menu");
           gameWindow.startMenu();
+          break;
       }
     });
   }

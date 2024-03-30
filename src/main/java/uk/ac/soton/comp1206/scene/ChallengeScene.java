@@ -236,14 +236,14 @@ public class ChallengeScene extends BaseScene {
       logger.info("Key pressed: {}", e1.getCode());
       switch (e1.getCode()) {
         //Go back to menu
-        case ESCAPE -> {
+        case ESCAPE :
           logger.info("Escape pressed, returning to menu");
           shutdownGame();
           gameMusic.stopBackgroundMusic();
           gameWindow.startMenu();
-        }
+          break;
         //Move the current piece left
-        case M -> {
+        case M:
           if (!gameMusic.isPlaying()) {
             gameMusic.playBackgroundMusic("/music/game.wav");
             muteImageView.setImage(muteImage);
@@ -251,16 +251,15 @@ public class ChallengeScene extends BaseScene {
             gameMusic.stopBackgroundMusic();
             muteImageView.setImage(unmuteImage);
           }
-        }
+          break;
         //Rotate the current piece
-        case Q -> {
+        case Q:
           game.rotateCurrentPiece();
-        }
+          break;
         //Swap the current piece(TODO: Change to spacebar)
-        case Z -> {
+        case Z:
           game.swapCurrentPiece();
-
-        }
+          break;
       }
     });
   }

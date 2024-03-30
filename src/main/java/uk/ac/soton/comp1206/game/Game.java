@@ -232,9 +232,14 @@ public class Game {
    * @param blocks passed from afterPiece method
    */
   public void score(int lines, int blocks) {
+    int oldScore = score.get();
     setScore(score.get() + (lines * blocks * 10 * multiplier.get()));
+    int newScore = score.get();
     logger.info("Score changed to: {}", score.get());
     //The level should increase per 1000 points
+    if (newScore > oldScore){
+      playClearSound();
+    }
     if (score.get() >= 1000 * (level.get()+1)) {
       incrementLevel();
       playLevelUpSound();
@@ -302,11 +307,21 @@ private void playErrorSound(){
   MediaPlayer mediaPlayer = new MediaPlayer(sound);
   mediaPlayer.play();
 }
-private void playRotateSound(){
+
+  /**
+   * Handles clearing sound
+   */
+  private void playRotateSound(){
   String soundFile = getClass().getResource("/sounds/rotate.wav").toExternalForm();
   Media sound = new Media(soundFile);
   MediaPlayer mediaPlayer = new MediaPlayer(sound);
   mediaPlayer.play();
+}
+private void playClearSound(){
+    String soundFile = getClass().getResource("/sounds/clear.wav").toExternalForm();
+    Media sound = new Media(soundFile);
+    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    mediaPlayer.play();
 }
 
 
