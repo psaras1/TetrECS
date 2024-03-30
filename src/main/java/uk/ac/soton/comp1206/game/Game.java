@@ -233,8 +233,9 @@ public class Game {
     setScore(score.get() + (lines * blocks * 10 * multiplier.get()));
     logger.info("Score changed to: {}", score.get());
     //The level should increase per 1000 points
-    if (score.get() >= 1000 * level.get()) {
+    if (score.get() >= 1000 * (level.get()+1)) {
       incrementLevel();
+      playLevelUpSound();
       logger.info("Level changed to: {}", level.get());
     }
   }
@@ -279,6 +280,22 @@ private void playErrorSound(){
   mediaPlayer.play();
 }
 
+private void playLevelUpSound(){
+  String soundFile = getClass().getResource("/sounds/level.wav").toExternalForm();
+  Media sound = new Media(soundFile);
+  MediaPlayer mediaPlayer = new MediaPlayer(sound);
+  mediaPlayer.play();
+}
+
+  /**
+   * Get the current piece in the game
+   *
+   * @return current piece
+   */
+  public GamePiece getCurrentPiece() {
+    return currentPiece;
+}
+
   /**
    * Get the grid model inside this game representing the game state of the board
    *
@@ -311,7 +328,10 @@ private void playErrorSound(){
     updateListener();
   }
 
-  //Add a swapCurrentPiece method to swap the current and following pieces
+  /**
+   * Add a swapCurrentPiece method to swap the current and following pieces
+   */
+
   public void swapCurrentPiece() {
     tempPiece = currentPiece;
     currentPiece = followingPiece;
