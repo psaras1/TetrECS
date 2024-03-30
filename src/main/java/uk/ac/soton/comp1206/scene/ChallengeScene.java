@@ -50,6 +50,7 @@ public class ChallengeScene extends BaseScene {
   int coordX = 0, coordY = 0;
   boolean mouseMode;
   private GameBoard board;
+  private GameBlock keyboardSelectedBlock = null;
 
 
   /**
@@ -94,6 +95,15 @@ public class ChallengeScene extends BaseScene {
     root.getChildren().add(challengePane);
     var mainPane = new BorderPane();
 
+    /*top*/
+    //title
+    var title = new Text("TetrECS");
+    title.getStyleClass().add("bigtitle");
+    var topBox = new HBox();
+    topBox.setAlignment(Pos.CENTER);
+    topBox.getChildren().add(title);
+    mainPane.setTop(topBox);
+
     /*right*/
     var rightBox = new VBox();
     rightBox.setAlignment(Pos.CENTER);
@@ -125,9 +135,7 @@ public class ChallengeScene extends BaseScene {
     livesLabel.getStyleClass().add("lives");
     livesBox.getChildren().addAll(livesTitle, livesLabel);
 
-    //title
-    var title = new Text("TetrECS");
-    title.getStyleClass().add("bigTitle");
+
 
     //multiplier
     var multiplierBox = new VBox();
@@ -140,7 +148,7 @@ public class ChallengeScene extends BaseScene {
     //add everything to the topBox
     rightBox.getChildren().addAll(scoreBox, livesBox,levelBox, multiplierBox);
 
-    //left
+    /*left*/
     var leftBox = new VBox();
     leftBox.setAlignment(Pos.CENTER);
     leftBox.setPadding(new Insets(0,5,0,15));
@@ -179,9 +187,9 @@ public class ChallengeScene extends BaseScene {
     board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 2, gameWindow.getWidth() / 2);
     mainPane.setCenter(board);
     //Implement it so that right clicking on the main GameBoard or left clicking on the current piece board rotates the next piece
-    board.setOnContextMenuRequested(e -> {
-      game.rotateCurrentPieceLeft();
-    });
+
+    //activate listener on board instance of GameBoard
+    board.setOnRightClick(this::rotate);
     challengePane.getChildren().add(mainPane);
 
     board.setOnBlockClick(this::blockClicked); //calls blockClicked from GameBoard class
@@ -248,6 +256,10 @@ public class ChallengeScene extends BaseScene {
     game.setLives(1);
   }
 
+  protected void rotate(){
+    game.rotateCurrentPieceRight();
+  }
+
   /**
    * Initialise the scene and start the game
    */
@@ -268,6 +280,14 @@ public class ChallengeScene extends BaseScene {
   private void keyboardControls() {
     board.setOnMouseMoved((e) -> {
       mouseMode = true;
+      /*
+      Ensures that if a user moves the mouse over the board, the keyboard selected block is deselected before
+      the block the mouse is over is selected
+       */
+      if(keyboardSelectedBlock != null){
+        board.mouseExitBlock(keyboardSelectedBlock);
+        keyboardSelectedBlock = null;
+      }
       coordX = board.currentBlock.getX();
       coordY = board.currentBlock.getY();
     });
@@ -309,11 +329,13 @@ public class ChallengeScene extends BaseScene {
             board.mouseExitBlock(board.getBlock(coordX, coordY));
             coordY = 0;
             coordX = 0;
+            keyboardSelectedBlock = board.getBlock(coordX, coordY);
             board.mouseEnterBlock(board.getBlock(coordX, coordY));
           } else {
             if (coordY != 0) {
               board.mouseExitBlock(board.getBlock(coordX, coordY));
               coordY--;
+              keyboardSelectedBlock = board.getBlock(coordX, coordY);
               board.mouseEnterBlock(board.getBlock(coordX, coordY));
             }
           }
@@ -324,11 +346,13 @@ public class ChallengeScene extends BaseScene {
             board.mouseExitBlock(board.getBlock(coordX, coordY));
             coordY = 0;
             coordX = 0;
+            keyboardSelectedBlock = board.getBlock(coordX, coordY);
             board.mouseEnterBlock(board.getBlock(coordX, coordY));
           } else {
             if (coordY != 4) {
               board.mouseExitBlock(board.getBlock(coordX, coordY));
               coordY++;
+              keyboardSelectedBlock = board.getBlock(coordX, coordY);
               board.mouseEnterBlock(board.getBlock(coordX, coordY));
             }
           }
@@ -339,11 +363,13 @@ public class ChallengeScene extends BaseScene {
             board.mouseExitBlock(board.getBlock(coordX, coordY));
             coordY = 0;
             coordX = 0;
+            keyboardSelectedBlock = board.getBlock(coordX, coordY);
             board.mouseEnterBlock(board.getBlock(coordX, coordY));
           } else {
             if (coordX != 0) {
               board.mouseExitBlock(board.getBlock(coordX, coordY));
               coordX--;
+              keyboardSelectedBlock = board.getBlock(coordX, coordY);
               board.mouseEnterBlock(board.getBlock(coordX, coordY));
             }
           }
@@ -354,11 +380,13 @@ public class ChallengeScene extends BaseScene {
             board.mouseExitBlock(board.getBlock(coordX, coordY));
             coordY = 0;
             coordX = 0;
+            keyboardSelectedBlock = board.getBlock(coordX, coordY);
             board.mouseEnterBlock(board.getBlock(coordX, coordY));
           } else {
             if (coordX != 4) {
               board.mouseExitBlock(board.getBlock(coordX, coordY));
               coordX++;
+              keyboardSelectedBlock = board.getBlock(coordX, coordY);
               board.mouseEnterBlock(board.getBlock(coordX, coordY));
             }
           }

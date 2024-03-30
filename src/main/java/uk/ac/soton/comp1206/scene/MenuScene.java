@@ -1,6 +1,7 @@
 package uk.ac.soton.comp1206.scene;
 
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -57,9 +58,12 @@ public class MenuScene extends BaseScene {
         menuPane.getChildren().add(mainPane);
 
         //Awful title
-        var title = new Text("TetrECS");
-        title.getStyleClass().add("title");
+        Image titleImage = new Image(getClass().getResource("/images/TetrECS.png").toString());
+        ImageView title = new ImageView(titleImage);
+        title.setFitWidth(400);
+        title.setFitHeight(100);
         HBox titleContainer = new HBox();
+        titleContainer.setPadding(new Insets(20));
         titleContainer.setAlignment(Pos.CENTER);
         titleContainer.getChildren().add(title);
         mainPane.setTop(titleContainer);

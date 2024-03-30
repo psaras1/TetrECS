@@ -268,6 +268,7 @@ public class GameBlock extends Canvas {
     gc.applyEffect(lighting);
   }
 
+
   /**
    * Handle mouse entered and exited events to change the block opacity
    * @param event

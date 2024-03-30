@@ -1,10 +1,12 @@
 package uk.ac.soton.comp1206.component;
 
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.event.BlockClickedListener;
+import uk.ac.soton.comp1206.event.RightClickListener;
 import uk.ac.soton.comp1206.game.Grid;
 
 /**
@@ -25,6 +27,8 @@ public class GameBoard extends GridPane {
      * Number of columns in the board
      */
     private final int cols;
+    //instance if rightclicklistener
+    private RightClickListener rightClickListener;
     public boolean mouseMode;
 
 
@@ -113,6 +117,14 @@ public class GameBoard extends GridPane {
     }
 
     /**
+     * Set the listener to handle an event when a right click is detected
+     * @param listener
+     */
+    public void setOnRightClick(RightClickListener listener) {
+        this.rightClickListener = listener;
+    }
+
+    /**
      * Build the GameBoard by creating a block at every x and y column and row
      */
     protected void build() {
@@ -184,8 +196,15 @@ public class GameBoard extends GridPane {
     private void blockClicked(MouseEvent event, GameBlock block) {
         logger.info("Block clicked: {}", block);
 
-        if(blockClickedListener != null) {
-            blockClickedListener.blockClicked(block);
+        if (event.getButton().equals(MouseButton.PRIMARY)) {
+            if (blockClickedListener != null) {
+                blockClickedListener.blockClicked(block);
+            }
+        }
+        if (event.getButton().equals(MouseButton.SECONDARY)) {
+            if (rightClickListener != null) {
+                rightClickListener.setOnRightClick();
+            }
         }
     }
     /**
