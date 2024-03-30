@@ -25,6 +25,8 @@ public class GameBoard extends GridPane {
      * Number of columns in the board
      */
     private final int cols;
+    public boolean mouseMode;
+
 
     /**
      * Number of rows in the board
@@ -50,6 +52,7 @@ public class GameBoard extends GridPane {
      * The blocks inside the grid
      */
     GameBlock[][] blocks;
+    private Boolean pieceBoardBool = false;
 
     /**
      * The listener to call when a specific block is clicked
@@ -70,6 +73,8 @@ public class GameBoard extends GridPane {
         this.width = width;
         this.height = height;
         this.grid = grid;
+        this.getStyleClass().add("gameBox");
+//        mouseMode = true;
         //Build the GameBoard
         build();
         currentBlock = getBlock(0,0);
@@ -151,6 +156,15 @@ public class GameBoard extends GridPane {
         //Add a mouse click handler to the block to trigger GameBoard blockClicked method
         block.setOnMouseClicked((e) -> blockClicked(e, block));
 
+        block.setOnMouseEntered((e) -> {if(!isPieceboard()){
+            currentBlock = block;
+            mouseEnterBlock(block);
+        }});
+        block.setOnMouseExited((e) ->{if(!isPieceboard()){
+            mouseExitBlock(block);
+        }});
+
+
         return block;
     }
 
@@ -174,5 +188,32 @@ public class GameBoard extends GridPane {
             blockClickedListener.blockClicked(block);
         }
     }
+    /**
+     * Checks if the gameboard is a pieceboard (for hovering effects)
+     * @return returns the bool value
+     */
+    public Boolean isPieceboard(){
+        return pieceBoardBool;
+    }
+    /**
+     * initiates hoverblock only if its a gameboard and not a pieceblock
+     * @param block to hover
+     */
+
+    public void mouseEnterBlock(GameBlock block){
+        if(!isPieceboard()){
+            block.hoverBlock();
+        }
+    }
+    /**
+     * returns block back to normal when called
+     * @param block block to stop hovering
+     */
+    public void mouseExitBlock(GameBlock block){
+        if(!isPieceboard()){
+            block.paint();
+        }
+    }
+
 
 }

@@ -17,6 +17,7 @@ public class PieceBoard extends GameBoard{
    */
     public PieceBoard(int width, int height) {
         super(3,3,width, height);
+        this.getStyleClass().add("gameBox");
         build();
     }
 

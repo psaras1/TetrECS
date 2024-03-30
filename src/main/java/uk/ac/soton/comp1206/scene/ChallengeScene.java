@@ -8,6 +8,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,12 +41,15 @@ public class ChallengeScene extends BaseScene {
   private Label livesLabel;
   private Label multiplierLabel;
   private PieceBoard currentPiece, followingPiece;
-  public Image muteImage = new Image(getClass().getResource("/images/mute.png").toString());
-  public Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
-  public ImageView muteImageView = new ImageView(muteImage);
+  private Image muteImage = new Image(getClass().getResource("/images/mute.png").toString());
+  private Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
+  private ImageView muteImageView = new ImageView(muteImage);
+  private Button muteButton = new Button("", muteImageView);
 
-  int coordX, coordY;
+  int coordX = 0, coordY = 0;
+  boolean mouseMode;
   private GameBoard board;
+
 
   /**
    * Create a new Single Player challenge scene
@@ -124,7 +130,6 @@ public class ChallengeScene extends BaseScene {
 
     //Create a mute button
 
-    var muteButton = new Button("", muteImageView);
     muteImageView.setFitHeight(30);
     muteImageView.setFitWidth(30);
     AnchorPane muteButtonPane = new AnchorPane();
@@ -227,41 +232,107 @@ public class ChallengeScene extends BaseScene {
   /**
    * Keyboard controls for the game
    */
-  public void keyboardControls() {
-    board.setOnMouseMoved(e -> {
+  private void keyboardControls() {
+    board.setOnMouseMoved((e)->{
+      mouseMode = true;
       coordX = board.currentBlock.getX();
       coordY = board.currentBlock.getY();
     });
-    gameWindow.getScene().setOnKeyPressed(e1 -> {
-      logger.info("Key pressed: {}", e1.getCode());
-      switch (e1.getCode()) {
-        //Go back to menu
-        case ESCAPE :
-          logger.info("Escape pressed, returning to menu");
-          shutdownGame();
+    gameWindow.getScene().setOnKeyPressed(event->{
+    logger.info("Key pressed{}", event.getCode());
+    switch (event.getCode()) {
+      //Go back to menu
+      case ESCAPE:
+        logger.info("Escape pressed, returning to menu");
+        shutdownGame();
+        gameMusic.stopBackgroundMusic();
+        gameWindow.startMenu();
+        break;
+      //Move the current piece left
+      case M:
+        if (!gameMusic.isPlaying()) {
+          gameMusic.playBackgroundMusic("/music/game.wav");
+          muteImageView.setImage(muteImage);
+        } else {
           gameMusic.stopBackgroundMusic();
-          gameWindow.startMenu();
-          break;
-        //Move the current piece left
-        case M:
-          if (!gameMusic.isPlaying()) {
-            gameMusic.playBackgroundMusic("/music/game.wav");
-            muteImageView.setImage(muteImage);
-          } else {
-            gameMusic.stopBackgroundMusic();
-            muteImageView.setImage(unmuteImage);
+          muteImageView.setImage(unmuteImage);
+        }
+        break;
+      //Rotate the current piece
+      case Q:
+        game.rotateCurrentPiece();
+        break;
+      //Swap the current piece(TODO: Change to spacebar)
+      case Z:
+        game.swapCurrentPiece();
+        break;
+
+      case W, UP:
+        if (mouseMode){
+          mouseMode = false;
+          board.mouseExitBlock(board.getBlock(coordX, coordY));
+          coordY =0;
+          coordX =0;
+          board.mouseEnterBlock(board.getBlock(coordX, coordY));
+        }else{
+          if(coordY!=0){
+            board.mouseExitBlock(board.getBlock(coordX, coordY));
+            coordY--;
+            board.mouseEnterBlock(board.getBlock(coordX, coordY));
           }
-          break;
-        //Rotate the current piece
-        case Q:
-          game.rotateCurrentPiece();
-          break;
-        //Swap the current piece(TODO: Change to spacebar)
-        case Z:
-          game.swapCurrentPiece();
-          break;
-      }
-    });
+        }
+        break;
+      case S, DOWN:
+        if (mouseMode){
+          mouseMode = false;
+          board.mouseExitBlock(board.getBlock(coordX, coordY));
+          coordY =0;
+          coordX =0;
+          board.mouseEnterBlock(board.getBlock(coordX, coordY));
+        }else{
+          if(coordY!=4){
+            board.mouseExitBlock(board.getBlock(coordX, coordY));
+            coordY++;
+            board.mouseEnterBlock(board.getBlock(coordX, coordY));
+          }
+        }
+        break;
+      case A, LEFT:
+        if (mouseMode){
+          mouseMode = false;
+          board.mouseExitBlock(board.getBlock(coordX, coordY));
+          coordY =0;
+          coordX =0;
+          board.mouseEnterBlock(board.getBlock(coordX, coordY));
+        }else{
+          if(coordX!=0){
+            board.mouseExitBlock(board.getBlock(coordX, coordY));
+            coordX--;
+            board.mouseEnterBlock(board.getBlock(coordX, coordY));
+          }
+        }
+        break;
+      case D, RIGHT:
+        if (mouseMode){
+          mouseMode = false;
+          board.mouseExitBlock(board.getBlock(coordX, coordY));
+          coordY =0;
+          coordX =0;
+          board.mouseEnterBlock(board.getBlock(coordX, coordY));
+        }else{
+          if(coordX!=4){
+            board.mouseExitBlock(board.getBlock(coordX, coordY));
+            coordX++;
+            board.mouseEnterBlock(board.getBlock(coordX, coordY));
+          }
+        }
+        break;
+
+    }
+  });
   }
 
 }
+
+
+

@@ -4,7 +4,10 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
+import javafx.scene.paint.*;
+import javafx.scene.effect.*;
 import javafx.scene.paint.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 public class GameBlock extends Canvas {
 
     private static final Logger logger = LogManager.getLogger(GameBlock.class);
+
 
     /**
      * The set of colours for different pieces
@@ -44,8 +48,6 @@ public class GameBlock extends Canvas {
             Color.PURPLE
     };
 
-    private final GameBoard gameBoard;
-
     private final double width;
     private final double height;
 
@@ -59,10 +61,12 @@ public class GameBlock extends Canvas {
      */
     private final int y;
 
+
     /**
      * The value of this block (0 = empty, otherwise specifies the colour to render as)
      */
     private final IntegerProperty value = new SimpleIntegerProperty(0); //each block has a unique IntegerProperty
+
 
     /**
      * Create a new single Game Block
@@ -73,11 +77,12 @@ public class GameBlock extends Canvas {
      * @param height the height of the canvas to render
      */
     public GameBlock(GameBoard gameBoard, int x, int y, double width, double height) {
-        this.gameBoard = gameBoard;
         this.width = width;
         this.height = height;
         this.x = x;
         this.y = y;
+
+
 
         //A canvas needs a fixed width and height
         setWidth(width);
@@ -88,8 +93,8 @@ public class GameBlock extends Canvas {
 
         //When the value property is updated, call the internal updateValue method
         value.addListener(this::updateValue); //When the value of a block changes, updateValue(From GameBoard) is called through listener
-        this.addEventHandler(MouseEvent.MOUSE_ENTERED, this::handleMouseEntered);
-        this.addEventHandler(MouseEvent.MOUSE_EXITED, this::handleMouseExited);
+//        this.addEventHandler(MouseEvent.MOUSE_ENTERED, this::handleMouseEntered);
+//        this.addEventHandler(MouseEvent.MOUSE_EXITED, this::handleMouseExited);
     }
 
     /**
@@ -113,7 +118,10 @@ public class GameBlock extends Canvas {
             //If the block is not empty, paint with the colour represented by the value
             paintColor(COLOURS[value.get()]);
         }
+
     }
+
+
 
     /**
      * Paint this canvas empty
@@ -147,9 +155,17 @@ public class GameBlock extends Canvas {
         gc.setFill(colour);
         gc.fillRect(0,0, width, height);
 
+        Glow glow = new Glow();
+        InnerShadow shadow = new InnerShadow();
+        shadow.setColor(Color.BLACK);
+        glow.setLevel(0.9);
+        gc.applyEffect(glow);
+        gc.applyEffect(shadow);
+
         //Border
         gc.setStroke(Color.BLACK);
         gc.strokeRect(0,0,width,height);
+
     }
     private void paintColorWithCircle(Paint colour) {
         var gc = getGraphicsContext2D();
@@ -210,17 +226,30 @@ public class GameBlock extends Canvas {
             ", value=" + value.get() +
             '}';
     }
+    public void hoverBlock(){
+        paint();
+        var gc = getGraphicsContext2D();
+        Light.Distant light = new Light.Distant();
+        light.setAzimuth(-135.0);
+
+        Lighting lighting = new Lighting();
+        lighting.setLight(light);
+        lighting.setSurfaceScale(5.0);
+        gc.applyEffect(lighting);
+    }
+    
+
 
     /**
      * Handle mouse entered and exited events to change the block opacity
      * @param event
      */
-    public void handleMouseEntered(MouseEvent event){
-        if(value.get() == 0){
-            this.setOpacity(0.5);
-        }
-    }
-    public void handleMouseExited(MouseEvent event){
-        this.setOpacity(1);
-    }
+//    public void handleMouseEntered(MouseEvent event){
+//        if(value.get() == 0){
+//            this.setOpacity(0.5);
+//        }
+//    }
+//    public void handleMouseExited(MouseEvent event){
+//        this.setOpacity(1);
+//    }
 }
