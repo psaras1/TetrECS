@@ -221,7 +221,4 @@ public class GamePiece {
     public String toString() {
         return this.name;
     }
-
-
-
 }

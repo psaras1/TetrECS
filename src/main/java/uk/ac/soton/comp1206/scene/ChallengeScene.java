@@ -73,7 +73,7 @@ public class ChallengeScene extends BaseScene {
   public void bindProperties() {
     scoreLabel.textProperty().bind(Bindings.concat(game.getScore().asString()));
     levelLabel.textProperty().bind(Bindings.concat(game.getLevel().asString()));
-    livesLabel.textProperty().bind(Bindings.concat( game.getLives().asString()));
+    livesLabel.textProperty().bind(Bindings.concat(game.getLives().asString()));
     multiplierLabel.textProperty().bind(Bindings.concat(game.getMultiplier().asString()));
   }
 
@@ -135,8 +135,6 @@ public class ChallengeScene extends BaseScene {
     livesLabel.getStyleClass().add("lives");
     livesBox.getChildren().addAll(livesTitle, livesLabel);
 
-
-
     //multiplier
     var multiplierBox = new VBox();
     multiplierBox.setAlignment(Pos.CENTER);
@@ -146,16 +144,16 @@ public class ChallengeScene extends BaseScene {
     multiplierBox.getChildren().addAll(multiplierTitle, multiplierLabel);
 
     //add everything to the topBox
-    rightBox.getChildren().addAll(scoreBox, livesBox,levelBox, multiplierBox);
+    rightBox.getChildren().addAll(scoreBox, livesBox, levelBox, multiplierBox);
 
     /*left*/
     var leftBox = new VBox();
     leftBox.setAlignment(Pos.CENTER);
-    leftBox.setPadding(new Insets(0,5,0,15));
+    leftBox.setPadding(new Insets(0, 5, 0, 15));
     mainPane.setLeft(leftBox);
 
     currentPiece = new PieceBoard(100, 100);
-    currentPiece.setPadding(new Insets(5,0,0,0));
+    currentPiece.setPadding(new Insets(5, 0, 0, 0));
     currentPiece.blocks[1][1].setCenter();
     currentPiece.setOnMouseClicked(e -> {
       logger.info("Rotating piece{}", currentPiece);
@@ -165,7 +163,7 @@ public class ChallengeScene extends BaseScene {
     currentPieceLabel.getStyleClass().add("heading");
 
     followingPiece = new PieceBoard(80, 80);
-    followingPiece.setPadding(new Insets(5,0,0,0));
+    followingPiece.setPadding(new Insets(5, 0, 0, 0));
     followingPiece.setOnMouseClicked(e -> {
       logger.info("Swapping pieces");
       game.swapCurrentPiece();
@@ -174,15 +172,6 @@ public class ChallengeScene extends BaseScene {
     nextPieceLabel.getStyleClass().add("heading");
 
     leftBox.getChildren().addAll(currentPieceLabel, currentPiece, nextPieceLabel, followingPiece);
-
-
-
-
-
-
-
-
-
     //Create the game board
     board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 2, gameWindow.getWidth() / 2);
     mainPane.setCenter(board);
@@ -225,9 +214,7 @@ public class ChallengeScene extends BaseScene {
   protected void nextPiece(GamePiece piece) {
     currentPiece.displayPiece(piece);
     followingPiece.displayPiece(game.followingPiece);
-
   }
-
 
   /**
    * Handle when a block is clicked
@@ -249,6 +236,10 @@ public class ChallengeScene extends BaseScene {
     game = new Game(5, 5);
   }
 
+  /**
+   * Shutdown the game, resetting the score, multiplier, level and lives
+   */
+
   public void shutdownGame() {
     game.setScore(0);
     game.setMultiplier(1);
@@ -256,7 +247,10 @@ public class ChallengeScene extends BaseScene {
     game.setLives(1);
   }
 
-  protected void rotate(){
+  /**
+   * Rotate the current piece
+   */
+  protected void rotate() {
     game.rotateCurrentPieceRight();
   }
 
@@ -284,7 +278,7 @@ public class ChallengeScene extends BaseScene {
       Ensures that if a user moves the mouse over the board, the keyboard selected block is deselected before
       the block the mouse is over is selected
        */
-      if(keyboardSelectedBlock != null){
+      if (keyboardSelectedBlock != null) {
         board.mouseExitBlock(keyboardSelectedBlock);
         keyboardSelectedBlock = null;
       }

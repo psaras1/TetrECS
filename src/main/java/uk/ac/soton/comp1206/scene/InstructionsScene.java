@@ -1,5 +1,6 @@
 package uk.ac.soton.comp1206.scene;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,6 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.PieceBoard;
@@ -63,6 +65,7 @@ public class InstructionsScene extends BaseScene {
     imageView.setPreserveRatio(true);
     imageView.setFitHeight(gameWindow.getHeight() / 2 - 40);
 
+
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
     mainPane.setMaxWidth(gameWindow.getWidth());
     mainPane.setMaxHeight(gameWindow.getHeight());
@@ -71,7 +74,8 @@ public class InstructionsScene extends BaseScene {
     VBox top = new VBox();
     top.setAlignment(Pos.CENTER);
     top.setSpacing(10);
-    var controlsLabel = new Label("Controls:");
+    var controlsLabel = new Text("Controls:");
+    controlsLabel.getStyleClass().add("heading");
     controlsLabel.setStyle("-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
 
 
@@ -101,21 +105,24 @@ public class InstructionsScene extends BaseScene {
 
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 5; j++) {
-        var pieceBoard = new PieceBoard(60, 60);
+        var pieceBoard = new PieceBoard(55, 55);
         GamePiece gamePiece = GamePiece.createPiece(i * 5 + j);
         pieceBoard.displayPiece(gamePiece);
         gridPane.add(pieceBoard, j, i);
       }
     }
     gridPane.setPrefSize(paneWidth, paneHeight / 2);
-    var  optionsLabel = new Label("Piece Options:");
+    var  optionsLabel = new Text("Piece Options:");
+    optionsLabel.getStyleClass().add("heading");
     optionsLabel.setStyle("-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
     var bottom = new VBox();
     bottom.setAlignment(Pos.CENTER);
+    bottom.fillWidthProperty().setValue(true);
+    bottom.setMaxHeight(paneHeight / 2);
+    bottom.setPadding(new javafx.geometry.Insets(10, 10, 10, 10));
     bottom.getChildren().addAll(optionsLabel, gridPane);
 
     gridPane.setPrefSize(paneWidth, paneHeight / 2);
-    bottom.setSpacing(5);
     mainPane.setBottom(bottom);
 
     root.getChildren().add(mainPane);

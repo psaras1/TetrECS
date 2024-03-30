@@ -36,6 +36,10 @@ public class Multimedia {
     musicPlayer.stop();
   }
 
+  /**
+   * Check if the music is playing
+   * @return
+   */
   public boolean isPlaying() {
     return musicPlayer.getStatus() == MediaPlayer.Status.PLAYING;
   }

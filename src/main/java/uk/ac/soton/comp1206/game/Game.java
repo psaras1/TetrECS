@@ -44,7 +44,9 @@ public class Game {
   protected final Grid grid;
 
 
-  //    Add bindable properties for the score, level, lives and multiplier to the Game class, with appropriate accessor methods.
+  /*
+  Add bindable properties for the score, level, lives and multiplier to the Game class, with appropriate accessor methods.
+   */
   public GamePiece currentPiece, followingPiece, tempPiece;
   private IntegerProperty score;
   private IntegerProperty level;
@@ -89,7 +91,11 @@ public class Game {
   }
 
 
-  //Add bindable properties for the score, level, lives and multiplier to the Game class, with appropriate accessor methods.
+  /**
+   * Bind the score, level, lives and multiplier properties to the Game class (Add bindable
+   * properties for the score, level, lives and multiplier to the Game class, with appropriate
+   * accessor methods.)
+   */
   public IntegerProperty getScore() {
     return score;
   }
@@ -237,10 +243,10 @@ public class Game {
     int newScore = score.get();
     logger.info("Score changed to: {}", score.get());
     //The level should increase per 1000 points
-    if (newScore > oldScore){
+    if (newScore > oldScore) {
       playClearSound();
     }
-    if (score.get() >= 1000 * (level.get()+1)) {
+    if (score.get() >= 1000 * (level.get() + 1)) {
       incrementLevel();
       playLevelUpSound();
       logger.info("Level changed to: {}", level.get());
@@ -262,7 +268,7 @@ public class Game {
    *
    * @param gameBlock the block that was clicked
    */
-  public void blockClicked(GameBlock gameBlock){
+  public void blockClicked(GameBlock gameBlock) {
     //Get the position of this block
     int x = gameBlock.getX();
     int y = gameBlock.getY();
@@ -281,48 +287,62 @@ public class Game {
   /**
    * Handles misplaced pieces by playing a sound(to be fixed)
    */
-private void playErrorSound(){
-  String soundFile = getClass().getResource("/sounds/fail.wav").toExternalForm();
-  Media sound = new Media(soundFile);
-  MediaPlayer mediaPlayer = new MediaPlayer(sound);
-  mediaPlayer.play();
-}
+  private void playErrorSound() {
+    String soundFile = getClass().getResource("/sounds/fail.wav").toExternalForm();
+    Media sound = new Media(soundFile);
+    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    mediaPlayer.play();
+  }
 
   /**
    * Handles level up sound
    */
-  private void playLevelUpSound(){
-  String soundFile = getClass().getResource("/sounds/level.wav").toExternalForm();
-  Media sound = new Media(soundFile);
-  MediaPlayer mediaPlayer = new MediaPlayer(sound);
-  mediaPlayer.play();
-}
+  private void playLevelUpSound() {
+    String soundFile = getClass().getResource("/sounds/level.wav").toExternalForm();
+    Media sound = new Media(soundFile);
+    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    mediaPlayer.play();
+  }
 
   /**
    * Handles placement sound
    */
-  private void playPlaceSound(){
-  String soundFile = getClass().getResource("/sounds/place.wav").toExternalForm();
-  Media sound = new Media(soundFile);
-  MediaPlayer mediaPlayer = new MediaPlayer(sound);
-  mediaPlayer.play();
-}
+  private void playPlaceSound() {
+    String soundFile = getClass().getResource("/sounds/place.wav").toExternalForm();
+    Media sound = new Media(soundFile);
+    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    mediaPlayer.play();
+  }
 
   /**
-   * Handles clearing sound
+   * Handles rotate sound
    */
-  private void playRotateSound(){
-  String soundFile = getClass().getResource("/sounds/rotate.wav").toExternalForm();
-  Media sound = new Media(soundFile);
-  MediaPlayer mediaPlayer = new MediaPlayer(sound);
-  mediaPlayer.play();
-}
-private void playClearSound(){
+  private void playRotateSound() {
+    String soundFile = getClass().getResource("/sounds/rotate.wav").toExternalForm();
+    Media sound = new Media(soundFile);
+    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    mediaPlayer.play();
+  }
+
+  /**
+   * Handles clear sound
+   */
+  private void playClearSound() {
     String soundFile = getClass().getResource("/sounds/clear.wav").toExternalForm();
     Media sound = new Media(soundFile);
     MediaPlayer mediaPlayer = new MediaPlayer(sound);
     mediaPlayer.play();
-}
+  }
+
+  /**
+   * Handles swap sound
+   */
+  private void playSwapSound() {
+    String soundFile = getClass().getResource("/sounds/pling.wav").toExternalForm();
+    Media sound = new Media(soundFile);
+    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    mediaPlayer.play();
+  }
 
 
   /**
@@ -350,7 +370,7 @@ private void playClearSound(){
    */
   public int getUniqueClearedBlocks() {
     return uniqueClearedBlocks;
-}
+  }
 
   /**
    * Get the current piece in the game
@@ -359,7 +379,7 @@ private void playClearSound(){
    */
   public GamePiece getCurrentPiece() {
     return currentPiece;
-}
+  }
 
   /**
    * Get the grid model inside this game representing the game state of the board
@@ -388,11 +408,18 @@ private void playClearSound(){
     return rows;
   }
 
+  /**
+   * Rotating once, rotates piece to the right
+   */
   public void rotateCurrentPieceRight() {
     currentPiece.rotate();
     playRotateSound();
     updateListener();
   }
+
+  /**
+   * Rotating three times, rotates piece to the left
+   */
   public void rotateCurrentPieceLeft() {
     currentPiece.rotate(3);
     playRotateSound();
@@ -407,6 +434,7 @@ private void playClearSound(){
     tempPiece = currentPiece;
     currentPiece = followingPiece;
     followingPiece = tempPiece;
+    playSwapSound();
     updateListener();
   }
 
@@ -419,6 +447,4 @@ private void playClearSound(){
       nextPieceListener.nextPiece(currentPiece);
     }
   }
-
-
 }

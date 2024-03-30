@@ -189,11 +189,8 @@ public class Grid {
         }
         //Updating 5x5 grid from 3x3 grid, takes x,y coordinates where user clicked
         //plus where we currently are on the grid in the specific iteration
-
       }
-
     }
-
   }
 
   /**

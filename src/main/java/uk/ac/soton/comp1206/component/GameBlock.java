@@ -67,6 +67,9 @@ public class GameBlock extends Canvas {
    */
   private final IntegerProperty value = new SimpleIntegerProperty(
       0); //each block has a unique IntegerProperty
+
+
+  //used to check if the block is in the center of the pieceboard, if so, a circle is drawn
   public Boolean center;
 
 
@@ -128,15 +131,16 @@ public class GameBlock extends Canvas {
     }
 
   }
+
+  /**
+   * Sets the middle of the block to be a circle
+   * Calls paint again to update the block
+   */
   public void setCenter(){
     center = true;
     paint();
   }
 
-  //TODO: Implement isPieceboard method to not color the pieceboards
-  public boolean isPieceboard() {
-    return false;
-  }
 
 
   /**
@@ -184,7 +188,11 @@ public class GameBlock extends Canvas {
     gc.strokeRect(0, 0, width, height);
 
   }
-
+/**
+   * Paint this canvas with the given colour and a circle in the middle(pieceboard middle piece)
+   *
+   * @param colour the colour to paint
+   */
   private void paintColorWithCircle(Paint colour) {
     var gc = getGraphicsContext2D();
     //Clear
@@ -256,6 +264,9 @@ public class GameBlock extends Canvas {
         '}';
   }
 
+  /**
+   * Changes appearance of selected block(when the mouse is over the block)
+   */
   public void hoverBlock() {
     paint();
     var gc = getGraphicsContext2D();
