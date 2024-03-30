@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Random;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import org.apache.logging.log4j.LogManager;
@@ -255,13 +257,14 @@ public class Game {
    *
    * @param gameBlock the block that was clicked
    */
-  public void blockClicked(GameBlock gameBlock) {
+  public void blockClicked(GameBlock gameBlock){
     //Get the position of this block
     int x = gameBlock.getX();
     int y = gameBlock.getY();
     if (grid.canPlayPiece(currentPiece, x, y)) {
       //Can play the piece
       grid.playPiece(currentPiece, x, y);
+      playPlaceSound();
       nextPiece(); //Once one piece has been placed, generate a new one
       afterPiece();
     } else {
@@ -280,11 +283,58 @@ private void playErrorSound(){
   mediaPlayer.play();
 }
 
-private void playLevelUpSound(){
+  /**
+   * Handles level up sound
+   */
+  private void playLevelUpSound(){
   String soundFile = getClass().getResource("/sounds/level.wav").toExternalForm();
   Media sound = new Media(soundFile);
   MediaPlayer mediaPlayer = new MediaPlayer(sound);
   mediaPlayer.play();
+}
+
+  /**
+   * Handles placement sound
+   */
+  private void playPlaceSound(){
+  String soundFile = getClass().getResource("/sounds/place.wav").toExternalForm();
+  Media sound = new Media(soundFile);
+  MediaPlayer mediaPlayer = new MediaPlayer(sound);
+  mediaPlayer.play();
+}
+private void playRotateSound(){
+  String soundFile = getClass().getResource("/sounds/rotate.wav").toExternalForm();
+  Media sound = new Media(soundFile);
+  MediaPlayer mediaPlayer = new MediaPlayer(sound);
+  mediaPlayer.play();
+}
+
+
+  /**
+   * Get the number of lines cleared
+   *
+   * @return number of lines cleared
+   */
+  public int getLines() {
+    return lines;
+  }
+
+  /**
+   * Get the number of intersecting blocks
+   *
+   * @return number of intersecting blocks
+   */
+  public int getIntersectingBlocks() {
+    return intersectingBlocks;
+  }
+
+  /**
+   * Get the number of unique cleared blocks
+   *
+   * @return number of unique cleared blocks
+   */
+  public int getUniqueClearedBlocks() {
+    return uniqueClearedBlocks;
 }
 
   /**
@@ -325,6 +375,7 @@ private void playLevelUpSound(){
 
   public void rotateCurrentPiece() {
     currentPiece.rotate();
+    playRotateSound();
     updateListener();
   }
 

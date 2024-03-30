@@ -124,7 +124,7 @@ public class ChallengeScene extends BaseScene {
 
     //Create a mute button
 
-    var muteButton = new Button("",muteImageView);
+    var muteButton = new Button("", muteImageView);
     muteImageView.setFitHeight(30);
     muteImageView.setFitWidth(30);
     AnchorPane muteButtonPane = new AnchorPane();
@@ -135,10 +135,10 @@ public class ChallengeScene extends BaseScene {
     root.getChildren().add(muteButtonPane);
     muteButton.setBackground(null);
     muteButton.setOnAction(actionEvent -> {
-      if(!gameMusic.isPlaying()){
+      if (!gameMusic.isPlaying()) {
         gameMusic.playBackgroundMusic("/music/game.wav");
         muteImageView.setImage(muteImage);
-      }else{
+      } else {
         gameMusic.stopBackgroundMusic();
         muteImageView.setImage(unmuteImage);
       }
@@ -155,8 +155,8 @@ public class ChallengeScene extends BaseScene {
         "-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
     nextPieceLabel.setStyle(
         "-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
-    leftContainer.getChildren().addAll(currentPieceLabel, currentPiece, nextPieceLabel,
-        followingPiece);
+    leftContainer.getChildren()
+        .addAll(currentPieceLabel, currentPiece, nextPieceLabel, followingPiece);
     leftContainer.setAlignment(Pos.CENTER);
     leftContainer.setPadding(new Insets(20));
     mainPane.setLeft(leftContainer);
@@ -189,8 +189,7 @@ public class ChallengeScene extends BaseScene {
    *
    * @param gameBlock the Game Block that was clocked
    */
-  private void blockClicked(
-      GameBlock gameBlock) { //calls blockClicked method on game, passing through current gameBlock
+  private void blockClicked(GameBlock gameBlock) { //calls blockClicked method on game, passing through current gameBlock
     game.blockClicked(gameBlock);
   }
 
@@ -228,14 +227,14 @@ public class ChallengeScene extends BaseScene {
   /**
    * Keyboard controls for the game
    */
-  public void keyboardControls(){
+  public void keyboardControls() {
     board.setOnMouseMoved(e -> {
       coordX = board.currentBlock.getX();
       coordY = board.currentBlock.getY();
     });
-    gameWindow.getScene().setOnKeyPressed(e1 ->{
+    gameWindow.getScene().setOnKeyPressed(e1 -> {
       logger.info("Key pressed: {}", e1.getCode());
-      switch (e1.getCode()){
+      switch (e1.getCode()) {
         //Go back to menu
         case ESCAPE -> {
           logger.info("Escape pressed, returning to menu");
@@ -244,7 +243,7 @@ public class ChallengeScene extends BaseScene {
           gameWindow.startMenu();
         }
         //Move the current piece left
-        case M ->{
+        case M -> {
           if (!gameMusic.isPlaying()) {
             gameMusic.playBackgroundMusic("/music/game.wav");
             muteImageView.setImage(muteImage);
@@ -254,11 +253,11 @@ public class ChallengeScene extends BaseScene {
           }
         }
         //Rotate the current piece
-        case Q ->{
+        case Q -> {
           game.rotateCurrentPiece();
         }
         //Swap the current piece(TODO: Change to spacebar)
-        case Z ->{
+        case Z -> {
           game.swapCurrentPiece();
 
         }
