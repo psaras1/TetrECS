@@ -388,8 +388,13 @@ private void playClearSound(){
     return rows;
   }
 
-  public void rotateCurrentPiece() {
+  public void rotateCurrentPieceRight() {
     currentPiece.rotate();
+    playRotateSound();
+    updateListener();
+  }
+  public void rotateCurrentPieceLeft() {
+    currentPiece.rotate(3);
     playRotateSound();
     updateListener();
   }

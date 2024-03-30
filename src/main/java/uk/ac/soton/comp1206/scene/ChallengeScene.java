@@ -12,6 +12,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
@@ -36,10 +37,10 @@ public class ChallengeScene extends BaseScene {
   /*
    * Labels for the game stats
    */
-  private Label scoreLabel;
-  private Label levelLabel;
-  private Label livesLabel;
-  private Label multiplierLabel;
+  private Text scoreLabel;
+  private Text levelLabel;
+  private Text livesLabel;
+  private Text multiplierLabel;
   private PieceBoard currentPiece, followingPiece;
   private Image muteImage = new Image(getClass().getResource("/images/mute.png").toString());
   private Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
@@ -58,10 +59,10 @@ public class ChallengeScene extends BaseScene {
    */
   public ChallengeScene(GameWindow gameWindow) {
     super(gameWindow);
-    this.scoreLabel = new Label();
-    this.levelLabel = new Label();
-    this.livesLabel = new Label();
-    this.multiplierLabel = new Label();
+    this.scoreLabel = new Text();
+    this.levelLabel = new Text();
+    this.livesLabel = new Text();
+    this.multiplierLabel = new Text();
     logger.info("Creating Challenge Scene");
   }
 
@@ -69,11 +70,10 @@ public class ChallengeScene extends BaseScene {
    * Bind the properties of the game to the UI
    */
   public void bindProperties() {
-    scoreLabel.textProperty().bind(Bindings.concat("Score: ", game.getScore().asString()));
-    levelLabel.textProperty().bind(Bindings.concat("Level: ", game.getLevel().asString()));
-    livesLabel.textProperty().bind(Bindings.concat("Lives: ", game.getLives().asString()));
-    multiplierLabel.textProperty()
-        .bind(Bindings.concat("Multiplier: ", game.getMultiplier().asString()));
+    scoreLabel.textProperty().bind(Bindings.concat(game.getScore().asString()));
+    levelLabel.textProperty().bind(Bindings.concat(game.getLevel().asString()));
+    livesLabel.textProperty().bind(Bindings.concat( game.getLives().asString()));
+    multiplierLabel.textProperty().bind(Bindings.concat(game.getMultiplier().asString()));
   }
 
   /**
@@ -83,46 +83,104 @@ public class ChallengeScene extends BaseScene {
   public void build() {
     logger.info("Building " + this.getClass().getName());
     setupGame();
-//        Implement background music in the game scene
+    // Implement background music in the game scene
     this.gameMusic.playBackgroundMusic("/music/game.wav");
     bindProperties();
-
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
-
-    var mainPane = new BorderPane();
-
     var challengePane = new StackPane();
-
     challengePane.setMaxWidth(gameWindow.getWidth());
     challengePane.setMaxHeight(gameWindow.getHeight());
     challengePane.getStyleClass().add("challenge-background");
     root.getChildren().add(challengePane);
-//        Build the User Interface
-    var stats = new HBox(135);
-    stats.setAlignment(Pos.CENTER);
-    BorderPane.setMargin(stats, new Insets(10, 0, 0, 0));
-    mainPane.setTop(stats);
-    stats.getChildren().addAll(scoreLabel, levelLabel, livesLabel, multiplierLabel);
+    var mainPane = new BorderPane();
 
-    //Style the stats through an array list to avoid repetition
-    ArrayList<Label> labels = new ArrayList<>();
-    labels.add(scoreLabel);
-    labels.add(levelLabel);
-    labels.add(livesLabel);
-    labels.add(multiplierLabel);
-    for (Label label : labels) {
-      //Style the labels
-      label.setStyle(
-          "-fx-border-color: white; -fx-border-width: 2; -fx-text-fill: white; -fx-padding: 10;"
-              + " -fx-border-radius: 5;-fx-font-family: 'Arial'; -fx-font-weight: bold;");
-    }
+    /*right*/
+    var rightBox = new VBox();
+    rightBox.setAlignment(Pos.CENTER);
+    rightBox.setSpacing(20);
+    rightBox.setPadding(new Insets(0, 15, 0, 0));
+    mainPane.setRight(rightBox);
+
+    //score
+    var scoreBox = new VBox();
+    scoreBox.setAlignment(Pos.CENTER);
+    var scoreTitle = new Text("Score:");
+    scoreTitle.getStyleClass().add("heading");
+    scoreLabel.getStyleClass().add("score");
+    scoreBox.getChildren().addAll(scoreTitle, scoreLabel);
+
+    //level
+    var levelBox = new VBox();
+    levelBox.setAlignment(Pos.CENTER);
+    var levelTitle = new Text("Level:");
+    levelTitle.getStyleClass().add("heading");
+    levelLabel.getStyleClass().add("level");
+    levelBox.getChildren().addAll(levelTitle, levelLabel);
+
+    //lives
+    var livesBox = new VBox();
+    livesBox.setAlignment(Pos.CENTER);
+    var livesTitle = new Text("Lives:");
+    livesTitle.getStyleClass().add("heading");
+    livesLabel.getStyleClass().add("lives");
+    livesBox.getChildren().addAll(livesTitle, livesLabel);
+
+    //title
+    var title = new Text("TetrECS");
+    title.getStyleClass().add("bigTitle");
+
+    //multiplier
+    var multiplierBox = new VBox();
+    multiplierBox.setAlignment(Pos.CENTER);
+    var multiplierTitle = new Text("Multiplier:");
+    multiplierTitle.getStyleClass().add("heading");
+    multiplierLabel.getStyleClass().add("level");
+    multiplierBox.getChildren().addAll(multiplierTitle, multiplierLabel);
+
+    //add everything to the topBox
+    rightBox.getChildren().addAll(scoreBox, livesBox,levelBox, multiplierBox);
+
+    //left
+    var leftBox = new VBox();
+    leftBox.setAlignment(Pos.CENTER);
+    leftBox.setPadding(new Insets(0,5,0,15));
+    mainPane.setLeft(leftBox);
+
+    currentPiece = new PieceBoard(100, 100);
+    currentPiece.setPadding(new Insets(5,0,0,0));
+    currentPiece.blocks[1][1].setCenter();
+    currentPiece.setOnMouseClicked(e -> {
+      logger.info("Rotating piece{}", currentPiece);
+      game.rotateCurrentPieceLeft();
+    });
+    var currentPieceLabel = new Text("Current Piece:");
+    currentPieceLabel.getStyleClass().add("heading");
+
+    followingPiece = new PieceBoard(80, 80);
+    followingPiece.setPadding(new Insets(5,0,0,0));
+    followingPiece.setOnMouseClicked(e -> {
+      logger.info("Swapping pieces");
+      game.swapCurrentPiece();
+    });
+    var nextPieceLabel = new Text("Next Piece:");
+    nextPieceLabel.getStyleClass().add("heading");
+
+    leftBox.getChildren().addAll(currentPieceLabel, currentPiece, nextPieceLabel, followingPiece);
+
+
+
+
+
+
+
+
 
     //Create the game board
     board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 2, gameWindow.getWidth() / 2);
     mainPane.setCenter(board);
     //Implement it so that right clicking on the main GameBoard or left clicking on the current piece board rotates the next piece
     board.setOnContextMenuRequested(e -> {
-      game.rotateCurrentPiece();
+      game.rotateCurrentPieceLeft();
     });
     challengePane.getChildren().add(mainPane);
 
@@ -149,32 +207,6 @@ public class ChallengeScene extends BaseScene {
       }
     });
 
-    //PieceBoard object, displays current and incoming pieces
-    //(Add another, smaller PieceBoard to show the following peice to the ChallengeScene)
-    var leftContainer = new VBox();
-    currentPiece = new PieceBoard(100, 100);
-    var currentPieceLabel = new Label("Current Piece:");
-    followingPiece = new PieceBoard(80, 80);
-    var nextPieceLabel = new Label("Next Piece:");
-    currentPieceLabel.setStyle(
-        "-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
-    nextPieceLabel.setStyle(
-        "-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
-    leftContainer.getChildren()
-        .addAll(currentPieceLabel, currentPiece, nextPieceLabel, followingPiece);
-    leftContainer.setAlignment(Pos.CENTER);
-    leftContainer.setPadding(new Insets(20));
-    mainPane.setLeft(leftContainer);
-
-    currentPiece.setOnMouseClicked(e -> {
-      logger.info("Rotating piece{}", currentPiece);
-      game.rotateCurrentPiece();
-    });
-    followingPiece.setOnMouseClicked(e -> {
-      logger.info("Swapping pieces");
-      game.swapCurrentPiece();
-    });
-
   }
 
   /**
@@ -194,7 +226,8 @@ public class ChallengeScene extends BaseScene {
    *
    * @param gameBlock the Game Block that was clocked
    */
-  private void blockClicked(GameBlock gameBlock) { //calls blockClicked method on game, passing through current gameBlock
+  private void blockClicked(
+      GameBlock gameBlock) { //calls blockClicked method on game, passing through current gameBlock
     game.blockClicked(gameBlock);
   }
 
@@ -233,103 +266,107 @@ public class ChallengeScene extends BaseScene {
    * Keyboard controls for the game
    */
   private void keyboardControls() {
-    board.setOnMouseMoved((e)->{
+    board.setOnMouseMoved((e) -> {
       mouseMode = true;
       coordX = board.currentBlock.getX();
       coordY = board.currentBlock.getY();
     });
-    gameWindow.getScene().setOnKeyPressed(event->{
-    logger.info("Key pressed{}", event.getCode());
-    switch (event.getCode()) {
-      //Go back to menu
-      case ESCAPE:
-        logger.info("Escape pressed, returning to menu");
-        shutdownGame();
-        gameMusic.stopBackgroundMusic();
-        gameWindow.startMenu();
-        break;
-      //Move the current piece left
-      case M:
-        if (!gameMusic.isPlaying()) {
-          gameMusic.playBackgroundMusic("/music/game.wav");
-          muteImageView.setImage(muteImage);
-        } else {
+    gameWindow.getScene().setOnKeyPressed(event -> {
+      logger.info("Key pressed{}", event.getCode());
+      switch (event.getCode()) {
+        //Go back to menu
+        case ESCAPE:
+          logger.info("Escape pressed, returning to menu");
+          shutdownGame();
           gameMusic.stopBackgroundMusic();
-          muteImageView.setImage(unmuteImage);
-        }
-        break;
-      //Rotate the current piece
-      case Q:
-        game.rotateCurrentPiece();
-        break;
-      //Swap the current piece(TODO: Change to spacebar)
-      case Z:
-        game.swapCurrentPiece();
-        break;
+          gameWindow.startMenu();
+          break;
+        //Move the current piece left
+        case M:
+          if (!gameMusic.isPlaying()) {
+            gameMusic.playBackgroundMusic("/music/game.wav");
+            muteImageView.setImage(muteImage);
+          } else {
+            gameMusic.stopBackgroundMusic();
+            muteImageView.setImage(unmuteImage);
+          }
+          break;
+        case CLOSE_BRACKET, E, C:
+          game.rotateCurrentPieceRight();
+          break;
+        //Rotate the current piece
+        case OPEN_BRACKET, Q, Z:
+          game.rotateCurrentPieceLeft();
+          break;
+        //Swap the current piece(TODO: Fix spacebar)
+        case SPACE, R:
+          game.swapCurrentPiece();
+          break;
 
-      case W, UP:
-        if (mouseMode){
-          mouseMode = false;
-          board.mouseExitBlock(board.getBlock(coordX, coordY));
-          coordY =0;
-          coordX =0;
-          board.mouseEnterBlock(board.getBlock(coordX, coordY));
-        }else{
-          if(coordY!=0){
+        case W, UP:
+          if (mouseMode) {
+            mouseMode = false;
             board.mouseExitBlock(board.getBlock(coordX, coordY));
-            coordY--;
+            coordY = 0;
+            coordX = 0;
             board.mouseEnterBlock(board.getBlock(coordX, coordY));
+          } else {
+            if (coordY != 0) {
+              board.mouseExitBlock(board.getBlock(coordX, coordY));
+              coordY--;
+              board.mouseEnterBlock(board.getBlock(coordX, coordY));
+            }
           }
-        }
-        break;
-      case S, DOWN:
-        if (mouseMode){
-          mouseMode = false;
-          board.mouseExitBlock(board.getBlock(coordX, coordY));
-          coordY =0;
-          coordX =0;
-          board.mouseEnterBlock(board.getBlock(coordX, coordY));
-        }else{
-          if(coordY!=4){
+          break;
+        case S, DOWN:
+          if (mouseMode) {
+            mouseMode = false;
             board.mouseExitBlock(board.getBlock(coordX, coordY));
-            coordY++;
+            coordY = 0;
+            coordX = 0;
             board.mouseEnterBlock(board.getBlock(coordX, coordY));
+          } else {
+            if (coordY != 4) {
+              board.mouseExitBlock(board.getBlock(coordX, coordY));
+              coordY++;
+              board.mouseEnterBlock(board.getBlock(coordX, coordY));
+            }
           }
-        }
-        break;
-      case A, LEFT:
-        if (mouseMode){
-          mouseMode = false;
-          board.mouseExitBlock(board.getBlock(coordX, coordY));
-          coordY =0;
-          coordX =0;
-          board.mouseEnterBlock(board.getBlock(coordX, coordY));
-        }else{
-          if(coordX!=0){
+          break;
+        case A, LEFT:
+          if (mouseMode) {
+            mouseMode = false;
             board.mouseExitBlock(board.getBlock(coordX, coordY));
-            coordX--;
+            coordY = 0;
+            coordX = 0;
             board.mouseEnterBlock(board.getBlock(coordX, coordY));
+          } else {
+            if (coordX != 0) {
+              board.mouseExitBlock(board.getBlock(coordX, coordY));
+              coordX--;
+              board.mouseEnterBlock(board.getBlock(coordX, coordY));
+            }
           }
-        }
-        break;
-      case D, RIGHT:
-        if (mouseMode){
-          mouseMode = false;
-          board.mouseExitBlock(board.getBlock(coordX, coordY));
-          coordY =0;
-          coordX =0;
-          board.mouseEnterBlock(board.getBlock(coordX, coordY));
-        }else{
-          if(coordX!=4){
+          break;
+        case D, RIGHT:
+          if (mouseMode) {
+            mouseMode = false;
             board.mouseExitBlock(board.getBlock(coordX, coordY));
-            coordX++;
+            coordY = 0;
+            coordX = 0;
             board.mouseEnterBlock(board.getBlock(coordX, coordY));
+          } else {
+            if (coordX != 4) {
+              board.mouseExitBlock(board.getBlock(coordX, coordY));
+              coordX++;
+              board.mouseEnterBlock(board.getBlock(coordX, coordY));
+            }
           }
-        }
-        break;
-
-    }
-  });
+          break;
+        case ENTER, X:
+          game.blockClicked(board.getBlock(coordX, coordY));
+      }
+    });
   }
 
 }

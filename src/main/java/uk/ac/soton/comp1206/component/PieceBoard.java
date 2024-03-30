@@ -17,7 +17,6 @@ public class PieceBoard extends GameBoard{
    */
     public PieceBoard(int width, int height) {
         super(3,3,width, height);
-        this.getStyleClass().add("gameBox");
         build();
     }
 
@@ -32,6 +31,7 @@ public class PieceBoard extends GameBoard{
         for (int j = 0; j < 3; j++) {
           if (blocks[i][j] !=0) {
             this.grid.set(i, j, blocks[i][j]);
+
           }
         }
       }

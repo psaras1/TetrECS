@@ -51,7 +51,7 @@ public class GameBoard extends GridPane {
     /**
      * The blocks inside the grid
      */
-    GameBlock[][] blocks;
+    public GameBlock[][] blocks;
     private Boolean pieceBoardBool = false;
 
     /**
@@ -193,6 +193,9 @@ public class GameBoard extends GridPane {
      * @return returns the bool value
      */
     public Boolean isPieceboard(){
+        if (this instanceof PieceBoard){
+            pieceBoardBool = true;
+        }
         return pieceBoardBool;
     }
     /**
