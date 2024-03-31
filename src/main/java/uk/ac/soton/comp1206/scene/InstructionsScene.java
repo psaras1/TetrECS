@@ -44,7 +44,13 @@ public class InstructionsScene extends BaseScene {
   @Override
   public void initialise() {
     logger.info("Initialising " + this.getClass().getName());
+    controls();
+
+  }
+
+  private void controls(){
     scene.setOnKeyPressed(e -> {
+      logger.info("Key Pressed: {}" ,e.getCode());
       switch (e.getCode()) {
         case ESCAPE:
           logger.info("Escape pressed, returning to menu");

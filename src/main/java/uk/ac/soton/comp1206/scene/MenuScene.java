@@ -104,15 +104,15 @@ public class MenuScene extends BaseScene {
         AnchorPane.setLeftAnchor(muteButton, 5.0);
         AnchorPane.setBottomAnchor(muteButton, 5.0);
         muteButtonPane.setPickOnBounds(false);
-        muteButton.setOnAction(actionEvent -> {
-            if(!menuMusic.isPlaying()){
-                menuMusic.playBackgroundMusic("/music/menu.wav");
-                muteImageView.setImage(muteImage);
-            }else{
-                menuMusic.stopBackgroundMusic();
-                muteImageView.setImage(unmuteImage);
-            }
-        });
+//        muteButton.setOnAction(actionEvent -> {
+//            if(!menuMusic.isPlaying()){
+//                menuMusic.playBackgroundMusic("/music/menu.wav");
+//                muteImageView.setImage(muteImage);
+//            }else{
+//                menuMusic.stopBackgroundMusic();
+//                muteImageView.setImage(unmuteImage);
+//            }
+//        });
         root.getChildren().add(muteButtonPane);
 
     }
@@ -152,7 +152,7 @@ public class MenuScene extends BaseScene {
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {
                 //Mute/Unmute music
-                case M:
+                case M :
                     if(!menuMusic.isPlaying()){
                         menuMusic.playBackgroundMusic("/music/menu.mp3");
                         muteImageView.setImage(muteImage);

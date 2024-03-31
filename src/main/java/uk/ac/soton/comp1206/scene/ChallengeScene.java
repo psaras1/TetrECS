@@ -194,15 +194,15 @@ public class ChallengeScene extends BaseScene {
     muteButtonPane.setPickOnBounds(false);
     root.getChildren().add(muteButtonPane);
     muteButton.setBackground(null);
-    muteButton.setOnAction(actionEvent -> {
-      if (!gameMusic.isPlaying()) {
-        gameMusic.playBackgroundMusic("/music/game.wav");
-        muteImageView.setImage(muteImage);
-      } else {
-        gameMusic.stopBackgroundMusic();
-        muteImageView.setImage(unmuteImage);
-      }
-    });
+//    muteButton.setOnAction(actionEvent -> {
+//      if (!gameMusic.isPlaying()) {
+//        gameMusic.playBackgroundMusic("/music/game.wav");
+//        muteImageView.setImage(muteImage);
+//      } else {
+//        gameMusic.stopBackgroundMusic();
+//        muteImageView.setImage(unmuteImage);
+//      }
+//    });
 
   }
 
@@ -286,7 +286,7 @@ public class ChallengeScene extends BaseScene {
       coordY = board.currentBlock.getY();
     });
     gameWindow.getScene().setOnKeyPressed(event -> {
-      logger.info("Key pressed{}", event.getCode());
+      logger.info("Key pressed: {}", event.getCode());
       switch (event.getCode()) {
         //Go back to menu
         case ESCAPE:
