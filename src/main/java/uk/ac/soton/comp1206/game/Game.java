@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBlockCoordinate;
+import uk.ac.soton.comp1206.event.LineClearedListener;
 import uk.ac.soton.comp1206.event.NextPieceListener;
 
 /**
@@ -25,6 +26,8 @@ public class Game {
   private static final Logger logger = LogManager.getLogger(Game.class);
   //declare a listener for when the next piece is generated
   private NextPieceListener nextPieceListener = null;
+
+  private LineClearedListener lineClearedListener = null;
   private Random random = new Random(); //Allows us to generate a random number in order to get random pieces/shapes
 
   /**
@@ -88,6 +91,14 @@ public class Game {
    */
   public void setNextPieceListener(NextPieceListener listener) {
     nextPieceListener = listener;
+  }
+  /**
+   * Set the listener for when a line is cleared
+   *
+   * @param listener
+   */
+  public void setLineClearedListener(LineClearedListener listener) {
+    lineClearedListener = listener;
   }
 
 
@@ -172,62 +183,69 @@ public class Game {
   }
 
   /**
-   * Handles clearing of full rows/columns
+   * Handles game mechanics after a block is placed
+   * Checks if any lines are cleared
+   * Updates the score, multiplier and level
    */
-  public void afterPiece() {
-    //separate hashsets to store full rows and columns
-    HashSet<GameBlockCoordinate> rowsFull = new HashSet<>();
-    HashSet<GameBlockCoordinate> colsFull = new HashSet<>();
+  public void afterPiece(){
+    var clearedBlocks = new HashSet<GameBlockCoordinate>();
+    var cleared = new HashSet<GameBlockCoordinate>();
 
-    //GameBlockCoordinate representing current column with a fixed row
-    for (int col = 0; col < this.cols; col++) {
-      colsFull.add(new GameBlockCoordinate(col, -1));
-    }
-    //iterate through all rows, add full ones to hashset
-    for (int row = 0; row < this.rows; row++) {
-      boolean rowFull = true;
-      for (int col = 0; col < this.cols; col++) {
-        if (this.getGrid().get(col, row) == 0) {
-          rowFull = false;
-          colsFull.remove(new GameBlockCoordinate(col, -1));
-        }
-      }
-      if (rowFull) {
-        rowsFull.add(new GameBlockCoordinate(-1, row));
+    int totalCleared = 0;
 
+    //check all rows
+    for(int x = 0; x < cols;x++){
+      int counter =0;
+      for(int y=0;y<rows;y++){
+        if(grid.get(x,y) == 0){
+          break;
+        }
+        counter++;
+      }
+      if(counter == rows){
+        totalCleared++;
+        for(int y=0;y<rows;y++){
+          clearedBlocks.add(new GameBlockCoordinate(x,y));
+          cleared.add(new GameBlockCoordinate(x,y));
+        }
       }
     }
-    //Iterate through whole grid to clear full rows and columns
-    for (int row = 0; row < this.rows; row++) {
-      for (int col = 0; col < this.cols; col++) {
-        if (rowsFull.contains(new GameBlockCoordinate(-1, row))) {
-          logger.info("Full row found! Row {}", row);
-          //clear each cell separately
-          this.getGrid().set(col, row, 0);
+    //check all columns
+    for(int y = 0; y < rows;y++){
+      int counter =0;
+      for(int x=0;x<cols;x++){
+        if(grid.get(x,y) == 0){
+          break;
         }
-        if (colsFull.contains(new GameBlockCoordinate(col, -1))) {
-          logger.info("Full col found! Col {}", col);
-          //clear each cell separately
-          this.getGrid().set(col, row, 0);
+        counter++;
+      }
+      if(counter == cols){
+        totalCleared++;
+        for(int x=0;x<cols;x++){
+          clearedBlocks.add(new GameBlockCoordinate(x,y));
+          cleared.add(new GameBlockCoordinate(x,y));
         }
       }
     }
-    this.intersectingBlocks = rowsFull.size() * colsFull.size();
-    //uniqueClearedBlocks = total blocks cleared - intersecting blocks
-    this.uniqueClearedBlocks = rowsFull.size() * rows + colsFull.size() * cols - intersectingBlocks;
-    this.lines = rowsFull.size() + colsFull.size();
-    logger.info("Number of blocks cleared: {}", uniqueClearedBlocks);
-    //If no rows or columns are full, the multiplier is reset to 1
-    if (rowsFull.isEmpty() && colsFull.isEmpty()) {
-      score(this.lines, uniqueClearedBlocks);
-      setMultiplier(1);
-      logger.info("Multiplier changed to: {}", multiplier.get());
+    //If any lines were cleared
+    if(totalCleared > 0){
+      //update the score
+      score(totalCleared, clearedBlocks.size());
+      //update the multiplier
+      multiplier.set(multiplier.get() + 1);
+      //update the level
+      level.set(Math.floorDiv(score.get(), 1000));
+      //if a LineClearedListener is set, the listener should be called with the set of cleared blocks
+      if(lineClearedListener != null){
+        lineClearedListener.linesCleaned(cleared);
+      }
+      for(var block : clearedBlocks){
+        grid.set(block.getX(), block.getY(), 0);
+      }
     }
-    //If there are full rows or columns, the multiplier is incremented by 1
-    else {
-      score(this.lines, uniqueClearedBlocks);
-      setMultiplier(multiplier.get() + 1);
-      logger.info("Multiplier changed to: {}", multiplier.get());
+    else{
+      //If no lines were cleared, the multiplier should be reset to 1
+      multiplier.set(1);
     }
   }
 

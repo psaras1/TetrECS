@@ -1,5 +1,6 @@
 package uk.ac.soton.comp1206.component;
 
+import javafx.animation.AnimationTimer;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
@@ -97,8 +98,6 @@ public class GameBlock extends Canvas {
     //When the value property is updated, call the internal updateValue method
     value.addListener(
         this::updateValue); //When the value of a block changes, updateValue(From GameBoard) is called through listener
-//        this.addEventHandler(MouseEvent.MOUSE_ENTERED, this::handleMouseEntered);
-//        this.addEventHandler(MouseEvent.MOUSE_EXITED, this::handleMouseExited);
   }
 
   /**
@@ -126,8 +125,6 @@ public class GameBlock extends Canvas {
       } else {
         paintColorWithCircle(COLOURS[value.get()]);
       }
-
-
     }
 
   }
@@ -280,16 +277,26 @@ public class GameBlock extends Canvas {
   }
 
 
-  /**
-   * Handle mouse entered and exited events to change the block opacity
-   * @param event
+  /*
+  *Handles the fading out of individual block when a line is cleared
    */
-//    public void handleMouseEntered(MouseEvent event){
-//        if(value.get() == 0){
-//            this.setOpacity(0.5);
-//        }
-//    }
-//    public void handleMouseExited(MouseEvent event){
-//        this.setOpacity(1);
-//    }
+  public void fadeOut() {
+    AnimationTimer timer = new AnimationTimer() {
+      private long lastUpdate = 0;
+
+      @Override
+      public void handle(long now) {
+        if (now - lastUpdate >= 10000000) {
+          lastUpdate = now;
+          paintEmpty();
+          var gc = getGraphicsContext2D();
+          gc.setGlobalAlpha(gc.getGlobalAlpha() - 0.1);
+          if (gc.getGlobalAlpha() <= 0) {
+            stop();
+          }
+        }
+      }
+    };
+  }
+
 }

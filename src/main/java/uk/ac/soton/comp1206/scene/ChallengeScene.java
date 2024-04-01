@@ -1,6 +1,7 @@
 package uk.ac.soton.comp1206.scene;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,6 +17,7 @@ import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
+import uk.ac.soton.comp1206.component.GameBlockCoordinate;
 import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.component.PieceBoard;
 import uk.ac.soton.comp1206.game.Game;
@@ -218,6 +220,10 @@ public class ChallengeScene extends BaseScene {
     currentPiece.displayPiece(piece);
     followingPiece.displayPiece(game.followingPiece);
   }
+  protected void clearedLines(HashSet<GameBlockCoordinate> linesCleared) {
+    logger.info("Lines cleared: {}", linesCleared);
+    board.fadeOut(linesCleared);
+  }
 
   /**
    * Handle when a block is clicked
@@ -265,6 +271,7 @@ public class ChallengeScene extends BaseScene {
     //Set the next piece listener
     //(Update the NextPieceListener to pass the following piece as well, and use this to update the following piece board.)
     game.setNextPieceListener(this::nextPiece); //next piece passed as GamePiece to interface
+    game.setLineClearedListener(this::clearedLines);
     game.start();
     keyboardControls();
 
