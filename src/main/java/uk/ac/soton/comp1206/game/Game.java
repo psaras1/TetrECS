@@ -465,4 +465,9 @@ public class Game {
       nextPieceListener.nextPiece(currentPiece);
     }
   }
+
+  public long getTimerDelay() {
+    long delay = Math.max(2500, 12000 - (level.get() * 500));
+    return delay;
+  }
 }
