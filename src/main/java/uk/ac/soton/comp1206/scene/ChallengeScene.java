@@ -271,7 +271,7 @@ public class ChallengeScene extends BaseScene {
     //Set the next piece listener
     //(Update the NextPieceListener to pass the following piece as well, and use this to update the following piece board.)
     game.setNextPieceListener(this::nextPiece); //next piece passed as GamePiece to interface
-    game.setLineClearedListener(this::clearedLines);
+    game.setLineClearedListener(this::clearedLines);//linesCleared passed as HashSet<GameBlockCoordinate> to interface
     game.start();
     keyboardControls();
 

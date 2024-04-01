@@ -252,7 +252,10 @@ public class GameBoard extends GridPane {
       block.paint();
     }
   }
+/*
+Called when a line is cleared, fades out the blocks in the line
 
+ */
   public void fadeOut(HashSet<GameBlockCoordinate> blocks){
     for (GameBlockCoordinate block : blocks) {
       GameBlock gameBlock = getBlock(block.getX(), block.getY());

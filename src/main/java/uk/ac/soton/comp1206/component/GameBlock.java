@@ -281,22 +281,24 @@ public class GameBlock extends Canvas {
   *Handles the fading out of individual block when a line is cleared
    */
   public void fadeOut() {
+    logger.info("Fading out block at {}, {}", x, y);
     AnimationTimer timer = new AnimationTimer() {
-      private long lastUpdate = 0;
+      double opacity = 1;
 
       @Override
-      public void handle(long now) {
-        if (now - lastUpdate >= 10000000) {
-          lastUpdate = now;
-          paintEmpty();
-          var gc = getGraphicsContext2D();
-          gc.setGlobalAlpha(gc.getGlobalAlpha() - 0.1);
-          if (gc.getGlobalAlpha() <= 0) {
-            stop();
-          }
+      public void handle(long l) {
+        GameBlock.this.paintEmpty();
+        opacity -= 0.02;
+        if (opacity <= 0) {
+          stop();
+          return;
         }
+        var gc = getGraphicsContext2D();
+        gc.setFill(Color.rgb(0, 1, 0, opacity));
+        gc.fillRect(0, 0, GameBlock.this.width, GameBlock.this.height);
       }
     };
+    timer.start();
   }
 
 }
