@@ -73,43 +73,48 @@ public class MenuScene extends BaseScene {
         //For now, let us just add a button that starts the game. I'm sure you'll do something way better.
         //Added multiplayer and chat buttons
         /*
-        * The buttons are styled using the play-button class in the css file
+        *Play button
          */
-        var playButton = new Button("Play");
-        var multiplayerButton = new Button("Multiplayer");
-        var chatButton = new Button("Chat");
-        var instructionsButton = new Button("Instructions");
-        instructionsButton.getStyleClass().add("play-button");
-        multiplayerButton.getStyleClass().add("play-button");
-        multiplayerButton.setMaxWidth(150);
-        instructionsButton.setMaxWidth(150);
-        chatButton.getStyleClass().add("play-button");
-        playButton.getStyleClass().add("play-button");
-
-        VBox buttons = new VBox();
-        buttons.getChildren().addAll(playButton, multiplayerButton, chatButton,instructionsButton);
-        buttons.setAlignment(Pos.CENTER);
-        buttons.setSpacing(20);
-        mainPane.setCenter(buttons);
-
-
-        //Calls startChallenge and stops the menu music
+        var playButton = new Text("Play");
+        playButton.getStyleClass().add("option-button");
         playButton.setOnMouseClicked(e -> {
             menuMusic.stopBackgroundMusic();
             transitionSound.playAudio("/sounds/transition.wav");
             gameWindow.startChallenge();
         });
-        //Bind the button action to the showInstructions method in the menu
+        /*
+        *Instructions button
+         */
+        var instructionsButton = new Text("Instructions");
+        instructionsButton.getStyleClass().add("option-button");
         instructionsButton.setOnMouseClicked(e->{
             menuMusic.stopBackgroundMusic();
             transitionSound.playAudio("/sounds/transition.wav");
             gameWindow.loadScene(new InstructionsScene(gameWindow));
         });
 
+        /*
+        *Multiplayer button
+         */
+
+        /*
+        *Chat button
+         */
+
+        /*
+        *Button container
+         */
+        var buttonContainer = new VBox();
+        buttonContainer.getChildren().addAll(playButton, instructionsButton);
+        buttonContainer.setAlignment(Pos.CENTER);
+        buttonContainer.setSpacing(20);
+        mainPane.setCenter(buttonContainer);
+
         //Mute button implementation
         var muteButton = new Button("",muteImageView);
         muteImageView.setFitHeight(30);
         muteImageView.setFitWidth(30);
+        muteImageView.styleProperty().setValue("-fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0);");
         muteButton.setBackground(null);
         AnchorPane muteButtonPane = new AnchorPane();
         muteButtonPane.getChildren().add(muteButton);

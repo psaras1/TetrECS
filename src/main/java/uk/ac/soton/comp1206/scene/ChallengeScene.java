@@ -192,6 +192,7 @@ public class ChallengeScene extends BaseScene {
 
     muteImageView.setFitHeight(30);
     muteImageView.setFitWidth(30);
+    muteImageView.styleProperty().setValue("-fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0);");
     AnchorPane muteButtonPane = new AnchorPane();
     muteButtonPane.getChildren().add(muteButton);
     AnchorPane.setLeftAnchor(muteButton, 5.0);
@@ -209,7 +210,24 @@ public class ChallengeScene extends BaseScene {
       }
     });
 
+    //Create a menu button
+    var menuButton = new Text("Menu");
+    menuButton.getStyleClass().add("option1-button");
+    var menuButtonPane = new AnchorPane();
+    menuButtonPane.getChildren().add(menuButton);
+    AnchorPane.setLeftAnchor(menuButton, 10.0);
+    AnchorPane.setTopAnchor(menuButton, 5.0);
+    menuButtonPane.setPickOnBounds(false);
+    menuButton.setOnMouseClicked(e -> {
+      logger.info("Menu button clicked, returning to menu");
+      shutdownGame();
+      gameMusic.stopBackgroundMusic();
+      gameWindow.startMenu();
+    });
+    root.getChildren().add(menuButtonPane);
+
   }
+
 
   /**
    * Update the game board with the next piece

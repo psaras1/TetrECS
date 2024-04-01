@@ -67,7 +67,7 @@
     -fx-font-weight: 700;
     -fx-border-color: black;
     -fx-stroke: black;
-    -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
+    -fx-effect: dropshadow(gaussian, aqua, 3, 0, 0, 0);
 }
 
 .score {
@@ -235,4 +235,24 @@ TextField {
 .menu-button:hover{
     -fx-background-color: white;
     -fx-text-fill: black;
+}
+
+.option-button{
+    -fx-fill: white; /* White text color */
+    -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 30px;
+}
+.option-button:hover{
+    -fx-effect: dropshadow(gaussian, magenta, 10, 0, 0, 0); /* Change glow to magenta on hover */
+}
+
+.option1-button{
+    -fx-fill: white; /* White text color */
+    -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 20px;
+}
+.option1-button:hover{
+    -fx-effect: dropshadow(gaussian, magenta, 10, 0, 0, 0); /* Change glow to magenta on hover */
 }
