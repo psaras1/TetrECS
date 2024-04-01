@@ -86,12 +86,15 @@ public class ChallengeScene extends BaseScene {
     setupGame();
     // Implement background music in the game scene
     this.gameMusic.playBackgroundMusic("/music/game.wav");
-    bindProperties();
+
+    bindProperties();//binds the properties of the game to the UI
+
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
     var challengePane = new StackPane();
     challengePane.setMaxWidth(gameWindow.getWidth());
     challengePane.setMaxHeight(gameWindow.getHeight());
     challengePane.getStyleClass().add("challenge-background");
+
     root.getChildren().add(challengePane);
     var mainPane = new BorderPane();
 
@@ -194,15 +197,15 @@ public class ChallengeScene extends BaseScene {
     muteButtonPane.setPickOnBounds(false);
     root.getChildren().add(muteButtonPane);
     muteButton.setBackground(null);
-//    muteButton.setOnAction(actionEvent -> {
-//      if (!gameMusic.isPlaying()) {
-//        gameMusic.playBackgroundMusic("/music/game.wav");
-//        muteImageView.setImage(muteImage);
-//      } else {
-//        gameMusic.stopBackgroundMusic();
-//        muteImageView.setImage(unmuteImage);
-//      }
-//    });
+    muteButton.setOnMouseClicked(actionEvent -> {
+      if (!gameMusic.isPlaying()) {
+        gameMusic.playBackgroundMusic("/music/game.wav");
+        muteImageView.setImage(muteImage);
+      } else {
+        gameMusic.stopBackgroundMusic();
+        muteImageView.setImage(unmuteImage);
+      }
+    });
 
   }
 
@@ -221,8 +224,7 @@ public class ChallengeScene extends BaseScene {
    *
    * @param gameBlock the Game Block that was clocked
    */
-  private void blockClicked(
-      GameBlock gameBlock) { //calls blockClicked method on game, passing through current gameBlock
+  private void blockClicked(GameBlock gameBlock) { //calls blockClicked method on game, passing through current gameBlock
     game.blockClicked(gameBlock);
   }
 

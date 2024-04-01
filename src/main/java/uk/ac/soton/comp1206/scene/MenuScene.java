@@ -21,6 +21,7 @@ public class MenuScene extends BaseScene {
 
     private static final Logger logger = LogManager.getLogger(MenuScene.class);
     private Multimedia menuMusic = new Multimedia();
+    private Multimedia transitionSound = new Multimedia();
     public Image muteImage = new Image(getClass().getResource("/images/mute.png").toString());
     public Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
     public ImageView muteImageView = new ImageView(muteImage);
@@ -57,7 +58,7 @@ public class MenuScene extends BaseScene {
         menuPane.setStyle("-fx-background-color: transparent;");
         menuPane.getChildren().add(mainPane);
 
-        //Awful title
+        //TetrECS title image
         Image titleImage = new Image(getClass().getResource("/images/TetrECS.png").toString());
         ImageView title = new ImageView(titleImage);
         title.setFitWidth(400);
@@ -71,6 +72,9 @@ public class MenuScene extends BaseScene {
 
         //For now, let us just add a button that starts the game. I'm sure you'll do something way better.
         //Added multiplayer and chat buttons
+        /*
+        * The buttons are styled using the play-button class in the css file
+         */
         var playButton = new Button("Play");
         var multiplayerButton = new Button("Multiplayer");
         var chatButton = new Button("Chat");
@@ -90,9 +94,17 @@ public class MenuScene extends BaseScene {
 
 
         //Calls startChallenge and stops the menu music
-        playButton.setOnAction(this::startGame);
+        playButton.setOnMouseClicked(e -> {
+            menuMusic.stopBackgroundMusic();
+            transitionSound.playAudio("/sounds/transition.wav");
+            gameWindow.startChallenge();
+        });
         //Bind the button action to the showInstructions method in the menu
-        instructionsButton.setOnAction(this::showInstructions);
+        instructionsButton.setOnMouseClicked(e->{
+            menuMusic.stopBackgroundMusic();
+            transitionSound.playAudio("/sounds/transition.wav");
+            gameWindow.loadScene(new InstructionsScene(gameWindow));
+        });
 
         //Mute button implementation
         var muteButton = new Button("",muteImageView);
@@ -104,15 +116,15 @@ public class MenuScene extends BaseScene {
         AnchorPane.setLeftAnchor(muteButton, 5.0);
         AnchorPane.setBottomAnchor(muteButton, 5.0);
         muteButtonPane.setPickOnBounds(false);
-//        muteButton.setOnAction(actionEvent -> {
-//            if(!menuMusic.isPlaying()){
-//                menuMusic.playBackgroundMusic("/music/menu.wav");
-//                muteImageView.setImage(muteImage);
-//            }else{
-//                menuMusic.stopBackgroundMusic();
-//                muteImageView.setImage(unmuteImage);
-//            }
-//        });
+        muteButton.setOnMouseClicked(actionEvent -> {
+            if(!menuMusic.isPlaying()){
+                menuMusic.playBackgroundMusic("/music/menu.mp3");
+                muteImageView.setImage(muteImage);
+            }else{
+                menuMusic.stopBackgroundMusic();
+                muteImageView.setImage(unmuteImage);
+            }
+        });
         root.getChildren().add(muteButtonPane);
 
     }
@@ -125,24 +137,6 @@ public class MenuScene extends BaseScene {
     public void initialise() {
         logger.info("Initialising " + this.getClass().getName());
         keyboardControlsMenu();
-    }
-
-    /**
-     * Handle when the Start Game button is pressed
-     *  Stops menu music and starts the game
-     * @param event event
-     */
-    private void startGame(ActionEvent event) {
-        menuMusic.stopBackgroundMusic();
-        gameWindow.startChallenge();
-    }
-
-    /**
-     * Handle when the Instructions button is pressed
-     * @param event
-     */
-    private void showInstructions(ActionEvent event) {
-        gameWindow.loadScene(new InstructionsScene(gameWindow));
     }
 
     /**

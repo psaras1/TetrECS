@@ -88,7 +88,7 @@ public class InstructionsScene extends BaseScene {
     //Add the instructions to the main pane
 
     var escape = new Button("Menu");
-    escape.setOnAction(e -> gameWindow.startMenu());
+    escape.setOnMouseClicked(e -> gameWindow.startMenu());
     escape.getStyleClass().add("play-button");
     AnchorPane menuButton = new AnchorPane();
     menuButton.getChildren().add(escape);
