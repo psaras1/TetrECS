@@ -3,6 +3,10 @@ package uk.ac.soton.comp1206.game;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.input.MouseButton;
@@ -13,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBlockCoordinate;
+import uk.ac.soton.comp1206.event.GameLoopListener;
 import uk.ac.soton.comp1206.event.LineClearedListener;
 import uk.ac.soton.comp1206.event.NextPieceListener;
 
@@ -34,8 +39,6 @@ public class Game {
    * Number of rows
    */
   protected final int rows;
-
-
   /**
    * Number of columns
    */
@@ -57,8 +60,18 @@ public class Game {
   private IntegerProperty multiplier;
 
   private int lines;
-  private int intersectingBlocks;
-  private int uniqueClearedBlocks;
+  /**
+   * GameLoop for the game
+   */
+  protected ScheduledFuture<?> gameLoop;
+  /**
+   * Game loop listener
+   */
+  protected GameLoopListener gameLoopListener = null;
+  /**
+   * Timer for the game loop(calls the gameLoop method)
+   */
+  protected ScheduledExecutorService timer;
 
 
   /**
@@ -71,9 +84,6 @@ public class Game {
     this.lines = 0;
     this.cols = cols;
     this.rows = rows;
-    this.intersectingBlocks = 0;
-    this.uniqueClearedBlocks = 0;
-
     //These should default to 0 score, level 0, 3 lives and 1 x multiplier respectively.
     this.score = new SimpleIntegerProperty(0);
     this.level = new SimpleIntegerProperty(0);
@@ -82,6 +92,8 @@ public class Game {
 
     //Create a new grid model to represent the game state
     this.grid = new Grid(cols, rows);
+
+    timer = Executors.newSingleThreadScheduledExecutor();
   }
 
   /**
@@ -149,7 +161,8 @@ public class Game {
   public void start() {
     logger.info("Starting game");
     initialiseGame();
-
+    gameLoop = timer.schedule(this::gameLoop, getTimerDelay(), TimeUnit.MILLISECONDS);
+    gameLoopListener();
   }
 
   /**
@@ -296,6 +309,10 @@ public class Game {
       playPlaceSound();
       nextPiece(); //Once one piece has been placed, generate a new one
       afterPiece();
+      gameLoop.cancel(false);
+      gameLoop = timer.schedule(this::gameLoop, getTimerDelay(), TimeUnit.MILLISECONDS);
+      gameLoopListener();
+      logger.info("Timer reset");
     } else {
       playErrorSound();
     }
@@ -371,25 +388,6 @@ public class Game {
   public int getLines() {
     return lines;
   }
-
-  /**
-   * Get the number of intersecting blocks
-   *
-   * @return number of intersecting blocks
-   */
-  public int getIntersectingBlocks() {
-    return intersectingBlocks;
-  }
-
-  /**
-   * Get the number of unique cleared blocks
-   *
-   * @return number of unique cleared blocks
-   */
-  public int getUniqueClearedBlocks() {
-    return uniqueClearedBlocks;
-  }
-
   /**
    * Get the current piece in the game
    *
@@ -467,7 +465,56 @@ public class Game {
   }
 
   public long getTimerDelay() {
-    long delay = Math.max(2500, 12000 - (level.get() * 500));
+    long delay = Math.max(12000 - (level.get() * 500),2500);
     return delay;
+  }
+
+  /**
+   * Handles execution after timeline ends
+   * @param listener
+   */
+  public void setGameLoopListener(GameLoopListener listener) {
+    gameLoopListener = listener;
+  }
+
+  /**
+   * Listens for when the timer ends
+   */
+  public void gameLoopListener() {
+    if (gameLoopListener != null) {
+      gameLoopListener.setOnGameLoop();
+    }
+  }
+
+  /**
+   * Reset the game after timer  ends
+   */
+  public void gameLoop(){
+    setLives(lives.get() - 1);
+    Multimedia lifeLost = new Multimedia();
+    lifeLost.playAudio("/sounds/lifelose.wav");
+    if(lives.get() == 0){
+      endGame();
+    }
+    else{
+      setMultiplier(1);
+      nextPiece();
+      gameLoopListener();
+      gameLoop = timer.schedule(this::gameLoop, getTimerDelay(), TimeUnit.MILLISECONDS);
+      logger.info("Lives left: {}", lives.get()+" Multiplier reset");
+    }
+  }
+  /**
+   * End the game
+   * Resets the stats and cancels the game loop
+   */
+  public void endGame() {
+    logger.info("Game over");
+    gameLoop.cancel(false);
+    timer.shutdown();
+    lives.set(3);
+    score.set(0);
+    level.set(0);
+    multiplier.set(1);
   }
 }

@@ -177,6 +177,10 @@ public class ChallengeScene extends BaseScene {
     nextPieceLabel.getStyleClass().add("heading");
 
     leftBox.getChildren().addAll(currentPieceLabel, currentPiece, nextPieceLabel, followingPiece);
+
+    /*botom*/
+    //TODO: Implement visual timeline for the gameloop
+
     //Create the game board
     board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 2, gameWindow.getWidth() / 2);
     mainPane.setCenter(board);
