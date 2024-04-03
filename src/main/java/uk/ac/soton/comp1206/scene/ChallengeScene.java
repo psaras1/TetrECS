@@ -1,8 +1,6 @@
 package uk.ac.soton.comp1206.scene;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FillTransition;
 import javafx.animation.KeyFrame;
@@ -12,13 +10,8 @@ import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -273,7 +266,7 @@ public class ChallengeScene extends BaseScene {
     menuButtonPane.setPickOnBounds(false);
     menuButton.setOnMouseClicked(e -> {
       logger.info("Menu button clicked, returning to menu");
-      game.shutdownGame();
+      game.exitGame();
       gameMusic.stopBackgroundMusic();
       gameWindow.startMenu();
     });
@@ -351,6 +344,11 @@ public void gameLoopAnimation(){
     //(Update the NextPieceListener to pass the following piece as well, and use this to update the following piece board.)
     game.setNextPieceListener(this::nextPiece); //next piece passed as GamePiece to interface
     game.setLineClearedListener(this::clearedLines);//linesCleared passed as HashSet<GameBlockCoordinate> to interface
+    game.setOnGameEnd(() -> {
+      logger.info("Game over");
+      game.exitGame();
+      gameWindow.showScores(game);
+    });
     game.start();
     gameLoopAnimation();
     keyboardControls();
@@ -380,7 +378,7 @@ public void gameLoopAnimation(){
         //Go back to menu
         case ESCAPE:
           logger.info("Escape pressed, returning to menu");
-          game.shutdownGame();
+          game.exitGame();
           gameMusic.stopBackgroundMusic();
           gameWindow.startMenu();
           break;

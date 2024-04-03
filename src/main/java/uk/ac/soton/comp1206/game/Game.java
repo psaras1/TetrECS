@@ -1,22 +1,21 @@
 package uk.ac.soton.comp1206.game;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBlockCoordinate;
+import uk.ac.soton.comp1206.event.GameEndListener;
 import uk.ac.soton.comp1206.event.GameLoopListener;
 import uk.ac.soton.comp1206.event.LineClearedListener;
 import uk.ac.soton.comp1206.event.NextPieceListener;
@@ -72,6 +71,10 @@ public class Game {
    * Timer for the game loop(calls the gameLoop method)
    */
   protected ScheduledExecutorService timer;
+  /*
+  called when the game ends
+   */
+  private GameEndListener gameEndListener = null;
 
 
   /**
@@ -477,6 +480,9 @@ public class Game {
   public void setOnGameLoop(GameLoopListener listener) {
     gameLoopListener = listener;
   }
+  public void setOnGameEnd(GameEndListener listener) {
+    gameEndListener = listener;
+  }
 
   /**
    * Listens for when the timer ends
@@ -495,7 +501,7 @@ public class Game {
     Multimedia lifeLost = new Multimedia();
     lifeLost.playAudio("/sounds/lifelose.wav");
     if(lives.get() == 0){
-      resetGame();
+      endGame();
     }
     else{
       setMultiplier(1);
@@ -506,30 +512,31 @@ public class Game {
     }
   }
 
-  /*
-  Temporary method to reset the game
-   */
-  public void resetGame(){
-    logger.info("Game over, resetting stats");
-    lives.set(3);
-    score.set(0);
-    level.set(0);
-    multiplier.set(1);
-    gameLoop = timer.schedule(this::gameLoop, getTimerDelay(), TimeUnit.MILLISECONDS);
-    gameLoopListener();
-    grid.clean();
-  }
+
   /**
    * Shutdown the game, resetting the score, multiplier, level and lives(upon exit)
    */
 
-  public void shutdownGame() {
+  public void exitGame() {
     logger.info("Shutting down game");
     lives.set(3);
     score.set(0);
     level.set(0);
     multiplier.set(1);
+    grid.clean();
     gameLoop.cancel(false);
 
+  }
+  public void endGame(){
+    logger.info("Game over, resetting stats");
+    lives.set(3);
+    score.set(0);
+    level.set(0);
+    multiplier.set(1);
+    grid.clean();
+    if(gameEndListener != null){
+//      gameEndListener.onGameEnd();
+      Platform.runLater(() -> gameEndListener.onGameEnd());
+    }
   }
 }
