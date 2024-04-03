@@ -102,9 +102,39 @@
     -fx-text-alignment: center;
     -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
 }
-
 .lives {
-    -fx-fill: yellow;
+    -fx-fill: #00ff00;
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 36px;
+    -fx-font-weight: 700;
+    -fx-border-color: black;
+    -fx-stroke: black;
+    -fx-text-alignment: center;
+    -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
+}
+
+.lives3 {
+    -fx-fill: #00ff00;
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 36px;
+    -fx-font-weight: 700;
+    -fx-border-color: black;
+    -fx-stroke: black;
+    -fx-text-alignment: center;
+    -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
+}
+.lives2 {
+    -fx-fill: #ffa312;
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 36px;
+    -fx-font-weight: 700;
+    -fx-border-color: black;
+    -fx-stroke: black;
+    -fx-text-alignment: center;
+    -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
+}
+.lives1 {
+    -fx-fill: red ;
     -fx-font-family: 'Orbitron';
     -fx-font-size: 36px;
     -fx-font-weight: 700;

@@ -2,24 +2,35 @@ package uk.ac.soton.comp1206.scene;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import javafx.animation.Animation;
+import javafx.animation.AnimationTimer;
+import javafx.animation.FillTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBlockCoordinate;
 import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.component.PieceBoard;
+import uk.ac.soton.comp1206.event.GameLoopListener;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.game.Multimedia;
@@ -32,6 +43,15 @@ import uk.ac.soton.comp1206.ui.GameWindow;
  * game.
  */
 public class ChallengeScene extends BaseScene {
+  /*
+  game loop implementation
+   */
+  private GameLoopListener gameLoopListener;
+  private AnimationTimer gameLoopAnimation;
+  private Rectangle timeBar;
+  private long timeBarWidth;
+  private Timeline timeline;
+  private long delay;
 
   private static final Logger logger = LogManager.getLogger(MenuScene.class);
   protected Game game;
@@ -66,7 +86,7 @@ public class ChallengeScene extends BaseScene {
     this.levelLabel = new Text();
     this.livesLabel = new Text();
     this.multiplierLabel = new Text();
-    logger.info("Creating Challenge Scene");
+
   }
 
   /**
@@ -137,7 +157,24 @@ public class ChallengeScene extends BaseScene {
     livesBox.setAlignment(Pos.CENTER);
     var livesTitle = new Text("Lives:");
     livesTitle.getStyleClass().add("heading");
+    //initial style of livesLabel
     livesLabel.getStyleClass().add("lives");
+    /*
+    add listener to livesLabel to change style based on the number of lives(dynamically)
+     */
+    game.getLives().addListener((obs, oldVal, newVal) -> {
+      //remove previously added style classes
+      livesLabel.getStyleClass().clear();
+      if (newVal.intValue() == 3){
+        livesLabel.getStyleClass().add("lives3");
+      }
+      if (newVal.intValue() == 2){
+        livesLabel.getStyleClass().add("lives2");
+      }
+      if (newVal.intValue() == 1){
+        livesLabel.getStyleClass().add("lives1");
+      }
+    });
     livesBox.getChildren().addAll(livesTitle, livesLabel);
 
     //multiplier
@@ -180,6 +217,18 @@ public class ChallengeScene extends BaseScene {
 
     /*botom*/
     //TODO: Implement visual timeline for the gameloop
+    /*
+    timebar implementation
+     */
+    game.setOnGameLoop(this::gameLoopAnimation);
+    timeBar = new Rectangle();
+    timeBar.setHeight(10);
+    timeBarWidth = gameWindow.getWidth();
+    timeBar.setWidth(timeBarWidth);
+    timeBar.setFill(Color.GREEN);//initial color of the timebar
+    var timeBox = new HBox(timeBar);
+    timeBox.setAlignment(Pos.CENTER);
+    mainPane.setBottom(timeBox);
 
     //Create the game board
     board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 2, gameWindow.getWidth() / 2);
@@ -224,14 +273,29 @@ public class ChallengeScene extends BaseScene {
     menuButtonPane.setPickOnBounds(false);
     menuButton.setOnMouseClicked(e -> {
       logger.info("Menu button clicked, returning to menu");
-      shutdownGame();
+      game.shutdownGame();
       gameMusic.stopBackgroundMusic();
       gameWindow.startMenu();
     });
     root.getChildren().add(menuButtonPane);
 
   }
+  /*
 
+   */
+public void gameLoopAnimation(){
+  timeBar.setScaleX(1);
+  timeline = new Timeline();
+  timeBar.setFill(Color.GREEN);
+  timeline.getKeyFrames().add(new KeyFrame(Duration.millis(game.getTimerDelay()),
+      new KeyValue(timeBar.scaleXProperty(), 0)));
+  timeline.playFromStart();
+  FillTransition color = new FillTransition();
+  color.setDuration(Duration.millis(game.getTimerDelay()));
+  color.setShape(timeBar);
+  color.setToValue(Color.RED);
+  color.play();
+}
 
   /**
    * Update the game board with the next piece
@@ -266,16 +330,8 @@ public class ChallengeScene extends BaseScene {
     game = new Game(5, 5);
   }
 
-  /**
-   * Shutdown the game, resetting the score, multiplier, level and lives
-   */
 
-  public void shutdownGame() {
-    game.setScore(0);
-    game.setMultiplier(1);
-    game.setLevel(0);
-    game.setLives(1);
-  }
+
 
   /**
    * Rotate the current piece
@@ -290,11 +346,13 @@ public class ChallengeScene extends BaseScene {
   @Override
   public void initialise() {
     logger.info("Initialising Challenge");
+    timeline = new Timeline();
     //Set the next piece listener
     //(Update the NextPieceListener to pass the following piece as well, and use this to update the following piece board.)
     game.setNextPieceListener(this::nextPiece); //next piece passed as GamePiece to interface
     game.setLineClearedListener(this::clearedLines);//linesCleared passed as HashSet<GameBlockCoordinate> to interface
     game.start();
+    gameLoopAnimation();
     keyboardControls();
 
   }
@@ -322,7 +380,7 @@ public class ChallengeScene extends BaseScene {
         //Go back to menu
         case ESCAPE:
           logger.info("Escape pressed, returning to menu");
-          shutdownGame();
+          game.shutdownGame();
           gameMusic.stopBackgroundMusic();
           gameWindow.startMenu();
           break;

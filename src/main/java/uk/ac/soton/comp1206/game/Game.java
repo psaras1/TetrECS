@@ -309,6 +309,7 @@ public class Game {
       playPlaceSound();
       nextPiece(); //Once one piece has been placed, generate a new one
       afterPiece();
+      /* if a block is placed, the game loop should be reset */
       gameLoop.cancel(false);
       gameLoop = timer.schedule(this::gameLoop, getTimerDelay(), TimeUnit.MILLISECONDS);
       gameLoopListener();
@@ -473,7 +474,7 @@ public class Game {
    * Handles execution after timeline ends
    * @param listener
    */
-  public void setGameLoopListener(GameLoopListener listener) {
+  public void setOnGameLoop(GameLoopListener listener) {
     gameLoopListener = listener;
   }
 
@@ -494,27 +495,41 @@ public class Game {
     Multimedia lifeLost = new Multimedia();
     lifeLost.playAudio("/sounds/lifelose.wav");
     if(lives.get() == 0){
-      endGame();
+      resetGame();
     }
     else{
       setMultiplier(1);
       nextPiece();
       gameLoopListener();
       gameLoop = timer.schedule(this::gameLoop, getTimerDelay(), TimeUnit.MILLISECONDS);
-      logger.info("Lives left: {}", lives.get()+" Multiplier reset");
+      logger.info("Lives left: {}", lives.get()+", Multiplier reset");
     }
   }
-  /**
-   * End the game
-   * Resets the stats and cancels the game loop
+
+  /*
+  Temporary method to reset the game
    */
-  public void endGame() {
-    logger.info("Game over");
-    gameLoop.cancel(false);
-    timer.shutdown();
+  public void resetGame(){
+    logger.info("Game over, resetting stats");
     lives.set(3);
     score.set(0);
     level.set(0);
     multiplier.set(1);
+    gameLoop = timer.schedule(this::gameLoop, getTimerDelay(), TimeUnit.MILLISECONDS);
+    gameLoopListener();
+    grid.clean();
+  }
+  /**
+   * Shutdown the game, resetting the score, multiplier, level and lives(upon exit)
+   */
+
+  public void shutdownGame() {
+    logger.info("Shutting down game");
+    lives.set(3);
+    score.set(0);
+    level.set(0);
+    multiplier.set(1);
+    gameLoop.cancel(false);
+
   }
 }
