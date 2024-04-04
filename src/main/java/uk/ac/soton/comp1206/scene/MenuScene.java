@@ -100,12 +100,22 @@ public class MenuScene extends BaseScene {
         /*
         *Chat button
          */
+        /*
+        *Scores button
+         */
+        var scoresButton = new Text("Scores");
+        scoresButton.getStyleClass().add("option-button");
+        scoresButton.setOnMouseClicked(e->{
+            menuMusic.stopBackgroundMusic();
+            transitionSound.playAudio("/sounds/transition.wav");
+            gameWindow.loadScene(new ScoresScene(gameWindow));
+        });
 
         /*
         *Button container
          */
         var buttonContainer = new VBox();
-        buttonContainer.getChildren().addAll(playButton, instructionsButton);
+        buttonContainer.getChildren().addAll(playButton, instructionsButton, scoresButton);
         buttonContainer.setAlignment(Pos.CENTER);
         buttonContainer.setSpacing(20);
         mainPane.setCenter(buttonContainer);

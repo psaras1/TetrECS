@@ -103,38 +103,6 @@
     -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
 }
 .lives {
-    -fx-fill: #00ff00;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 36px;
-    -fx-font-weight: 700;
-    -fx-border-color: black;
-    -fx-stroke: black;
-    -fx-text-alignment: center;
-    -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
-}
-
-.lives3 {
-    -fx-fill: #00ff00;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 36px;
-    -fx-font-weight: 700;
-    -fx-border-color: black;
-    -fx-stroke: black;
-    -fx-text-alignment: center;
-    -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
-}
-.lives2 {
-    -fx-fill: #ffa312;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 36px;
-    -fx-font-weight: 700;
-    -fx-border-color: black;
-    -fx-stroke: black;
-    -fx-text-alignment: center;
-    -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
-}
-.lives1 {
-    -fx-fill: red ;
     -fx-font-family: 'Orbitron';
     -fx-font-size: 36px;
     -fx-font-weight: 700;
@@ -285,4 +253,10 @@ TextField {
 }
 .option1-button:hover{
     -fx-effect: dropshadow(gaussian, magenta, 10, 0, 0, 0); /* Change glow to magenta on hover */
+}
+.score-title{
+    -fx-fill:pink;
+    -fx-effect:dropshadow(gaussian, aqua, 10, 0, 0, 0);
+    -fx-font-family: 'PressStart2P-Regular';
+    -fx-font-size: 30px;
 }

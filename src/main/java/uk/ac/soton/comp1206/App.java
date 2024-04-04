@@ -1,6 +1,7 @@
 package uk.ac.soton.comp1206;
 
 import javafx.application.Application;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import org.apache.logging.log4j.LogManager;
@@ -44,7 +45,6 @@ public class App extends Application {
     public void start(Stage stage) {
         instance = this;
         this.stage = stage;
-
         //Open game window
         openGame();
     }

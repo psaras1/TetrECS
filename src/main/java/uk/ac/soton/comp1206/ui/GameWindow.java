@@ -162,6 +162,7 @@ public class GameWindow {
         return communicator;
     }
     public void showScores(Game game) {
+        logger.info("Loading score screen");
         loadScene(new ScoresScene(this,game));
     }
 }

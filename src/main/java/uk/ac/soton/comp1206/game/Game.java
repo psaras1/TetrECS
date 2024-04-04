@@ -500,7 +500,7 @@ public class Game {
     setLives(lives.get() - 1);
     Multimedia lifeLost = new Multimedia();
     lifeLost.playAudio("/sounds/lifelose.wav");
-    if(lives.get() == 0){
+    if(lives.get() < 0){
       endGame();
     }
     else{

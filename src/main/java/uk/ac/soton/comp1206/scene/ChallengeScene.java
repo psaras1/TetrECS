@@ -36,15 +36,13 @@ import uk.ac.soton.comp1206.ui.GameWindow;
  * game.
  */
 public class ChallengeScene extends BaseScene {
+
   /*
   game loop implementation
    */
-  private GameLoopListener gameLoopListener;
-  private AnimationTimer gameLoopAnimation;
   private Rectangle timeBar;
   private long timeBarWidth;
   private Timeline timeline;
-  private long delay;
 
   private static final Logger logger = LogManager.getLogger(MenuScene.class);
   protected Game game;
@@ -62,8 +60,8 @@ public class ChallengeScene extends BaseScene {
   private ImageView muteImageView = new ImageView(muteImage);
   private Button muteButton = new Button("", muteImageView);
 
-  int coordX = 0, coordY = 0;
-  boolean mouseMode;
+  private int coordX = 0, coordY = 0;
+  private boolean mouseMode;
   private GameBoard board;
   private GameBlock keyboardSelectedBlock = null;
 
@@ -152,21 +150,14 @@ public class ChallengeScene extends BaseScene {
     livesTitle.getStyleClass().add("heading");
     //initial style of livesLabel
     livesLabel.getStyleClass().add("lives");
+    livesLabel.styleProperty().setValue("-fx-fill: green;");
     /*
     add listener to livesLabel to change style based on the number of lives(dynamically)
      */
     game.getLives().addListener((obs, oldVal, newVal) -> {
       //remove previously added style classes
       livesLabel.getStyleClass().clear();
-      if (newVal.intValue() == 3){
-        livesLabel.getStyleClass().add("lives3");
-      }
-      if (newVal.intValue() == 2){
-        livesLabel.getStyleClass().add("lives2");
-      }
-      if (newVal.intValue() == 1){
-        livesLabel.getStyleClass().add("lives1");
-      }
+      updateLivesLabel(newVal.intValue());
     });
     livesBox.getChildren().addAll(livesTitle, livesLabel);
 
@@ -273,22 +264,42 @@ public class ChallengeScene extends BaseScene {
     root.getChildren().add(menuButtonPane);
 
   }
-  /*
 
+  /*
+  *Update lives label based on the number of lives
    */
-public void gameLoopAnimation(){
-  timeBar.setScaleX(1);
-  timeline = new Timeline();
-  timeBar.setFill(Color.GREEN);
-  timeline.getKeyFrames().add(new KeyFrame(Duration.millis(game.getTimerDelay()),
-      new KeyValue(timeBar.scaleXProperty(), 0)));
-  timeline.playFromStart();
-  FillTransition color = new FillTransition();
-  color.setDuration(Duration.millis(game.getTimerDelay()));
-  color.setShape(timeBar);
-  color.setToValue(Color.RED);
-  color.play();
-}
+  public void updateLivesLabel(int lives) {
+    if (lives == 3) {
+      livesLabel.getStyleClass().add("lives");
+      livesLabel.styleProperty().setValue("-fx-fill: green;");
+    }
+    if (lives == 2) {
+      livesLabel.getStyleClass().add("lives");
+      livesLabel.styleProperty().setValue("-fx-fill: yellow;");
+    }
+    if (lives == 1) {
+      livesLabel.getStyleClass().add("lives");
+      livesLabel.styleProperty().setValue("-fx-fill: orange;");
+    }
+    if (lives == 0) {
+      livesLabel.getStyleClass().add("lives");
+      livesLabel.styleProperty().setValue("-fx-fill: red;");
+    }
+  }
+
+  public void gameLoopAnimation() {
+    timeBar.setScaleX(1);
+    timeline = new Timeline();
+    timeBar.setFill(Color.GREEN);
+    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(game.getTimerDelay()),
+        new KeyValue(timeBar.scaleXProperty(), 0)));
+    timeline.playFromStart();
+    FillTransition color = new FillTransition();
+    color.setDuration(Duration.millis(game.getTimerDelay()));
+    color.setShape(timeBar);
+    color.setToValue(Color.RED);
+    color.play();
+  }
 
   /**
    * Update the game board with the next piece
@@ -299,6 +310,7 @@ public void gameLoopAnimation(){
     currentPiece.displayPiece(piece);
     followingPiece.displayPiece(game.followingPiece);
   }
+
   protected void clearedLines(HashSet<GameBlockCoordinate> linesCleared) {
     logger.info("Lines cleared: {}", linesCleared);
     board.fadeOut(linesCleared);
@@ -309,7 +321,8 @@ public void gameLoopAnimation(){
    *
    * @param gameBlock the Game Block that was clocked
    */
-  private void blockClicked(GameBlock gameBlock) { //calls blockClicked method on game, passing through current gameBlock
+  private void blockClicked(
+      GameBlock gameBlock) { //calls blockClicked method on game, passing through current gameBlock
     game.blockClicked(gameBlock);
   }
 
@@ -318,12 +331,8 @@ public void gameLoopAnimation(){
    */
   public void setupGame() {
     logger.info("Starting a new challenge");
-
-    //Start new game
     game = new Game(5, 5);
   }
-
-
 
 
   /**
@@ -343,7 +352,8 @@ public void gameLoopAnimation(){
     //Set the next piece listener
     //(Update the NextPieceListener to pass the following piece as well, and use this to update the following piece board.)
     game.setNextPieceListener(this::nextPiece); //next piece passed as GamePiece to interface
-    game.setLineClearedListener(this::clearedLines);//linesCleared passed as HashSet<GameBlockCoordinate> to interface
+    game.setLineClearedListener(
+        this::clearedLines);//linesCleared passed as HashSet<GameBlockCoordinate> to interface
     game.setOnGameEnd(() -> {
       logger.info("Game over");
       game.exitGame();
