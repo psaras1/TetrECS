@@ -356,7 +356,7 @@ public class ChallengeScene extends BaseScene {
         this::clearedLines);//linesCleared passed as HashSet<GameBlockCoordinate> to interface
     game.setOnGameEnd(() -> {
       logger.info("Game over");
-      game.exitGame();
+      game.endTimer();
       gameWindow.showScores(game);
     });
     game.start();

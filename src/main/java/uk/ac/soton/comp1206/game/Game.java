@@ -53,7 +53,7 @@ public class Game {
   Add bindable properties for the score, level, lives and multiplier to the Game class, with appropriate accessor methods.
    */
   public GamePiece currentPiece, followingPiece, tempPiece;
-  private IntegerProperty score;
+  public IntegerProperty score;
   private IntegerProperty level;
   private IntegerProperty lives;
   private IntegerProperty multiplier;
@@ -90,7 +90,7 @@ public class Game {
     //These should default to 0 score, level 0, 3 lives and 1 x multiplier respectively.
     this.score = new SimpleIntegerProperty(0);
     this.level = new SimpleIntegerProperty(0);
-    this.lives = new SimpleIntegerProperty(3);
+    this.lives = new SimpleIntegerProperty(0);
     this.multiplier = new SimpleIntegerProperty(1);
 
     //Create a new grid model to represent the game state
@@ -501,7 +501,9 @@ public class Game {
     Multimedia lifeLost = new Multimedia();
     lifeLost.playAudio("/sounds/lifelose.wav");
     if(lives.get() < 0){
-      endGame();
+      if(gameEndListener != null){
+        Platform.runLater(() -> gameEndListener.onGameEnd());
+      }
     }
     else{
       setMultiplier(1);
@@ -527,16 +529,8 @@ public class Game {
     gameLoop.cancel(false);
 
   }
-  public void endGame(){
-    logger.info("Game over, resetting stats");
-    lives.set(3);
-    score.set(0);
-    level.set(0);
-    multiplier.set(1);
-    grid.clean();
-    if(gameEndListener != null){
-//      gameEndListener.onGameEnd();
-      Platform.runLater(() -> gameEndListener.onGameEnd());
-    }
+  /* Called on game over */
+  public void endTimer(){
+    this.timer.shutdown();
   }
 }

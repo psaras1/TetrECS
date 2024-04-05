@@ -1,5 +1,6 @@
 package uk.ac.soton.comp1206.scene;
 
+import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ListProperty;
@@ -39,9 +40,6 @@ public class ScoresScene extends BaseScene {
   public ScoresScene(GameWindow gameWindow, Game game) {
     super(gameWindow);
     this.game = game;
-
-    observableScoreList = FXCollections.observableArrayList(scoreList);
-    localScores = new SimpleListProperty<>(observableScoreList);
     logger.info("Creating Scores Scene");
   }
 
@@ -75,7 +73,7 @@ public class ScoresScene extends BaseScene {
   @Override
   public void initialise() {
     logger.info("Initialising " + this.getClass().getName());
-    addScores();
+    logger.info("Final score: {}",game.score.get());
     controls();
   }
 /*
@@ -111,8 +109,12 @@ Build the Scores Window
     Center
      */
     /*score list*/
+    scoreList = new ArrayList<>();
+    scoreList.add(new Pair<>("Guest",game.score.get()));
+    observableScoreList = FXCollections.observableList(scoreList);
+    localScores = new SimpleListProperty<>(observableScoreList);
+
     scoreListView = new ListView<>(localScores);
-    scoreListView.setItems(localScores);
     scoreListView.getStyleClass().add("score-list");
     mainPane.setCenter(scoreListView);
 
@@ -120,7 +122,7 @@ Build the Scores Window
   /*
   Method to handle the keyboard controls of the scene
    */
-  public void controls(){
+  private void controls(){
     scene.setOnKeyPressed(e -> {
       logger.info("Key Pressed: {}" ,e.getCode());
       switch (e.getCode()) {
