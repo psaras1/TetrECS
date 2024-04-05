@@ -1,7 +1,18 @@
 package uk.ac.soton.comp1206.scene;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -11,13 +22,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,23 +47,24 @@ import uk.ac.soton.comp1206.ui.GameWindow;
  */
 public class ScoresScene extends BaseScene {
   private Game game;
-  /*Add a localScores SimpleListProperty to hold the current list of scores in the Scene*/
-  /*Wrapper around observableScoreList*/
-//  private ListProperty<Pair<String,Integer>> localScores;
-//  /*Created from scoreList. Capable of being observed/binded to the ListView*/
-//  private ObservableList<Pair<String,Integer>> observableScoreList;
-//  /*Holds the actual data of scores*/
-//  private List<Pair<String,Integer>> scoreList;
-//  /*Displays the list of scores*/
-//  private ListView<Pair<String,Integer>> scoreListView;
-  private StringProperty currentPlayer = new SimpleStringProperty("");
-  private ObservableList<Pair<String,Integer>> observableScoreList;
-  private VBox scoreListCenter;
-  private ScoreList localScoreList;
+
+  /*
+List of scores (Observable means it can be observed for changes, have a listener attached to it)
+ */
+  private ObservableList<Pair<String, Integer>> localScores = new SimpleListProperty<>();
+  private ScoreList scoreList;
+
+  private StringProperty name = new SimpleStringProperty("");
+  Integer currentScore;
+  String username;
+
+
   private static final Logger logger = LogManager.getLogger(InstructionsScene.class);
   public ScoresScene(GameWindow gameWindow, Game game) {
     super(gameWindow);
     this.game = game;
+    currentScore = game.score.get();
+    logger.info("Current score: {}", currentScore);
     logger.info("Creating Scores Scene");
   }
 
@@ -61,15 +77,7 @@ public class ScoresScene extends BaseScene {
     super(gameWindow);
     logger.info("Creating Scores Scene");
   }
-  /*/
-  Method to add scores
-   */
-  public void addScores(){
-    IntegerProperty score = game.getScore();
-    Pair<String,Integer> newScore = new Pair<>("Guest",score.getValue());
-    observableScoreList.add(newScore);
-    //scoreList.add(newScore);
-  }
+
 
   /*
   Method to handle the end of the game
@@ -82,7 +90,7 @@ public class ScoresScene extends BaseScene {
   @Override
   public void initialise() {
     logger.info("Initialising " + this.getClass().getName());
-    logger.info("Final score: {}",game.score.get());
+//    logger.info("Final score: {}",game.score.get());
     scene.setOnKeyPressed(e -> {
       logger.info("Key Pressed: {}" ,e.getCode());
       switch (e.getCode()) {
@@ -98,6 +106,14 @@ Build the Scores Window
  */
   @Override
   public void build() {
+    localScores = FXCollections.observableArrayList(loadScores());
+    scoreList = new ScoreList();
+    localScores.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+    AtomicReference<SimpleListProperty<Pair<String,Integer>>> scoresWrapper = new AtomicReference<>(new SimpleListProperty<>(localScores));
+    scoreList = new ScoreList();
+    scoreList.returnScores().bind(scoresWrapper.get());
+    scoreList.returnName().bind(name);
+
 
     logger.info("Building " + this.getClass().getName());
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
@@ -127,26 +143,138 @@ Build the Scores Window
     Center
      */
     /*score list*/
-    scoreListCenter = new VBox();
-    scoreListCenter.setAlignment(Pos.CENTER);
-    scoreListCenter.setSpacing(10);
-    mainPane.setCenter(scoreListCenter);
+    boolean newHS = false;
+    for(Pair<String, Integer> score : scoreList.returnScores()){
+      if(currentScore > score.getValue()){
+        newHS = true;
+      }
+    }
+    if(newHS){
+      var nameLabel = new Text("Enter your name: ");
+      TextField nameField = new TextField();
+      var display = new VBox();
+      var submit = new Button("Submit");
+      submit.setOnMouseClicked(e -> {
+        username = nameField.getText();
+        ArrayList<Pair<String, Integer>> newScores = new ArrayList<>();
+        for(Pair<String, Integer> score : scoreList.returnScores()){
+          newScores.add(score);
+        }
+        newScores.add(new Pair<>(username, currentScore));
+        writeScores(newScores);
+        localScores = FXCollections.observableArrayList(loadScores());
+        scoreList = new ScoreList();
+        localScores.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+        scoresWrapper.set(new SimpleListProperty<>(localScores));
+        scoreList = new ScoreList();
+        scoreList.returnScores().bind(scoresWrapper.get());
+        scoreList.returnName().bind(name);
+        display.getChildren().clear();
+        finishBuild(mainPane);
 
-    var gridPane = new GridPane();
-    gridPane.setAlignment(Pos.CENTER);
+      });
+      display.setPadding(new Insets(10));
+      display.getChildren().addAll(nameLabel, nameField, submit);
+      mainPane.setCenter(display);
+      display.setAlignment(Pos.CENTER);
 
+    }
+    else{
+      var nameLabel = new Label("Your score: " + currentScore);
+      nameLabel.setPadding(new Insets(10,10,50,10));
+      var info = new VBox();
+      var submit = new Button("Proceed");
+      submit.setPadding(new Insets(10));
+      info.getChildren().addAll(nameLabel, submit);
+      mainPane.setCenter(info);
+      info.setAlignment(Pos.CENTER);
+      submit.setOnMouseClicked(e -> {
+        ArrayList<Pair<String, Integer>> newScores = new ArrayList<>();
+        for(Pair<String, Integer> score : scoreList.returnScores()){
+          newScores.add(score);
+        }
+        writeScores(newScores);
+        localScores = FXCollections.observableArrayList(loadScores());
+        scoreList = new ScoreList();
+        localScores.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+        scoresWrapper.set(new SimpleListProperty<>(localScores));
+        scoreList = new ScoreList();
+        scoreList.returnScores().bind(scoresWrapper.get());
+        scoreList.returnName().bind(name);
+        info.getChildren().clear();
+        finishBuild(mainPane);
+      });
+    }
+  }
+  public void finishBuild(BorderPane mainPane){
+    var localScores = new Text("Local Scores");
+    localScores.getStyleClass().add("heading");
+    localScores.setTextAlignment(TextAlignment.CENTER);
 
-    localScoreList = new ScoreList();
-    localScoreList.setAlignment(Pos.CENTER);
-    gridPane.getChildren().add(localScoreList);
+    var scoreBox = new VBox(localScores, scoreList);
+    scoreBox.setAlignment(Pos.CENTER);
 
-    scoreListCenter.getChildren().add(gridPane);
+    mainPane.setCenter(scoreBox);
+  }
 
-    observableScoreList = FXCollections.observableArrayList();
-    observableScoreList.add(new Pair<>("Guest",game.getScore().get()));
-    SimpleListProperty<Pair<String,Integer>>localScores = new SimpleListProperty<>(observableScoreList);
-    observableScoreList.add(new Pair<>("Test", 100));
-
+  public ArrayList<Pair<String, Integer>> loadScores() {
+    ArrayList<Pair<String, Integer>> scores = new ArrayList<>();
+    File file = new File("Scores.txt");
+    if(!file.exists()){
+      ArrayList<Pair<String, Integer>> scoresFiller = new ArrayList<>();
+      scores.add(new Pair<>("Guest", 300));
+      scores.add(new Pair<>("Guest", 250));
+      scores.add(new Pair<>("Guest", 200));
+      scores.add(new Pair<>("Guest: ", 150));
+      scores.add(new Pair<>("Guest", 100));
+      scores.add(new Pair<>("Guest", 50));
+      scores.add(new Pair<>("Guest", 40));
+      scores.add(new Pair<>("Guest", 30));
+      scores.add(new Pair<>("Guest", 20));
+      scores.add(new Pair<>("Guest", 10));
+      writeScores(scoresFiller);
+    }
+    try{
+      FileInputStream fis = new FileInputStream(file);
+      BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+      try{
+        String line;
+        while((line = br.readLine()) != null){
+          String[] parts = line.split(":");
+          scores.add(new Pair<>(parts[0], Integer.parseInt(parts[1])));
+        }
+        br.close();
+      }catch (IOException e){
+        logger.error("Error reading scores file");
+      }
+    }catch (IOException e){
+      logger.error("Error opening scores file");
+    }
+    return scores;
+  }
+  public void writeScores(ArrayList<Pair<String, Integer>> scores){
+    scores.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+    try{
+      if(new File("Scores.txt").createNewFile()){
+        logger.info("Scores file created");
+      }
+    }catch (IOException e){
+      logger.error("Error creating scores file");
+    }
+    try{
+      BufferedWriter writer = new BufferedWriter(new FileWriter("Scores.txt"));
+      int scoreCount =0;
+      for(Pair<String,Integer>score:scores){
+        writer.write(score.getKey() + ":" + score.getValue()+"\n");
+        scoreCount++;
+        if(scoreCount > 10){
+          break;
+        }
+      }
+      writer.close();
+    }catch (IOException e){
+      logger.error("Error writing scores file");
+    }
   }
 
 }
