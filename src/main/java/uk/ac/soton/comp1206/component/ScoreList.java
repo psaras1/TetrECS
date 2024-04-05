@@ -10,44 +10,55 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import javafx.util.Pair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import uk.ac.soton.comp1206.scene.InstructionsScene;
 
+/**
+ * The ScoreList class is a custom JavaFX component that displays a list of scores in a VBox. It is
+ * used to display the scores of the players in the game in a readable manner.
+ */
 public class ScoreList extends VBox {
-  private static final Logger logger = LogManager.getLogger(ScoreList.class);
+
   private SimpleListProperty<Pair<String, Integer>> scores = new SimpleListProperty<>();
   StringProperty name = new SimpleStringProperty();
+  /*
+  Used to loop through the scores and apply animation to them
+   */
   ArrayList<HBox> scoresAnimated = new ArrayList<>();
 
-  public ScoreList(){
+  /*
+  Constructor for the ScoreList class. It sets the style of the component and adds a listener to the scores property to update the list when the scores change.
+   */
+  public ScoreList() {
     getStyleClass().add("scorelist");
     scores.addListener(((InvalidationListener) observable -> this.updateList()));
     name.addListener(e -> this.updateList());
   }
 
-  public void updateList(){
+  /**
+   * Updates the list of scores displayed in the component. It loops through the scores and creates
+   * a new HBox for each score, containing the player's name and score. It then adds the HBox to the
+   * list of scores to be animated and adds the HBox to the VBox. Finally, it calls the reveal
+   * method to animate the scores.
+   */
+  public void updateList() {
     int i = 0;
     scoresAnimated.clear();
     getChildren().clear();
 
-    for(Pair<String, Integer> pair : scores){
-      if(i >10){
+    for (Pair<String, Integer> pair : scores) {
+      if (i > 10) {
         break;
       }
       HBox indLine = new HBox();
       indLine.setAlignment(Pos.CENTER);
 
-      var playerName = new Text(pair.getKey()+": ");
+      var playerName = new Text(pair.getKey() + ": ");
       playerName.getStyleClass().add("player-name");
 
       playerName.setTextAlignment(TextAlignment.CENTER);
@@ -64,15 +75,19 @@ public class ScoreList extends VBox {
 
       i++;
     }
-    for(HBox line : scoresAnimated){
+    for (HBox line : scoresAnimated) {
       getChildren().add(line);
     }
     reveal();
 
   }
-  public void reveal(){
+
+  /**
+   * Animates the scores in the list by fading them in.
+   */
+  public void reveal() {
     ArrayList<Transition> transitions = new ArrayList<>();
-    for(HBox line : scoresAnimated){
+    for (HBox line : scoresAnimated) {
       FadeTransition ft = new FadeTransition(new Duration(1000), line);
       ft.setFromValue(0);
       ft.setToValue(1);
@@ -81,11 +96,15 @@ public class ScoreList extends VBox {
     SequentialTransition st = new SequentialTransition(transitions.toArray(Animation[]::new));
     st.play();
   }
-  public ListProperty<Pair<String,Integer>> returnScores(){
+
+  /*
+  Accessor methods for the scores and name properties.
+   */
+  public ListProperty<Pair<String, Integer>> returnScores() {
     return scores;
   }
-  public StringProperty returnName(){
+
+  public StringProperty returnName() {
     return name;
   }
-
 }

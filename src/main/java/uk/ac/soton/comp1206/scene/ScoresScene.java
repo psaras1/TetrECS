@@ -8,14 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -24,17 +18,12 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,6 +36,9 @@ import uk.ac.soton.comp1206.ui.GameWindow;
  * The scores scene of the game. Holds the scores of the game for the player to see.
  */
 public class ScoresScene extends BaseScene {
+  /*
+  Stores current game instance
+   */
 
   private Game game;
 
@@ -54,15 +46,26 @@ public class ScoresScene extends BaseScene {
 List of scores (Observable means it can be observed for changes, have a listener attached to it)
  */
   private ObservableList<Pair<String, Integer>> localScores = new SimpleListProperty<>();
+  /*
+  Temporary score storage
+   */
   private ScoreList scoreList;
-
+  /*
+  Name of the player
+   */
   private StringProperty name = new SimpleStringProperty("");
+  /*
+  Stored as a pair
+   */
   Integer currentScore;
   String username;
 
 
   private static final Logger logger = LogManager.getLogger(InstructionsScene.class);
 
+  /*
+  Constructor for ScoresScene
+   */
   public ScoresScene(GameWindow gameWindow, Game game) {
     super(gameWindow);
     this.game = game;
@@ -74,6 +77,7 @@ List of scores (Observable means it can be observed for changes, have a listener
   /**
    * Second constructor for ScoresScene, allows it to be scene from menu scene No need to have a
    * game instance
+   * TODO: Hasn't been implemented yet
    *
    * @param gameWindow
    */
@@ -83,8 +87,8 @@ List of scores (Observable means it can be observed for changes, have a listener
   }
 
 
-  /*
-  Method to handle the end of the game
+  /**
+   * Method to handle the end of the game Loads the score scene
    */
   public void onGameEnd() {
     logger.info("Game has ended");
@@ -94,7 +98,9 @@ List of scores (Observable means it can be observed for changes, have a listener
   @Override
   public void initialise() {
     logger.info("Initialising " + this.getClass().getName());
-//    logger.info("Final score: {}",game.score.get());
+    /*
+    Return to menu on escape pressed
+     */
     scene.setOnKeyPressed(e -> {
       logger.info("Key Pressed: {}", e.getCode());
       switch (e.getCode()) {
@@ -111,6 +117,9 @@ List of scores (Observable means it can be observed for changes, have a listener
    */
   @Override
   public void build() {
+    /*
+    Logic, load scores from file, sort them, add new score if it is a high score
+     */
     localScores = FXCollections.observableArrayList(loadScores());
     scoreList = new ScoreList();
     localScores.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
@@ -119,6 +128,11 @@ List of scores (Observable means it can be observed for changes, have a listener
     scoreList = new ScoreList();
     scoreList.returnScores().bind(scoresWrapper.get());
     scoreList.returnName().bind(name);
+
+    /**
+     * ScorePane used as parent for all elements
+     * MainPane used as parent for all elements, stored within ScorePane
+     */
 
     logger.info("Building " + this.getClass().getName());
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
@@ -147,7 +161,11 @@ List of scores (Observable means it can be observed for changes, have a listener
     /*
     Center
      */
-    /*score list*/
+    /**
+     * Boolean newHS, gets triggered if the current score is higher than any of the scores in the list
+     * If newHS is true, the user is prompted to enter their name, their score is displayed in top 10
+     * If newHS is false, the user is prompted to proceed and view score board
+     */
     boolean newHS = false;
     for (Pair<String, Integer> score : scoreList.returnScores()) {
       if (currentScore > score.getValue()) {
@@ -214,20 +232,24 @@ List of scores (Observable means it can be observed for changes, have a listener
     }
   }
 
+  /**
+   * Finish building the scores scene Takes in the mainPane and adds the scores to it in a VBox
+   *
+   * @param mainPane
+   */
   public void finishBuild(BorderPane mainPane) {
-//    var localScores = new Text("Local Scores");
-//    localScores.getStyleClass().add("heading");
-//    localScores.setTextAlignment(TextAlignment.CENTER);
-//
-//    Region spacer = new Region();
-//    spacer.setPrefHeight(20);
-
     var scoreBox = new VBox(scoreList);
     scoreBox.setAlignment(Pos.CENTER);
-
     mainPane.setCenter(scoreBox);
   }
 
+  /**
+   * Load scores from text file If file does not exist, create a new file and fill it with default
+   * scores If file does exist, load first ten scores from file, add them to an ArrayList of paired
+   * usernames and scores and return it
+   *
+   * @return
+   */
   public ArrayList<Pair<String, Integer>> loadScores() {
     ArrayList<Pair<String, Integer>> scores = new ArrayList<>();
     File file = new File("Scores.txt");
@@ -252,10 +274,9 @@ List of scores (Observable means it can be observed for changes, have a listener
         String line;
         while ((line = br.readLine()) != null) {
           String[] parts = line.split(":");
-          if(parts.length == 2) {
+          if (parts.length == 2) {
             scores.add(new Pair<>(parts[0], Integer.parseInt(parts[1])));
-          }
-          else{
+          } else {
             logger.info("Invalid line in scores file");
           }
         }
@@ -269,6 +290,11 @@ List of scores (Observable means it can be observed for changes, have a listener
     return scores;
   }
 
+  /**
+   * Write scores to text file Called when a new score is added to the list
+   *
+   * @param scores
+   */
   public void writeScores(ArrayList<Pair<String, Integer>> scores) {
     scores.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
     try {
