@@ -5,18 +5,23 @@ import java.util.List;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp1206.component.ScoreList;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -29,13 +34,17 @@ public class ScoresScene extends BaseScene {
   private Game game;
   /*Add a localScores SimpleListProperty to hold the current list of scores in the Scene*/
   /*Wrapper around observableScoreList*/
-  private ListProperty<Pair<String,Integer>> localScores;
-  /*Created from scoreList. Capable of being observed/binded to the ListView*/
+//  private ListProperty<Pair<String,Integer>> localScores;
+//  /*Created from scoreList. Capable of being observed/binded to the ListView*/
+//  private ObservableList<Pair<String,Integer>> observableScoreList;
+//  /*Holds the actual data of scores*/
+//  private List<Pair<String,Integer>> scoreList;
+//  /*Displays the list of scores*/
+//  private ListView<Pair<String,Integer>> scoreListView;
+  private StringProperty currentPlayer = new SimpleStringProperty("");
   private ObservableList<Pair<String,Integer>> observableScoreList;
-  /*Holds the actual data of scores*/
-  private List<Pair<String,Integer>> scoreList;
-  /*Displays the list of scores*/
-  private ListView<Pair<String,Integer>> scoreListView;
+  private VBox scoreListCenter;
+  private ScoreList localScoreList;
   private static final Logger logger = LogManager.getLogger(InstructionsScene.class);
   public ScoresScene(GameWindow gameWindow, Game game) {
     super(gameWindow);
@@ -59,7 +68,7 @@ public class ScoresScene extends BaseScene {
     IntegerProperty score = game.getScore();
     Pair<String,Integer> newScore = new Pair<>("Guest",score.getValue());
     observableScoreList.add(newScore);
-    scoreList.add(newScore);
+    //scoreList.add(newScore);
   }
 
   /*
@@ -74,13 +83,22 @@ public class ScoresScene extends BaseScene {
   public void initialise() {
     logger.info("Initialising " + this.getClass().getName());
     logger.info("Final score: {}",game.score.get());
-    controls();
+    scene.setOnKeyPressed(e -> {
+      logger.info("Key Pressed: {}" ,e.getCode());
+      switch (e.getCode()) {
+        case ESCAPE:
+          logger.info("Escape pressed, returning to menu");
+          gameWindow.startMenu();
+          break;
+      }
+    });
   }
 /*
 Build the Scores Window
  */
   @Override
   public void build() {
+
     logger.info("Building " + this.getClass().getName());
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
     var scorePane = new StackPane();
@@ -109,29 +127,26 @@ Build the Scores Window
     Center
      */
     /*score list*/
-    scoreList = new ArrayList<>();
-    scoreList.add(new Pair<>("Guest",game.score.get()));
-    observableScoreList = FXCollections.observableList(scoreList);
-    localScores = new SimpleListProperty<>(observableScoreList);
+    scoreListCenter = new VBox();
+    scoreListCenter.setAlignment(Pos.CENTER);
+    scoreListCenter.setSpacing(10);
+    mainPane.setCenter(scoreListCenter);
 
-    scoreListView = new ListView<>(localScores);
-    scoreListView.getStyleClass().add("score-list");
-    mainPane.setCenter(scoreListView);
+    var gridPane = new GridPane();
+    gridPane.setAlignment(Pos.CENTER);
 
-  }
-  /*
-  Method to handle the keyboard controls of the scene
-   */
-  private void controls(){
-    scene.setOnKeyPressed(e -> {
-      logger.info("Key Pressed: {}" ,e.getCode());
-      switch (e.getCode()) {
-        case ESCAPE:
-          logger.info("Escape pressed, returning to menu");
-          gameWindow.startMenu();
-          break;
-      }
-    });
+
+    localScoreList = new ScoreList();
+    localScoreList.setAlignment(Pos.CENTER);
+    gridPane.getChildren().add(localScoreList);
+
+    scoreListCenter.getChildren().add(gridPane);
+
+    observableScoreList = FXCollections.observableArrayList();
+    observableScoreList.add(new Pair<>("Guest",game.getScore().get()));
+    SimpleListProperty<Pair<String,Integer>>localScores = new SimpleListProperty<>(observableScoreList);
+    observableScoreList.add(new Pair<>("Test", 100));
+
   }
 
 }

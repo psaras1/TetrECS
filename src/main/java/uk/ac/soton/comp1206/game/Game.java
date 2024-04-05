@@ -1,5 +1,6 @@
 package uk.ac.soton.comp1206.game;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -11,6 +12,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
@@ -75,7 +77,10 @@ public class Game {
   called when the game ends
    */
   private GameEndListener gameEndListener = null;
-
+  /*
+  Array List to store the scores, passed to scores scene
+   */
+  public ArrayList<Pair<String,Integer>> scores = new ArrayList<>();
 
   /**
    * Create a new game with the specified rows and columns. Creates a corresponding grid model.
