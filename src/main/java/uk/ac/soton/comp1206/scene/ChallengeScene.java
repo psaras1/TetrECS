@@ -208,11 +208,20 @@ public class ChallengeScene extends BaseScene {
     /*
     Current High Score
      */
+    var score = currentHighScore.getValue();
+    var name = currentHighScore.getKey();
+    var highScoreLabel = new Text("High Score: ");
+    var highScore = new Text(score + " by " + name);
+    highScore.getStyleClass().add("heading");
+    highScoreLabel.getStyleClass().add("heading");
 
-    leftBox.getChildren().addAll(currentPieceLabel, currentPiece, nextPieceLabel, followingPiece);
+    Region spacing = new Region();
+    spacing.setPrefHeight(50);
+
+    leftBox.getChildren().addAll(currentPieceLabel, currentPiece, nextPieceLabel, followingPiece,spacing,
+        highScoreLabel, highScore);
 
     /*botom*/
-    //TODO: Implement visual timeline for the gameloop
     /*
     timebar implementation
      */
