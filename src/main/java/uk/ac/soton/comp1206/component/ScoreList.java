@@ -30,6 +30,7 @@ public class ScoreList extends VBox {
   ArrayList<HBox> scoresAnimated = new ArrayList<>();
 
   public ScoreList(){
+    getStyleClass().add("scorelist");
     scores.addListener(((InvalidationListener) observable -> this.updateList()));
     name.addListener(e -> this.updateList());
   }
@@ -44,7 +45,6 @@ public class ScoreList extends VBox {
         break;
       }
       HBox indLine = new HBox();
-      indLine.getStyleClass().add("scoreitem");
       indLine.setAlignment(Pos.CENTER);
 
       var playerName = new Text(pair.getKey());

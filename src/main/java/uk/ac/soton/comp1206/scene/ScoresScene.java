@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -43,9 +44,9 @@ import uk.ac.soton.comp1206.ui.GameWindow;
 
 /**
  * The scores scene of the game. Holds the scores of the game for the player to see.
-
  */
 public class ScoresScene extends BaseScene {
+
   private Game game;
 
   /*
@@ -60,6 +61,7 @@ List of scores (Observable means it can be observed for changes, have a listener
 
 
   private static final Logger logger = LogManager.getLogger(InstructionsScene.class);
+
   public ScoresScene(GameWindow gameWindow, Game game) {
     super(gameWindow);
     this.game = game;
@@ -69,8 +71,9 @@ List of scores (Observable means it can be observed for changes, have a listener
   }
 
   /**
-   * Second constructor for ScoresScene, allows it to be scene from menu scene
-   * No need to have a game instance
+   * Second constructor for ScoresScene, allows it to be scene from menu scene No need to have a
+   * game instance
+   *
    * @param gameWindow
    */
   public ScoresScene(GameWindow gameWindow) {
@@ -92,7 +95,7 @@ List of scores (Observable means it can be observed for changes, have a listener
     logger.info("Initialising " + this.getClass().getName());
 //    logger.info("Final score: {}",game.score.get());
     scene.setOnKeyPressed(e -> {
-      logger.info("Key Pressed: {}" ,e.getCode());
+      logger.info("Key Pressed: {}", e.getCode());
       switch (e.getCode()) {
         case ESCAPE:
           logger.info("Escape pressed, returning to menu");
@@ -101,19 +104,20 @@ List of scores (Observable means it can be observed for changes, have a listener
       }
     });
   }
-/*
-Build the Scores Window
- */
+
+  /*
+  Build the Scores Window
+   */
   @Override
   public void build() {
     localScores = FXCollections.observableArrayList(loadScores());
     scoreList = new ScoreList();
     localScores.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
-    AtomicReference<SimpleListProperty<Pair<String,Integer>>> scoresWrapper = new AtomicReference<>(new SimpleListProperty<>(localScores));
+    AtomicReference<SimpleListProperty<Pair<String, Integer>>> scoresWrapper = new AtomicReference<>(
+        new SimpleListProperty<>(localScores));
     scoreList = new ScoreList();
     scoreList.returnScores().bind(scoresWrapper.get());
     scoreList.returnName().bind(name);
-
 
     logger.info("Building " + this.getClass().getName());
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
@@ -135,7 +139,7 @@ Build the Scores Window
     title.styleProperty().setValue("-fx-effect: dropshadow(gaussian, magenta, 40, 0, 0, 0);");
     var topBox = new HBox();
     topBox.setAlignment(Pos.CENTER);
-    BorderPane.setMargin(topBox, new Insets(10,0,0,0));
+    BorderPane.setMargin(topBox, new Insets(10, 0, 0, 0));
     topBox.getChildren().add(title);
     mainPane.setTop(topBox);
 
@@ -144,20 +148,22 @@ Build the Scores Window
      */
     /*score list*/
     boolean newHS = false;
-    for(Pair<String, Integer> score : scoreList.returnScores()){
-      if(currentScore > score.getValue()){
+    for (Pair<String, Integer> score : scoreList.returnScores()) {
+      if (currentScore > score.getValue()) {
         newHS = true;
       }
     }
-    if(newHS){
+    if (newHS) {
       var nameLabel = new Text("Enter your name: ");
+      nameLabel.getStyleClass().add("heading");
       TextField nameField = new TextField();
+
       var display = new VBox();
       var submit = new Button("Submit");
       submit.setOnMouseClicked(e -> {
         username = nameField.getText();
         ArrayList<Pair<String, Integer>> newScores = new ArrayList<>();
-        for(Pair<String, Integer> score : scoreList.returnScores()){
+        for (Pair<String, Integer> score : scoreList.returnScores()) {
           newScores.add(score);
         }
         newScores.add(new Pair<>(username, currentScore));
@@ -178,19 +184,18 @@ Build the Scores Window
       mainPane.setCenter(display);
       display.setAlignment(Pos.CENTER);
 
-    }
-    else{
-      var nameLabel = new Label("Your score: " + currentScore);
-      nameLabel.setPadding(new Insets(10,10,50,10));
+    } else {
+      var nameLabel = new Text("Your score: " + currentScore);
+      nameLabel.getStyleClass().add("heading");
       var info = new VBox();
-      var submit = new Button("Proceed");
-      submit.setPadding(new Insets(10));
+      Text submit = new Text("Proceed");
+      submit.getStyleClass().add("option-button");
       info.getChildren().addAll(nameLabel, submit);
       mainPane.setCenter(info);
       info.setAlignment(Pos.CENTER);
       submit.setOnMouseClicked(e -> {
         ArrayList<Pair<String, Integer>> newScores = new ArrayList<>();
-        for(Pair<String, Integer> score : scoreList.returnScores()){
+        for (Pair<String, Integer> score : scoreList.returnScores()) {
           newScores.add(score);
         }
         writeScores(newScores);
@@ -204,9 +209,11 @@ Build the Scores Window
         info.getChildren().clear();
         finishBuild(mainPane);
       });
+
     }
   }
-  public void finishBuild(BorderPane mainPane){
+
+  public void finishBuild(BorderPane mainPane) {
     var localScores = new Text("Local Scores");
     localScores.getStyleClass().add("heading");
     localScores.setTextAlignment(TextAlignment.CENTER);
@@ -220,7 +227,7 @@ Build the Scores Window
   public ArrayList<Pair<String, Integer>> loadScores() {
     ArrayList<Pair<String, Integer>> scores = new ArrayList<>();
     File file = new File("Scores.txt");
-    if(!file.exists()){
+    if (!file.exists()) {
       ArrayList<Pair<String, Integer>> scoresFiller = new ArrayList<>();
       scores.add(new Pair<>("Guest", 300));
       scores.add(new Pair<>("Guest", 250));
@@ -234,45 +241,51 @@ Build the Scores Window
       scores.add(new Pair<>("Guest", 10));
       writeScores(scoresFiller);
     }
-    try{
+    try {
       FileInputStream fis = new FileInputStream(file);
       BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-      try{
+      try {
         String line;
-        while((line = br.readLine()) != null){
+        while ((line = br.readLine()) != null) {
           String[] parts = line.split(":");
-          scores.add(new Pair<>(parts[0], Integer.parseInt(parts[1])));
+          if(parts.length == 2) {
+            scores.add(new Pair<>(parts[0], Integer.parseInt(parts[1])));
+          }
+          else{
+            logger.info("Invalid line in scores file");
+          }
         }
         br.close();
-      }catch (IOException e){
-        logger.error("Error reading scores file");
+      } catch (IOException e) {
+        logger.info("Error reading scores file");
       }
-    }catch (IOException e){
-      logger.error("Error opening scores file");
+    } catch (FileNotFoundException e) {
+      logger.info("Error opening scores file");
     }
     return scores;
   }
-  public void writeScores(ArrayList<Pair<String, Integer>> scores){
+
+  public void writeScores(ArrayList<Pair<String, Integer>> scores) {
     scores.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
-    try{
-      if(new File("Scores.txt").createNewFile()){
+    try {
+      if (new File("Scores.txt").createNewFile()) {
         logger.info("Scores file created");
       }
-    }catch (IOException e){
-      logger.error("Error creating scores file");
+    } catch (IOException e) {
+      logger.info("Error creating scores file");
     }
-    try{
+    try {
       BufferedWriter writer = new BufferedWriter(new FileWriter("Scores.txt"));
-      int scoreCount =0;
-      for(Pair<String,Integer>score:scores){
-        writer.write(score.getKey() + ":" + score.getValue()+"\n");
+      int scoreCount = 0;
+      for (Pair<String, Integer> score : scores) {
+        writer.write(score.getKey() + ":" + score.getValue() + "\n");
         scoreCount++;
-        if(scoreCount > 10){
+        if (scoreCount > 9) {
           break;
         }
       }
       writer.close();
-    }catch (IOException e){
+    } catch (IOException e) {
       logger.error("Error writing scores file");
     }
   }

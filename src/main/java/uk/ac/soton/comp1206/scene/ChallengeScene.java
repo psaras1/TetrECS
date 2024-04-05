@@ -1,5 +1,11 @@
 package uk.ac.soton.comp1206.scene;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FillTransition;
@@ -17,6 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
@@ -101,6 +108,7 @@ public class ChallengeScene extends BaseScene {
     this.gameMusic.playBackgroundMusic("/music/game.wav");
 
     bindProperties();//binds the properties of the game to the UI
+    var currentHighScore = getHighScore();
 
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
     var challengePane = new StackPane();
@@ -196,6 +204,10 @@ public class ChallengeScene extends BaseScene {
     });
     var nextPieceLabel = new Text("Next Piece:");
     nextPieceLabel.getStyleClass().add("heading");
+
+    /*
+    Current High Score
+     */
 
     leftBox.getChildren().addAll(currentPieceLabel, currentPiece, nextPieceLabel, followingPiece);
 
@@ -486,6 +498,28 @@ public class ChallengeScene extends BaseScene {
           game.blockClicked(board.getBlock(coordX, coordY));
       }
     });
+  }
+  public Pair<String,Integer> getHighScore(){
+    Pair<String,Integer> highScore = new Pair<>("",0);
+    File file = new File("Scores.txt");
+    try{
+      FileInputStream fis = new FileInputStream(file);
+      BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+      try{
+        String[] parts = br.readLine().split(":");
+        if(parts.length == 2){
+          highScore = new Pair<>(parts[0], Integer.parseInt(parts[1]));
+        }
+        else{
+          logger.info("Invalid line in scores file");
+        }
+      }catch (IOException e){
+        logger.info("Error reading scores file");
+      }
+    }catch (FileNotFoundException e){
+      logger.info("Error opening scores file");
+    }
+    return highScore;
   }
 
 }
