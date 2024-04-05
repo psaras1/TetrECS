@@ -254,7 +254,7 @@ public class ChallengeScene extends BaseScene {
     AnchorPane muteButtonPane = new AnchorPane();
     muteButtonPane.getChildren().add(muteButton);
     AnchorPane.setLeftAnchor(muteButton, 5.0);
-    AnchorPane.setBottomAnchor(muteButton, 5.0);
+    AnchorPane.setBottomAnchor(muteButton, 13.0);
     muteButtonPane.setPickOnBounds(false);
     root.getChildren().add(muteButtonPane);
     muteButton.setBackground(null);

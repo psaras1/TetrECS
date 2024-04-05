@@ -262,3 +262,19 @@ TextField {
     -fx-font-family: 'PressStart2P-Regular';
     -fx-font-size: 30px;
 }
+
+.player-score{
+    -fx-fill: white;
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 18px;
+    -fx-stroke: black;
+    -fx-stroke-width: 1;
+}
+
+.player-name{
+    -fx-fill: #dcdcdc;
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 18px;
+    -fx-stroke: black;
+    -fx-stroke-width: 1;
+}

@@ -30,6 +30,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -214,11 +215,14 @@ List of scores (Observable means it can be observed for changes, have a listener
   }
 
   public void finishBuild(BorderPane mainPane) {
-    var localScores = new Text("Local Scores");
-    localScores.getStyleClass().add("heading");
-    localScores.setTextAlignment(TextAlignment.CENTER);
+//    var localScores = new Text("Local Scores");
+//    localScores.getStyleClass().add("heading");
+//    localScores.setTextAlignment(TextAlignment.CENTER);
+//
+//    Region spacer = new Region();
+//    spacer.setPrefHeight(20);
 
-    var scoreBox = new VBox(localScores, scoreList);
+    var scoreBox = new VBox(scoreList);
     scoreBox.setAlignment(Pos.CENTER);
 
     mainPane.setCenter(scoreBox);
