@@ -23,6 +23,9 @@ import javafx.util.Pair;
  * used to display the scores of the players in the game in a readable manner.
  */
 public class ScoreList extends VBox {
+  /*
+  Temporarily stores scores
+   */
 
   private SimpleListProperty<Pair<String, Integer>> scores = new SimpleListProperty<>();
   StringProperty name = new SimpleStringProperty();

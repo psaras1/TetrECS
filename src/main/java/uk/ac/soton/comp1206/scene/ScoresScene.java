@@ -48,7 +48,7 @@ public class ScoresScene extends BaseScene {
   /*
 List of scores (Observable means it can be observed for changes, have a listener attached to it)
  */
-  private ObservableList<Pair<String, Integer>> localScores = new SimpleListProperty<>();
+  private ObservableList<Pair<String, Integer>> localScoresObservable = new SimpleListProperty<>();
   /*
   Temporary score storage
    */
@@ -69,11 +69,13 @@ Online scores
   public ObservableList<Pair<String, Integer>> remoteScores = new SimpleListProperty<>();
   private final Communicator communicator;
   private final SimpleStringProperty onlineNames = new SimpleStringProperty("");
-  private ArrayList<Pair<String, Integer>> returnOnlineScores;
+  /*
+  Used to store top 10 online scores, current score is compared to these
+   */
+  private ArrayList<Pair<String, Integer>> onlineScores;
 
 
-
-  private static final Logger logger = LogManager.getLogger(InstructionsScene.class);
+  private static final Logger logger = LogManager.getLogger(ScoresScene.class);
 
   /*
   Constructor for ScoresScene
@@ -84,7 +86,7 @@ Online scores
     currentScore = game.score.get();
     logger.info("Current score: {}", currentScore);
     logger.info("Creating Scores Scene");
-    communicator = new Communicator("ws://ofb-labs.soton.ac.uk:9700");
+    communicator = gameWindow.getCommunicator();
   }
 
   /**
@@ -99,12 +101,16 @@ Online scores
     logger.info("Creating Scores Scene");
     communicator = gameWindow.getCommunicator();
   }
+
   public void loadOnlineScores(String s) {
-   remoteScoresList.getChildren().clear();
-   String[] indLines = s.split("\\R"); //line break, matches \n,\r, \r\n
+    remoteScoresList.getChildren().clear();
+   /*
+   Message from the server is split into individual lines (indLines)
+    */
+    String[] indLines = s.split("\\R"); //line break, matches \n,\r, \r\n
     ArrayList<Pair<String, Integer>> toReturn = new ArrayList<>();
 
-    for(String line : indLines) {
+    for (String line : indLines) {
       String[] parts = line.split(":");
       if (parts.length == 2) {
         toReturn.add(new Pair<>(parts[0], Integer.parseInt(parts[1])));
@@ -114,15 +120,13 @@ Online scores
     }
 
     toReturn.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
-    returnOnlineScores = toReturn;
+    onlineScores = toReturn;
     remoteScores = FXCollections.observableArrayList(toReturn);
-    SimpleListProperty<Pair<String,Integer>> remoteScoresWrapper = new SimpleListProperty<>(remoteScores);
+    SimpleListProperty<Pair<String, Integer>> remoteScoresWrapper = new SimpleListProperty<>(
+        remoteScores);
     remoteScoresList.returnScores().bind(remoteScoresWrapper);
     remoteScoresList.returnName().bind(onlineNames);
     remoteScoresList.updateList();
-
-
-
   }
 
 
@@ -152,7 +156,6 @@ Online scores
       }
     });
     communicator.send("HISCORES");
-    communicator.send("HISCORES DEFAULT");
     communicator.addListener(this::communicationListener);
   }
 
@@ -162,15 +165,15 @@ Online scores
   @Override
   public void build() {
     /*
-    Logic, load scores from file, sort them, add new score if it is a high score
+    Logic: load scores from file, sort them, add new score if it is a high score
      */
     scoresMusic.playBackgroundMusic("/music/end.wav");
-    localScores = FXCollections.observableArrayList(loadScores());
+    localScoresObservable = FXCollections.observableArrayList(loadScores());
     scoreList = new ScoreList();
     remoteScoresList = new ScoreList();
-    localScores.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+    localScoresObservable.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
     AtomicReference<SimpleListProperty<Pair<String, Integer>>> scoresWrapper = new AtomicReference<>(
-        new SimpleListProperty<>(localScores));
+        new SimpleListProperty<>(localScoresObservable));
     scoreList = new ScoreList();
     scoreList.returnScores().bind(scoresWrapper.get());
     scoreList.returnName().bind(name);
@@ -235,10 +238,10 @@ Online scores
         }
         newScores.add(new Pair<>(username, currentScore));
         writeScores(newScores);
-        localScores = FXCollections.observableArrayList(loadScores());
+        localScoresObservable = FXCollections.observableArrayList(loadScores());
         scoreList = new ScoreList();
-        localScores.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
-        scoresWrapper.set(new SimpleListProperty<>(localScores));
+        localScoresObservable.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+        scoresWrapper.set(new SimpleListProperty<>(localScoresObservable));
         scoreList = new ScoreList();
         scoreList.returnScores().bind(scoresWrapper.get());
         scoreList.returnName().bind(name);
@@ -259,7 +262,7 @@ Online scores
       submit.getStyleClass().add("option-button");
       Region spacer3 = new Region();
       spacer3.setPrefHeight(20);
-      info.getChildren().addAll(nameLabel,spacer3, submit);
+      info.getChildren().addAll(nameLabel, spacer3, submit);
       mainPane.setCenter(info);
       info.setAlignment(Pos.CENTER);
       submit.setOnMouseClicked(e -> {
@@ -268,10 +271,10 @@ Online scores
           newScores.add(score);
         }
         writeScores(newScores);
-        localScores = FXCollections.observableArrayList(loadScores());
+        localScoresObservable = FXCollections.observableArrayList(loadScores());
         scoreList = new ScoreList();
-        localScores.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
-        scoresWrapper.set(new SimpleListProperty<>(localScores));
+        localScoresObservable.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+        scoresWrapper.set(new SimpleListProperty<>(localScoresObservable));
         scoreList = new ScoreList();
         scoreList.returnScores().bind(scoresWrapper.get());
         scoreList.returnName().bind(name);
@@ -289,13 +292,14 @@ Online scores
    */
   public void finishBuild(BorderPane mainPane) {
     Boolean worthy = false;
-    for (Pair<String, Integer> score : returnOnlineScores) {
+    for (Pair<String, Integer> score : onlineScores) {
       if (currentScore > score.getValue()) {
         worthy = true;
       }
     }
-    if(worthy){
-      writeOnlineScore(username,currentScore);
+    if (worthy) {
+      logger.info("Worthy score{}", currentScore);
+      writeOnlineScore(username, currentScore);
     }
     /*
     Local scores
@@ -306,17 +310,17 @@ Online scores
     scoreBoxLocalLabel.getStyleClass().add("heading");
     var scoreBoxLocal = new VBox();
     scoreBoxLocal.setAlignment(Pos.CENTER);
-    scoreBoxLocal.getChildren().addAll(scoreBoxLocalLabel,spacer,scoreList);
-/*
-Remote scores
- */
+    scoreBoxLocal.getChildren().addAll(scoreBoxLocalLabel, spacer, scoreList);
+  /*
+  Remote scores
+   */
     var scoreBoxRemoteLabel = new Text("Remote Scores");
     Region spacer1 = new Region();
     spacer1.setPrefHeight(20);
     scoreBoxRemoteLabel.getStyleClass().add("heading");
     var scoreBoxRemote = new VBox();
     scoreBoxRemote.setAlignment(Pos.CENTER);
-    scoreBoxRemote.getChildren().addAll(scoreBoxRemoteLabel,spacer1,remoteScoresList);
+    scoreBoxRemote.getChildren().addAll(scoreBoxRemoteLabel, spacer1, remoteScoresList);
     /*
     Scores container
      */
@@ -402,6 +406,13 @@ Remote scores
       logger.error("Error writing scores file");
     }
   }
+
+  /**
+   * Listener for communication with the server
+   * Takes in a string, splits it into parts, checks if the command is HISCORES
+   * If it is, loads the online scores(calls loadOnlineScores())
+   * @param s
+   */
   public void communicationListener(String s) {
     String[] parts = s.split(" ", 2);
     String command = parts[0];
@@ -413,8 +424,14 @@ Remote scores
       }
     }
   }
-  public void writeOnlineScore(String name,Integer score){
-    returnOnlineScores.add(0, new Pair<String,Integer>(name, score));
+
+  /**
+   * Called when a score is achieved > than the top 10 online scores from the server
+   * @param name
+   * @param score
+   */
+  public void writeOnlineScore(String name, Integer score) {
+    onlineScores.add(0, new Pair<String, Integer>(name, score));
     communicator.send("HISCORE " + name + ":" + score);
   }
 }
