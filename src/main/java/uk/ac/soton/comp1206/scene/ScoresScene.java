@@ -17,10 +17,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -29,6 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.ScoreList;
 import uk.ac.soton.comp1206.game.Game;
+import uk.ac.soton.comp1206.game.Multimedia;
 import uk.ac.soton.comp1206.network.Communicator;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -42,6 +43,7 @@ public class ScoresScene extends BaseScene {
    */
 
   private Game game;
+  private Multimedia scoresMusic = new Multimedia();
 
   /*
 List of scores (Observable means it can be observed for changes, have a listener attached to it)
@@ -134,6 +136,7 @@ Online scores
 
   @Override
   public void initialise() {
+
     logger.info("Initialising " + this.getClass().getName());
     /*
     Return to menu on escape pressed
@@ -144,10 +147,12 @@ Online scores
         case ESCAPE:
           logger.info("Escape pressed, returning to menu");
           gameWindow.startMenu();
+          scoresMusic.stopBackgroundMusic();
           break;
       }
     });
     communicator.send("HISCORES");
+    communicator.send("HISCORES DEFAULT");
     communicator.addListener(this::communicationListener);
   }
 
@@ -159,6 +164,7 @@ Online scores
     /*
     Logic, load scores from file, sort them, add new score if it is a high score
      */
+    scoresMusic.playBackgroundMusic("/music/end.wav");
     localScores = FXCollections.observableArrayList(loadScores());
     scoreList = new ScoreList();
     remoteScoresList = new ScoreList();
@@ -214,11 +220,13 @@ Online scores
     }
     if (newHS) {
       var nameLabel = new Text("Enter your name: ");
-      nameLabel.getStyleClass().add("heading");
+      nameLabel.getStyleClass().add("option3-button");
       TextField nameField = new TextField();
+      nameField.setMaxWidth(gameWindow.getWidth() - 100);
 
       var display = new VBox();
-      var submit = new Button("Submit");
+      var submit = new Text("Submit");
+      submit.getStyleClass().add("option-button");
       submit.setOnMouseClicked(e -> {
         username = nameField.getText();
         ArrayList<Pair<String, Integer>> newScores = new ArrayList<>();
@@ -239,17 +247,19 @@ Online scores
 
       });
       display.getChildren().addAll(nameLabel, nameField, submit);
-      display.setPadding(new Insets(30));
+      display.setSpacing(20);
       mainPane.setCenter(display);
       display.setAlignment(Pos.CENTER);
 
     } else {
       var nameLabel = new Text("Your score: " + currentScore);
-      nameLabel.getStyleClass().add("heading");
+      nameLabel.getStyleClass().add("option3-button");
       var info = new VBox();
       Text submit = new Text("Proceed");
       submit.getStyleClass().add("option-button");
-      info.getChildren().addAll(nameLabel, submit);
+      Region spacer3 = new Region();
+      spacer3.setPrefHeight(20);
+      info.getChildren().addAll(nameLabel,spacer3, submit);
       mainPane.setCenter(info);
       info.setAlignment(Pos.CENTER);
       submit.setOnMouseClicked(e -> {
@@ -285,22 +295,35 @@ Online scores
       }
     }
     if(worthy){
-      returnOnlineScores.add(0, new Pair<>(username, currentScore));
-      communicator.send("HISCORES " + username + ":" + currentScore);
+      writeOnlineScore(username,currentScore);
     }
+    /*
+    Local scores
+     */
     var scoreBoxLocalLabel = new Text("Local Scores");
+    Region spacer = new Region();
+    spacer.setPrefHeight(20);
     scoreBoxLocalLabel.getStyleClass().add("heading");
     var scoreBoxLocal = new VBox();
     scoreBoxLocal.setAlignment(Pos.CENTER);
-    scoreBoxLocal.getChildren().addAll(scoreBoxLocalLabel,scoreList);
-    mainPane.setLeft(scoreBoxLocal);
-
+    scoreBoxLocal.getChildren().addAll(scoreBoxLocalLabel,spacer,scoreList);
+/*
+Remote scores
+ */
     var scoreBoxRemoteLabel = new Text("Remote Scores");
+    Region spacer1 = new Region();
+    spacer1.setPrefHeight(20);
     scoreBoxRemoteLabel.getStyleClass().add("heading");
     var scoreBoxRemote = new VBox();
     scoreBoxRemote.setAlignment(Pos.CENTER);
-    scoreBoxRemote.getChildren().addAll(scoreBoxRemoteLabel,remoteScoresList);
-    mainPane.setRight(scoreBoxRemote);
+    scoreBoxRemote.getChildren().addAll(scoreBoxRemoteLabel,spacer1,remoteScoresList);
+    /*
+    Scores container
+     */
+    var centralBox = new HBox();
+    centralBox.setAlignment(Pos.CENTER);
+    centralBox.getChildren().addAll(scoreBoxLocal, scoreBoxRemote);
+    mainPane.setCenter(centralBox);
   }
 
   /**
@@ -389,5 +412,9 @@ Online scores
         loadOnlineScores(scores);
       }
     }
+  }
+  public void writeOnlineScore(String name,Integer score){
+    returnOnlineScores.add(0, new Pair<String,Integer>(name, score));
+    communicator.send("HISCORE " + name + ":" + score);
   }
 }

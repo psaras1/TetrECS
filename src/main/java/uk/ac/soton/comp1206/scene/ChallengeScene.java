@@ -67,7 +67,7 @@ public class ChallengeScene extends BaseScene {
   private PieceBoard currentPiece, followingPiece;
   private Image muteImage = new Image(getClass().getResource("/images/mute.png").toString());
   private Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
-  private ImageView muteImageView = new ImageView(muteImage);
+  private ImageView muteImageView = new ImageView(unmuteImage);
   private Button muteButton = new Button("", muteImageView);
 
   private int coordX = 0, coordY = 0;
@@ -264,10 +264,10 @@ public class ChallengeScene extends BaseScene {
     muteButton.setOnMouseClicked(actionEvent -> {
       if (!gameMusic.isPlaying()) {
         gameMusic.playBackgroundMusic("/music/game.wav");
-        muteImageView.setImage(muteImage);
+        muteImageView.setImage(unmuteImage);
       } else {
         gameMusic.stopBackgroundMusic();
-        muteImageView.setImage(unmuteImage);
+        muteImageView.setImage(muteImage);
       }
     });
 
@@ -438,10 +438,10 @@ public class ChallengeScene extends BaseScene {
         case M:
           if (!gameMusic.isPlaying()) {
             gameMusic.playBackgroundMusic("/music/game.wav");
-            muteImageView.setImage(muteImage);
+            muteImageView.setImage(unmuteImage);
           } else {
             gameMusic.stopBackgroundMusic();
-            muteImageView.setImage(unmuteImage);
+            muteImageView.setImage(muteImage);
           }
           break;
         case CLOSE_BRACKET, E, C:

@@ -24,7 +24,7 @@ public class MenuScene extends BaseScene {
     private Multimedia transitionSound = new Multimedia();
     public Image muteImage = new Image(getClass().getResource("/images/mute.png").toString());
     public Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
-    public ImageView muteImageView = new ImageView(muteImage);
+    public ImageView muteImageView = new ImageView(unmuteImage);
 
     /**
      * Create a new menu scene
@@ -134,10 +134,10 @@ public class MenuScene extends BaseScene {
         muteButton.setOnMouseClicked(actionEvent -> {
             if(!menuMusic.isPlaying()){
                 menuMusic.playBackgroundMusic("/music/menu.mp3");
-                muteImageView.setImage(muteImage);
+                muteImageView.setImage(unmuteImage);
             }else{
                 menuMusic.stopBackgroundMusic();
-                muteImageView.setImage(unmuteImage);
+                muteImageView.setImage(muteImage);
             }
         });
         root.getChildren().add(muteButtonPane);
@@ -164,10 +164,10 @@ public class MenuScene extends BaseScene {
                 case M :
                     if(!menuMusic.isPlaying()){
                         menuMusic.playBackgroundMusic("/music/menu.mp3");
-                        muteImageView.setImage(muteImage);
+                        muteImageView.setImage(unmuteImage);
                     }else{
                         menuMusic.stopBackgroundMusic();
-                        muteImageView.setImage(unmuteImage);
+                        muteImageView.setImage(muteImage);
                     }
                     break;
             }
