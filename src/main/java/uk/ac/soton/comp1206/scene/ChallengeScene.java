@@ -395,7 +395,7 @@ public class ChallengeScene extends BaseScene {
 
   /**
    * Update the high score
-   
+
    * Called in the initialise method
    * Added a listener to the score, so whenever it changes updateHighScore is called
    * @param observable
