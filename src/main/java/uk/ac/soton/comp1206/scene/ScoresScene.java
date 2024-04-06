@@ -29,6 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.ScoreList;
 import uk.ac.soton.comp1206.game.Game;
+import uk.ac.soton.comp1206.network.Communicator;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -57,8 +58,17 @@ List of scores (Observable means it can be observed for changes, have a listener
   /*
   Stored as a pair
    */
-  Integer currentScore;
-  String username;
+  private Integer currentScore;
+  private String username;
+  /*
+Online scores
+   */
+  private ScoreList remoteScoresList;
+  public ObservableList<Pair<String, Integer>> remoteScores = new SimpleListProperty<>();
+  private final Communicator communicator;
+  private final SimpleStringProperty onlineNames = new SimpleStringProperty("");
+  private ArrayList<Pair<String, Integer>> returnOnlineScores;
+
 
 
   private static final Logger logger = LogManager.getLogger(InstructionsScene.class);
@@ -72,6 +82,7 @@ List of scores (Observable means it can be observed for changes, have a listener
     currentScore = game.score.get();
     logger.info("Current score: {}", currentScore);
     logger.info("Creating Scores Scene");
+    communicator = new Communicator("ws://ofb-labs.soton.ac.uk:9700");
   }
 
   /**
@@ -84,6 +95,32 @@ List of scores (Observable means it can be observed for changes, have a listener
   public ScoresScene(GameWindow gameWindow) {
     super(gameWindow);
     logger.info("Creating Scores Scene");
+    communicator = gameWindow.getCommunicator();
+  }
+  public void loadOnlineScores(String s) {
+   remoteScoresList.getChildren().clear();
+   String[] indLines = s.split("\\R"); //line break, matches \n,\r, \r\n
+    ArrayList<Pair<String, Integer>> toReturn = new ArrayList<>();
+
+    for(String line : indLines) {
+      String[] parts = line.split(":");
+      if (parts.length == 2) {
+        toReturn.add(new Pair<>(parts[0], Integer.parseInt(parts[1])));
+      } else {
+        logger.info("Invalid line in scores file");
+      }
+    }
+
+    toReturn.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+    returnOnlineScores = toReturn;
+    remoteScores = FXCollections.observableArrayList(toReturn);
+    SimpleListProperty<Pair<String,Integer>> remoteScoresWrapper = new SimpleListProperty<>(remoteScores);
+    remoteScoresList.returnScores().bind(remoteScoresWrapper);
+    remoteScoresList.returnName().bind(onlineNames);
+    remoteScoresList.updateList();
+
+
+
   }
 
 
@@ -110,6 +147,8 @@ List of scores (Observable means it can be observed for changes, have a listener
           break;
       }
     });
+    communicator.send("HISCORES");
+    communicator.addListener(this::communicationListener);
   }
 
   /*
@@ -122,6 +161,7 @@ List of scores (Observable means it can be observed for changes, have a listener
      */
     localScores = FXCollections.observableArrayList(loadScores());
     scoreList = new ScoreList();
+    remoteScoresList = new ScoreList();
     localScores.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
     AtomicReference<SimpleListProperty<Pair<String, Integer>>> scoresWrapper = new AtomicReference<>(
         new SimpleListProperty<>(localScores));
@@ -238,9 +278,29 @@ List of scores (Observable means it can be observed for changes, have a listener
    * @param mainPane
    */
   public void finishBuild(BorderPane mainPane) {
-    var scoreBox = new VBox(scoreList);
-    scoreBox.setAlignment(Pos.CENTER);
-    mainPane.setCenter(scoreBox);
+    Boolean worthy = false;
+    for (Pair<String, Integer> score : returnOnlineScores) {
+      if (currentScore > score.getValue()) {
+        worthy = true;
+      }
+    }
+    if(worthy){
+      returnOnlineScores.add(0, new Pair<>(username, currentScore));
+      communicator.send("HISCORES " + username + ":" + currentScore);
+    }
+    var scoreBoxLocalLabel = new Text("Local Scores");
+    scoreBoxLocalLabel.getStyleClass().add("heading");
+    var scoreBoxLocal = new VBox();
+    scoreBoxLocal.setAlignment(Pos.CENTER);
+    scoreBoxLocal.getChildren().addAll(scoreBoxLocalLabel,scoreList);
+    mainPane.setLeft(scoreBoxLocal);
+
+    var scoreBoxRemoteLabel = new Text("Remote Scores");
+    scoreBoxRemoteLabel.getStyleClass().add("heading");
+    var scoreBoxRemote = new VBox();
+    scoreBoxRemote.setAlignment(Pos.CENTER);
+    scoreBoxRemote.getChildren().addAll(scoreBoxRemoteLabel,remoteScoresList);
+    mainPane.setRight(scoreBoxRemote);
   }
 
   /**
@@ -319,5 +379,15 @@ List of scores (Observable means it can be observed for changes, have a listener
       logger.error("Error writing scores file");
     }
   }
+  public void communicationListener(String s) {
+    String[] parts = s.split(" ", 2);
+    String command = parts[0];
 
+    if (command.equals("HISCORES")) {
+      if (parts.length > 1) {
+        String scores = parts[1];
+        loadOnlineScores(scores);
+      }
+    }
+  }
 }

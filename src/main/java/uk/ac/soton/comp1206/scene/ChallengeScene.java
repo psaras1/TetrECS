@@ -74,7 +74,7 @@ public class ChallengeScene extends BaseScene {
   private boolean mouseMode;
   private GameBoard board;
   private GameBlock keyboardSelectedBlock = null;
-  //haldad
+  /* Holds the high score */
   private IntegerProperty highScore = new SimpleIntegerProperty();
 
 
@@ -109,11 +109,11 @@ public class ChallengeScene extends BaseScene {
   public void build() {
     logger.info("Building " + this.getClass().getName());
     setupGame();
-    // Implement background music in the game scene
+    /*Implement background music in the game scene*/
     this.gameMusic.playBackgroundMusic("/music/game.wav");
 
-    bindProperties();//binds the properties of the game to the UI
-//    var currentHighScore = getHighScore();
+    /*binds the properties of the game to the UI*/
+    bindProperties();
 
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
     var challengePane = new StackPane();
@@ -125,7 +125,7 @@ public class ChallengeScene extends BaseScene {
     var mainPane = new BorderPane();
 
     /*top*/
-    //title
+    /*title*/
     var title = new Text("TetrECS");
     title.getStyleClass().add("bigtitle");
     var topBox = new HBox();
@@ -140,7 +140,7 @@ public class ChallengeScene extends BaseScene {
     rightBox.setPadding(new Insets(0, 15, 0, 0));
     mainPane.setRight(rightBox);
 
-    //score
+    /*score*/
     var scoreBox = new VBox();
     scoreBox.setAlignment(Pos.CENTER);
     var scoreTitle = new Text("Score:");
@@ -148,7 +148,7 @@ public class ChallengeScene extends BaseScene {
     scoreLabel.getStyleClass().add("score");
     scoreBox.getChildren().addAll(scoreTitle, scoreLabel);
 
-    //level
+    /*level*/
     var levelBox = new VBox();
     levelBox.setAlignment(Pos.CENTER);
     var levelTitle = new Text("Level:");
@@ -156,33 +156,31 @@ public class ChallengeScene extends BaseScene {
     levelLabel.getStyleClass().add("level");
     levelBox.getChildren().addAll(levelTitle, levelLabel);
 
-    //lives
+    /*lives*/
     var livesBox = new VBox();
     livesBox.setAlignment(Pos.CENTER);
     var livesTitle = new Text("Lives:");
     livesTitle.getStyleClass().add("heading");
-    //initial style of livesLabel
+    /*initial style of lives label*/
     livesLabel.getStyleClass().add("lives");
     livesLabel.styleProperty().setValue("-fx-fill: green;");
     /*
     add listener to livesLabel to change style based on the number of lives(dynamically)
      */
     game.getLives().addListener((obs, oldVal, newVal) -> {
-      //remove previously added style classes
+      /*remove previously added styles*/
       livesLabel.getStyleClass().clear();
       updateLivesLabel(newVal.intValue());
     });
     livesBox.getChildren().addAll(livesTitle, livesLabel);
 
-    //multiplier
+    /*multiplier*/
     var multiplierBox = new VBox();
     multiplierBox.setAlignment(Pos.CENTER);
     var multiplierTitle = new Text("Multiplier:");
     multiplierTitle.getStyleClass().add("heading");
     multiplierLabel.getStyleClass().add("level");
     multiplierBox.getChildren().addAll(multiplierTitle, multiplierLabel);
-
-    //add everything to the topBox
     rightBox.getChildren().addAll(scoreBox, livesBox, levelBox, multiplierBox);
 
     /*left*/
@@ -217,6 +215,7 @@ public class ChallengeScene extends BaseScene {
     highScoreLabel.getStyleClass().add("hiscore");
     var highScoreVal = new Text();
     highScoreVal.getStyleClass().add("hiscore");
+    /*Text object binded to highScore property*/
     highScoreVal.textProperty().bind(highScore.asString());
 
     Region spacing = new Region();
@@ -385,6 +384,7 @@ public class ChallengeScene extends BaseScene {
       gameWindow.showScores(game);
     });
     game.start();
+    /*Attatching a listener to the score variable of the game instance, call updateHighScore whenever it changes*/
     game.score.addListener(this::updateHighScore);
     highScore.set(getHighScore().getValue());
     gameLoopAnimation();
@@ -529,6 +529,12 @@ public class ChallengeScene extends BaseScene {
       }
     });
   }
+
+  /**
+   * Get the high score from the first line of the Scores.txt file
+   * (Line 0 stores the highest score, as it's sorted)
+   * @return
+   */
   public Pair<String,Integer> getHighScore(){
     Pair<String,Integer> highScore = new Pair<>("",0);
     File file = new File("Scores.txt");
