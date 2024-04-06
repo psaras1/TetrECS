@@ -13,6 +13,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -71,6 +74,8 @@ public class ChallengeScene extends BaseScene {
   private boolean mouseMode;
   private GameBoard board;
   private GameBlock keyboardSelectedBlock = null;
+  //haldad
+  private IntegerProperty highScore = new SimpleIntegerProperty();
 
 
   /**
@@ -108,7 +113,7 @@ public class ChallengeScene extends BaseScene {
     this.gameMusic.playBackgroundMusic("/music/game.wav");
 
     bindProperties();//binds the properties of the game to the UI
-    var currentHighScore = getHighScore();
+//    var currentHighScore = getHighScore();
 
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
     var challengePane = new StackPane();
@@ -208,18 +213,17 @@ public class ChallengeScene extends BaseScene {
     /*
     Current High Score
      */
-    var score = currentHighScore.getValue();
-    var name = currentHighScore.getKey();
-    var highScoreLabel = new Text("High Score: ");
-    var highScore = new Text(score + " by " + name);
-    highScore.getStyleClass().add("heading");
-    highScoreLabel.getStyleClass().add("heading");
+    var highScoreLabel = new Text("High Score:");
+    highScoreLabel.getStyleClass().add("hiscore");
+    var highScoreVal = new Text();
+    highScoreVal.getStyleClass().add("hiscore");
+    highScoreVal.textProperty().bind(highScore.asString());
 
     Region spacing = new Region();
     spacing.setPrefHeight(50);
 
     leftBox.getChildren().addAll(currentPieceLabel, currentPiece, nextPieceLabel, followingPiece,spacing,
-        highScoreLabel, highScore);
+        highScoreLabel, highScoreVal);
 
     /*botom*/
     /*
@@ -381,9 +385,26 @@ public class ChallengeScene extends BaseScene {
       gameWindow.showScores(game);
     });
     game.start();
+    game.score.addListener(this::updateHighScore);
+    highScore.set(getHighScore().getValue());
     gameLoopAnimation();
     keyboardControls();
 
+  }
+
+  /**
+   * Update the high score
+   * Called in the initialise method
+   * Added a listener to the score, so whenever it changes updateHighScore is called
+   * @param observable
+   * @param oldValue
+   * @param newValue
+   */
+  public void updateHighScore(ObservableValue<? extends Number> observable, Number oldValue, Number newValue){
+    if(newValue.intValue() > highScore.get()){
+      highScore.set(newValue.intValue());
+      logger.info("High Score updated to: {}", newValue.intValue());
+    }
   }
 
   /**

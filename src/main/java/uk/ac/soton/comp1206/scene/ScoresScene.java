@@ -198,8 +198,8 @@ List of scores (Observable means it can be observed for changes, have a listener
         finishBuild(mainPane);
 
       });
-      display.setPadding(new Insets(10));
       display.getChildren().addAll(nameLabel, nameField, submit);
+      display.setPadding(new Insets(30));
       mainPane.setCenter(display);
       display.setAlignment(Pos.CENTER);
 
