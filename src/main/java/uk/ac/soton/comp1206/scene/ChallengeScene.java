@@ -381,6 +381,7 @@ public class ChallengeScene extends BaseScene {
     game.setOnGameEnd(() -> {
       logger.info("Game over");
       game.endTimer();
+      gameMusic.stopBackgroundMusic();
       gameWindow.showScores(game);
     });
     game.start();
@@ -394,6 +395,7 @@ public class ChallengeScene extends BaseScene {
 
   /**
    * Update the high score
+   
    * Called in the initialise method
    * Added a listener to the score, so whenever it changes updateHighScore is called
    * @param observable
