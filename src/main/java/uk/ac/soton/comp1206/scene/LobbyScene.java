@@ -66,14 +66,16 @@ public class LobbyScene extends BaseScene {
     root.getChildren().add(menuPane);
 
     mainPane = new BorderPane();
+    mainPane.setMaxWidth(gameWindow.getWidth()-25);
+    mainPane.setMaxHeight(gameWindow.getHeight()-25);
     menuPane.getChildren().add(mainPane);
 
     var createLobby = new Text("Create Lobby");
-    buttons = new VBox(createLobby);
+    buttons = new VBox();
     createLobby.getStyleClass().add("option-button");
     var channeLabel = new Text("Channels: ");
     channeLabel.getStyleClass().add("option3-button");
-    buttons.getChildren().add(channeLabel);
+    buttons.getChildren().addAll(createLobby,channeLabel);
     buttons.setMinWidth(gameWindow.getWidth()/2);
 //    createLobby.setTextAlignment(Pos.TOP_LEFT);
     mainPane.getChildren().add(buttons);
@@ -109,6 +111,7 @@ public class LobbyScene extends BaseScene {
     channelList.setAlignment(Pos.BOTTOM_LEFT);
     String[] channelArray = data.split("\\R");
     channels.addAll(Arrays.asList(channelArray));
+    channelList.setPadding(new javafx.geometry.Insets(100,0,0,0));
     mainPane.setLeft(channelList);
     for(String channel : channels){
       var channelID = new Text(channel);

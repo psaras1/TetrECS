@@ -387,7 +387,7 @@ public class ChallengeScene extends BaseScene {
     game.start();
     /*Attatching a listener to the score variable of the game instance, call updateHighScore whenever it changes*/
     game.score.addListener(this::updateHighScore);
-    highScore.set(getHighScore().getValue());
+    highScore.set(ScoresScene.loadScores().get(0).getValue());
     gameLoopAnimation();
     keyboardControls();
 

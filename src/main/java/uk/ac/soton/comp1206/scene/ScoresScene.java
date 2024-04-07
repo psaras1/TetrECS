@@ -49,6 +49,12 @@ public class ScoresScene extends BaseScene {
 List of scores (Observable means it can be observed for changes, have a listener attached to it)
  */
   private ObservableList<Pair<String, Integer>> localScoresObservable = new SimpleListProperty<>();
+  private AtomicReference<SimpleListProperty<Pair<String, Integer>>> scoresWrapper = new AtomicReference<>(
+      new SimpleListProperty<>(localScoresObservable));
+  private TextField nameField = new TextField();
+  private VBox display = new VBox();
+  private BorderPane mainPane = new BorderPane();
+
   /*
   Temporary score storage
    */
@@ -172,8 +178,6 @@ Online scores
     scoreList = new ScoreList();
     remoteScoresList = new ScoreList();
     localScoresObservable.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
-    AtomicReference<SimpleListProperty<Pair<String, Integer>>> scoresWrapper = new AtomicReference<>(
-        new SimpleListProperty<>(localScoresObservable));
     scoreList = new ScoreList();
     scoreList.returnScores().bind(scoresWrapper.get());
     scoreList.returnName().bind(name);
@@ -190,8 +194,6 @@ Online scores
     scorePane.setMaxHeight(gameWindow.getHeight());
     scorePane.getStyleClass().add("menu-background");
     root.getChildren().add(scorePane);
-
-    var mainPane = new BorderPane();
     scorePane.getChildren().add(mainPane);
 
     /*
@@ -224,31 +226,13 @@ Online scores
     if (newHS) {
       var nameLabel = new Text("Enter your name: ");
       nameLabel.getStyleClass().add("option3-button");
-      TextField nameField = new TextField();
+
       nameField.setMaxWidth(gameWindow.getWidth() - 100);
 
-      var display = new VBox();
       var submit = new Text("Submit");
       submit.getStyleClass().add("option-button");
-      submit.setOnMouseClicked(e -> {
-        username = nameField.getText();
-        ArrayList<Pair<String, Integer>> newScores = new ArrayList<>();
-        for (Pair<String, Integer> score : scoreList.returnScores()) {
-          newScores.add(score);
-        }
-        newScores.add(new Pair<>(username, currentScore));
-        writeScores(newScores);
-        localScoresObservable = FXCollections.observableArrayList(loadScores());
-        scoreList = new ScoreList();
-        localScoresObservable.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
-        scoresWrapper.set(new SimpleListProperty<>(localScoresObservable));
-        scoreList = new ScoreList();
-        scoreList.returnScores().bind(scoresWrapper.get());
-        scoreList.returnName().bind(name);
-        display.getChildren().clear();
-        finishBuild(mainPane);
-
-      });
+      submit.setOnMouseClicked(e -> submitUsername());
+      nameField.setOnAction(e -> submitUsername());
       display.getChildren().addAll(nameLabel, nameField, submit);
       display.setSpacing(20);
       mainPane.setCenter(display);
@@ -283,6 +267,26 @@ Online scores
       });
 
     }
+  }
+
+  public void submitUsername() {
+    username = nameField.getText();
+    ArrayList<Pair<String, Integer>> newScores = new ArrayList<>();
+    for (Pair<String, Integer> score : scoreList.returnScores()) {
+      newScores.add(score);
+    }
+    newScores.add(new Pair<>(username, currentScore));
+    writeScores(newScores);
+    localScoresObservable = FXCollections.observableArrayList(loadScores());
+    scoreList = new ScoreList();
+    localScoresObservable.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+    scoresWrapper.set(new SimpleListProperty<>(localScoresObservable));
+    scoreList = new ScoreList();
+    scoreList.returnScores().bind(scoresWrapper.get());
+    scoreList.returnName().bind(name);
+    display.getChildren().clear();
+    finishBuild(mainPane);
+
   }
 
   /**
@@ -337,10 +341,11 @@ Online scores
    *
    * @return
    */
-  public ArrayList<Pair<String, Integer>> loadScores() {
+  public static ArrayList<Pair<String, Integer>> loadScores() {
     ArrayList<Pair<String, Integer>> scores = new ArrayList<>();
     File file = new File("Scores.txt");
     if (!file.exists()) {
+      logger.info("Scores file does not exist, creating new file");
       ArrayList<Pair<String, Integer>> scoresFiller = new ArrayList<>();
       scores.add(new Pair<>("Guest", 300));
       scores.add(new Pair<>("Guest", 250));
@@ -361,11 +366,7 @@ Online scores
         String line;
         while ((line = br.readLine()) != null) {
           String[] parts = line.split(":");
-          if (parts.length == 2) {
             scores.add(new Pair<>(parts[0], Integer.parseInt(parts[1])));
-          } else {
-            logger.info("Invalid line in scores file");
-          }
         }
         br.close();
       } catch (IOException e) {
@@ -382,7 +383,7 @@ Online scores
    *
    * @param scores
    */
-  public void writeScores(ArrayList<Pair<String, Integer>> scores) {
+  public static void writeScores(ArrayList<Pair<String, Integer>> scores) {
     scores.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
     try {
       if (new File("Scores.txt").createNewFile()) {
