@@ -96,6 +96,13 @@ public class MenuScene extends BaseScene {
         /*
         *Multiplayer button
          */
+        var multiplayerButton = new Text("Multiplayer");
+        multiplayerButton.getStyleClass().add("option-button");
+        multiplayerButton.setOnMouseClicked(e->{
+            menuMusic.stopBackgroundMusic();
+            transitionSound.playAudio("/sounds/transition.wav");
+            gameWindow.loadScene(new LobbyScene(gameWindow));
+        });
 
         /*
         *Chat button
@@ -115,7 +122,7 @@ public class MenuScene extends BaseScene {
         *Button container
          */
         var buttonContainer = new VBox();
-        buttonContainer.getChildren().addAll(playButton, instructionsButton, scoresButton);
+        buttonContainer.getChildren().addAll(playButton, instructionsButton, scoresButton, multiplayerButton);
         buttonContainer.setAlignment(Pos.CENTER);
         buttonContainer.setSpacing(20);
         mainPane.setCenter(buttonContainer);
