@@ -8,7 +8,11 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -49,8 +53,7 @@ public class ScoresScene extends BaseScene {
 List of scores (Observable means it can be observed for changes, have a listener attached to it)
  */
   private ObservableList<Pair<String, Integer>> localScoresObservable = new SimpleListProperty<>();
-  private AtomicReference<SimpleListProperty<Pair<String, Integer>>> scoresWrapper = new AtomicReference<>(
-      new SimpleListProperty<>(localScoresObservable));
+
   private TextField nameField = new TextField();
   private VBox display = new VBox();
   private BorderPane mainPane = new BorderPane();
@@ -148,6 +151,10 @@ Online scores
   public void initialise() {
 
     logger.info("Initialising " + this.getClass().getName());
+    remoteScoresList = new ScoreList();
+    communicator.addListener(this::communicationListener);
+    communicator.send("HISCORE "+"bobTest:"+"55000");
+    communicator.send("HISCORES");
     /*
     Return to menu on escape pressed
      */
@@ -161,8 +168,6 @@ Online scores
           break;
       }
     });
-    communicator.send("HISCORES");
-    communicator.addListener(this::communicationListener);
   }
 
   /*
@@ -176,8 +181,9 @@ Online scores
     scoresMusic.playBackgroundMusic("/music/end.wav");
     localScoresObservable = FXCollections.observableArrayList(loadScores());
     scoreList = new ScoreList();
-    remoteScoresList = new ScoreList();
     localScoresObservable.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+    AtomicReference<SimpleListProperty<Pair<String, Integer>>> scoresWrapper = new AtomicReference<>(
+        new SimpleListProperty<>(localScoresObservable));
     scoreList = new ScoreList();
     scoreList.returnScores().bind(scoresWrapper.get());
     scoreList.returnName().bind(name);
@@ -231,8 +237,24 @@ Online scores
 
       var submit = new Text("Submit");
       submit.getStyleClass().add("option-button");
-      submit.setOnMouseClicked(e -> submitUsername());
-      nameField.setOnAction(e -> submitUsername());
+      submit.setOnMouseClicked(e->{
+        username = nameField.getText();
+        ArrayList<Pair<String, Integer>> newScores = new ArrayList<>();
+        for (Pair<String, Integer> score : scoreList.returnScores()) {
+          newScores.add(score);
+        }
+        newScores.add(new Pair<>(username, currentScore));
+        writeScores(newScores);
+        localScoresObservable = FXCollections.observableArrayList(loadScores());
+        scoreList = new ScoreList();
+        localScoresObservable.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+        scoresWrapper.set(new SimpleListProperty<>(localScoresObservable));
+        scoreList = new ScoreList();
+        scoreList.returnScores().bind(scoresWrapper.get());
+        scoreList.returnName().bind(name);
+        display.getChildren().clear();
+        finishBuild(mainPane);
+      });
       display.getChildren().addAll(nameLabel, nameField, submit);
       display.setSpacing(20);
       mainPane.setCenter(display);
@@ -270,22 +292,7 @@ Online scores
   }
 
   public void submitUsername() {
-    username = nameField.getText();
-    ArrayList<Pair<String, Integer>> newScores = new ArrayList<>();
-    for (Pair<String, Integer> score : scoreList.returnScores()) {
-      newScores.add(score);
-    }
-    newScores.add(new Pair<>(username, currentScore));
-    writeScores(newScores);
-    localScoresObservable = FXCollections.observableArrayList(loadScores());
-    scoreList = new ScoreList();
-    localScoresObservable.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
-    scoresWrapper.set(new SimpleListProperty<>(localScoresObservable));
-    scoreList = new ScoreList();
-    scoreList.returnScores().bind(scoresWrapper.get());
-    scoreList.returnName().bind(name);
-    display.getChildren().clear();
-    finishBuild(mainPane);
+
 
   }
 
@@ -303,7 +310,8 @@ Online scores
     }
     if (worthy) {
       logger.info("Worthy score{}", currentScore);
-      writeOnlineScore(username, currentScore);
+      onlineScores.add(0, new Pair<>(username, currentScore));
+      communicator.send("HISCORE " + username + ":" + currentScore);
     }
     /*
     Local scores
@@ -347,16 +355,10 @@ Online scores
     if (!file.exists()) {
       logger.info("Scores file does not exist, creating new file");
       ArrayList<Pair<String, Integer>> scoresFiller = new ArrayList<>();
-      scores.add(new Pair<>("Guest", 300));
-      scores.add(new Pair<>("Guest", 250));
-      scores.add(new Pair<>("Guest", 200));
-      scores.add(new Pair<>("Guest: ", 150));
-      scores.add(new Pair<>("Guest", 100));
-      scores.add(new Pair<>("Guest", 50));
-      scores.add(new Pair<>("Guest", 40));
-      scores.add(new Pair<>("Guest", 30));
-      scores.add(new Pair<>("Guest", 20));
-      scores.add(new Pair<>("Guest", 10));
+      for(int i=0;i<10;i++){
+        scoresFiller.add(new Pair<>("Guest", i*100));
+      }
+      logger.info("Number of scores: {}", scoresFiller.size());
       writeScores(scoresFiller);
     }
     try {
@@ -365,25 +367,30 @@ Online scores
       try {
         String line;
         while ((line = br.readLine()) != null) {
-          String[] parts = line.split(":");
+            String[] parts = line.split(":");
+          if (parts.length == 2) {
             scores.add(new Pair<>(parts[0], Integer.parseInt(parts[1])));
+          }
         }
         br.close();
       } catch (IOException e) {
+        e.printStackTrace();
         logger.info("Error reading scores file");
       }
     } catch (FileNotFoundException e) {
+      e.printStackTrace();
       logger.info("Error opening scores file");
     }
     return scores;
   }
+
 
   /**
    * Write scores to text file Called when a new score is added to the list
    *
    * @param scores
    */
-  public static void writeScores(ArrayList<Pair<String, Integer>> scores) {
+  public static void writeScores(List<Pair<String, Integer>> scores) {
     scores.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
     try {
       if (new File("Scores.txt").createNewFile()) {
@@ -397,11 +404,13 @@ Online scores
       int scoreCount = 0;
       for (Pair<String, Integer> score : scores) {
         writer.write(score.getKey() + ":" + score.getValue() + "\n");
+        logger.info("Writing score: {}", score.getKey() + ":" + score.getValue() + "\n");
         scoreCount++;
         if (scoreCount > 9) {
           break;
         }
       }
+      writer.flush();
       writer.close();
     } catch (IOException e) {
       logger.error("Error writing scores file");

@@ -95,8 +95,8 @@ public class Game {
     //These should default to 0 score, level 0, 3 lives and 1 x multiplier respectively.
     this.score = new SimpleIntegerProperty(0);
     this.level = new SimpleIntegerProperty(0);
-    this.lives = new SimpleIntegerProperty(0);
-    this.multiplier = new SimpleIntegerProperty(1);
+    this.lives = new SimpleIntegerProperty(3);
+    this.multiplier = new SimpleIntegerProperty(0);
 
     //Create a new grid model to represent the game state
     this.grid = new Grid(cols, rows);

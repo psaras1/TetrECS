@@ -54,7 +54,7 @@ public class ChallengeScene extends BaseScene {
   private long timeBarWidth;
   private Timeline timeline;
 
-  private static final Logger logger = LogManager.getLogger(MenuScene.class);
+  private static final Logger logger = LogManager.getLogger(ChallengeScene.class);
   protected Game game;
   private Multimedia gameMusic = new Multimedia();
   /*
@@ -384,10 +384,12 @@ public class ChallengeScene extends BaseScene {
       gameMusic.stopBackgroundMusic();
       gameWindow.showScores(game);
     });
-    game.start();
     /*Attatching a listener to the score variable of the game instance, call updateHighScore whenever it changes*/
     game.score.addListener(this::updateHighScore);
     highScore.set(ScoresScene.loadScores().get(0).getValue());
+
+    game.start();
+
     gameLoopAnimation();
     keyboardControls();
 
@@ -403,9 +405,17 @@ public class ChallengeScene extends BaseScene {
    * @param newValue
    */
   public void updateHighScore(ObservableValue<? extends Number> observable, Number oldValue, Number newValue){
-    if(newValue.intValue() > highScore.get()){
-      highScore.set(newValue.intValue());
+    if(newValue.intValue() > this.highScore.get()){
+      this.highScore.set(newValue.intValue());
       logger.info("High Score updated to: {}", newValue.intValue());
+    }
+    if(newValue.intValue() < this.highScore.get()){
+      if(newValue.intValue() > ScoresScene.loadScores().get(0).getValue()){
+        this.highScore.set(newValue.intValue());
+        logger.info("High Score updated to: {}", newValue.intValue());
+      }else{
+        this.highScore.set(ScoresScene.loadScores().get(0).getValue());
+      }
     }
   }
 
@@ -537,28 +547,28 @@ public class ChallengeScene extends BaseScene {
    * (Line 0 stores the highest score, as it's sorted)
    * @return
    */
-  public Pair<String,Integer> getHighScore(){
-    Pair<String,Integer> highScore = new Pair<>("",0);
-    File file = new File("Scores.txt");
-    try{
-      FileInputStream fis = new FileInputStream(file);
-      BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-      try{
-        String[] parts = br.readLine().split(":");
-        if(parts.length == 2){
-          highScore = new Pair<>(parts[0], Integer.parseInt(parts[1]));
-        }
-        else{
-          logger.info("Invalid line in scores file");
-        }
-      }catch (IOException e){
-        logger.info("Error reading scores file");
-      }
-    }catch (FileNotFoundException e){
-      logger.info("Error opening scores file");
-    }
-    return highScore;
-  }
+//  public Pair<String,Integer> getHighScore(){
+//    Pair<String,Integer> highScore = new Pair<>("",0);
+//    File file = new File("Scores.txt");
+//    try{
+//      FileInputStream fis = new FileInputStream(file);
+//      BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+//      try{
+//        String[] parts = br.readLine().split(":");
+//        if(parts.length == 2){
+//          highScore = new Pair<>(parts[0], Integer.parseInt(parts[1]));
+//        }
+//        else{
+//          logger.info("Invalid line in scores file");
+//        }
+//      }catch (IOException e){
+//        logger.info("Error reading scores file");
+//      }
+//    }catch (FileNotFoundException e){
+//      logger.info("Error opening scores file");
+//    }
+//    return highScore;
+//  }
 
 }
 
