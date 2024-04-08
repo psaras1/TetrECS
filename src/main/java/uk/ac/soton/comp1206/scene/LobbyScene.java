@@ -61,6 +61,7 @@ public class LobbyScene extends BaseScene {
   public void initialise() {
     logger.info("Initialising Lobby Scene");
     startChannelTimer();
+    keyboardControls();
     communicator.send("LIST");
     communicator.addListener(this::listenForList);
   }
@@ -319,6 +320,18 @@ public class LobbyScene extends BaseScene {
     fadeOut.setOnFinished(e -> {
       buttons.getChildren().remove(errMessage);
     });
+  }
+
+  private void keyboardControls(){
+    gameWindow.getScene().setOnKeyPressed(e->{
+      switch (e.getCode()){
+        case ESCAPE:
+          communicator.send("LEAVE");
+          inChannel = false;
+          gameWindow.startMenu();
+          break;
+      }
+  });
   }
 
 }

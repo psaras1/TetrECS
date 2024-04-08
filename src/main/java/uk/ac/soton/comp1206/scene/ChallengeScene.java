@@ -21,6 +21,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -372,6 +373,7 @@ public class ChallengeScene extends BaseScene {
   @Override
   public void initialise() {
     logger.info("Initialising Challenge");
+    keyboardControls();
     timeline = new Timeline();
     //Set the next piece listener
     //(Update the NextPieceListener to pass the following piece as well, and use this to update the following piece board.)
@@ -391,7 +393,7 @@ public class ChallengeScene extends BaseScene {
     game.start();
 
     gameLoopAnimation();
-    keyboardControls();
+
 
   }
 
@@ -421,6 +423,8 @@ public class ChallengeScene extends BaseScene {
 
   /**
    * Keyboard controls for the game
+   * (Using .setOnKeyPressed() method to listen for key presses didn't work for me
+   * (arrows and space bar weren't registering)
    */
   private void keyboardControls() {
     board.setOnMouseMoved((e) -> {
@@ -436,7 +440,7 @@ public class ChallengeScene extends BaseScene {
       coordX = board.currentBlock.getX();
       coordY = board.currentBlock.getY();
     });
-    gameWindow.getScene().setOnKeyPressed(event -> {
+    gameWindow.getScene().addEventFilter(KeyEvent.KEY_PRESSED,event -> {
       logger.info("Key pressed: {}", event.getCode());
       switch (event.getCode()) {
         //Go back to menu
@@ -464,7 +468,7 @@ public class ChallengeScene extends BaseScene {
           game.rotateCurrentPieceLeft();
           break;
         //Swap the current piece(TODO: Fix spacebar)
-        case SPACE, R:
+        case R, SPACE:
           game.swapCurrentPiece();
           break;
 
@@ -542,33 +546,6 @@ public class ChallengeScene extends BaseScene {
     });
   }
 
-  /**
-   * Get the high score from the first line of the Scores.txt file
-   * (Line 0 stores the highest score, as it's sorted)
-   * @return
-   */
-//  public Pair<String,Integer> getHighScore(){
-//    Pair<String,Integer> highScore = new Pair<>("",0);
-//    File file = new File("Scores.txt");
-//    try{
-//      FileInputStream fis = new FileInputStream(file);
-//      BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-//      try{
-//        String[] parts = br.readLine().split(":");
-//        if(parts.length == 2){
-//          highScore = new Pair<>(parts[0], Integer.parseInt(parts[1]));
-//        }
-//        else{
-//          logger.info("Invalid line in scores file");
-//        }
-//      }catch (IOException e){
-//        logger.info("Error reading scores file");
-//      }
-//    }catch (FileNotFoundException e){
-//      logger.info("Error opening scores file");
-//    }
-//    return highScore;
-//  }
 
 }
 
