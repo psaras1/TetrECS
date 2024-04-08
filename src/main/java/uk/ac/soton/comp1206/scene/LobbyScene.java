@@ -17,6 +17,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -176,8 +177,8 @@ public class LobbyScene extends BaseScene {
 
   public void join(String channel, boolean host){
     currentChannel = channel;
-    messages.getChildren().clear();
     if(!inChannel) {
+      messages.getChildren().clear();
       communicator.send("JOIN " + channel);
       inChannel = true;
 
@@ -194,22 +195,34 @@ public class LobbyScene extends BaseScene {
       scroller = new ScrollPane();
       messages.getStyleClass().add("messages");
       scroller.getStyleClass().add("scroller");
+      scroller.setStyle("-fx-border-color: white; -fx-border-width: 2px;");
       scroller.setContent(messages);
 
       /*
       Option Bar
        */
       TextField sendText = new TextField();
-      sendText.getStyleClass().add("messageBox");
+      sendText.getStyleClass().add("textField");
       Button sendButton = new Button("Send");
+      sendButton.getStyleClass().add("lobby-button");
       sendButton.setAlignment(Pos.BOTTOM_RIGHT);
-      sendButton.setOnAction(e -> {
+      sendButton.setOnMouseClicked(e -> {
         communicator.send("MSG " + sendText.getText());
         sendText.clear();
       });
+
+      Button leaveButton = new Button("Leave");
+      leaveButton.getStyleClass().add("lobby-button");
+      leaveButton.setAlignment(Pos.BOTTOM_RIGHT);
+      leaveButton.setOnMouseClicked(e->{
+        communicator.send("LEAVE");
+        inChannel = false;
+        mainPane.getChildren().remove(rightPane);
+      });
+
       HBox optionBar = new HBox();
       HBox.setHgrow(sendText, javafx.scene.layout.Priority.ALWAYS);
-      optionBar.getChildren().addAll(sendText, sendButton);
+      optionBar.getChildren().addAll(sendText, sendButton, leaveButton);
 
       scroller.setPrefHeight(gameWindow.getHeight()-100);
       scroller.setFitToWidth(true);
@@ -228,6 +241,7 @@ public class LobbyScene extends BaseScene {
   public void createLobby(){
     if(!inChannel){
       nameField = new TextField();
+      nameField.getStyleClass().add("textField");
       nameField.setPromptText("Enter lobby name");
       nameField.setMinWidth(200);
       nameField.setMinHeight(30);
