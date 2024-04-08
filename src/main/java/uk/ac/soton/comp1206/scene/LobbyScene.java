@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Pos;
@@ -34,6 +37,10 @@ public class LobbyScene extends BaseScene {
   private VBox mainBox;
   private boolean inChannel;
   private BorderPane mainPane;
+  /*
+  Repeating timer requesting the list of channels
+   */
+  private ScheduledExecutorService executor;
   public LobbyScene(GameWindow gameWindow) {
     super(gameWindow);
     communicator = gameWindow.getCommunicator();
@@ -45,8 +52,16 @@ public class LobbyScene extends BaseScene {
   public void initialise() {
     logger.info("Initialising Lobby Scene");
     this.timer = new Timer();
+    startChannelTimer();
     communicator.send("LIST");
     communicator.addListener(this::listenForList);
+  }
+  private void startChannelTimer() {
+    logger.info("searching for channels");
+    executor = Executors.newSingleThreadScheduledExecutor();
+    executor.scheduleAtFixedRate(() -> {
+      communicator.send("LIST");
+    }, 0, 5, TimeUnit.SECONDS);
   }
 
   @Override

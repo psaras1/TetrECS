@@ -131,10 +131,10 @@ Online scores
     toReturn.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
     onlineScores = toReturn;
     remoteScores = FXCollections.observableArrayList(toReturn);
-    SimpleListProperty<Pair<String, Integer>> remoteScoresWrapper = new SimpleListProperty<>(
-        remoteScores);
+    SimpleListProperty<Pair<String, Integer>> remoteScoresWrapper = new SimpleListProperty<>(remoteScores);
     remoteScoresList.returnScores().bind(remoteScoresWrapper);
     remoteScoresList.returnName().bind(onlineNames);
+    remoteScoresList.updateList();
     remoteScoresList.updateList();
   }
 
@@ -153,7 +153,7 @@ Online scores
     logger.info("Initialising " + this.getClass().getName());
     remoteScoresList = new ScoreList();
     communicator.addListener(this::communicationListener);
-    communicator.send("HISCORE "+"bobTest:"+"55000");
+    communicator.send("HISCORE " + "bobTest:" + "55000");
     communicator.send("HISCORES");
     /*
     Return to menu on escape pressed
@@ -238,7 +238,7 @@ Online scores
 
       var submit = new Text("Submit");
       submit.getStyleClass().add("option-button");
-      submit.setOnMouseClicked(e->{
+      submit.setOnMouseClicked(e -> {
         username = nameField.getText();
         ArrayList<Pair<String, Integer>> newScores = new ArrayList<>();
         for (Pair<String, Integer> score : scoreList.returnScores()) {
@@ -306,9 +306,7 @@ Online scores
       }
     }
     if (worthy) {
-      logger.info("Worthy score{}", currentScore);
-      onlineScores.add(0, new Pair<>(username, currentScore));
-      communicator.send("HISCORE " + username + ":" + currentScore);
+      writeOnlineScore(username, currentScore);
     }
     /*
     Local scores
@@ -365,6 +363,19 @@ Online scores
   }
 
   /**
+   * Called when a score is achieved > than the top 10 online scores from the server
+   *
+   * @param name
+   * @param score
+   */
+  public void writeOnlineScore(String name, int score) {
+    logger.info("New online high score: {}", score);
+    remoteScores.add(0, new Pair<>(name, score));
+    logger.info("Number of online scores: {}", onlineScores.size());
+    communicator.send("HISCORE " + name + ":" + score);
+  }
+
+  /**
    * Load scores from text file If file does not exist, create a new file and fill it with default
    * scores If file does exist, load first ten scores from file, add them to an ArrayList of paired
    * usernames and scores and return it
@@ -377,8 +388,8 @@ Online scores
     if (!file.exists()) {
       logger.info("Scores file does not exist, creating new file");
       ArrayList<Pair<String, Integer>> scoresFiller = new ArrayList<>();
-      for(int i=0;i<10;i++){
-        scoresFiller.add(new Pair<>("Guest", i*100));
+      for (int i = 0; i < 10; i++) {
+        scoresFiller.add(new Pair<>("Guest", i * 100));
       }
       logger.info("Number of scores: {}", scoresFiller.size());
       writeScores(scoresFiller);
@@ -389,7 +400,7 @@ Online scores
       try {
         String line;
         while ((line = br.readLine()) != null) {
-            String[] parts = line.split(":");
+          String[] parts = line.split(":");
           if (parts.length == 2) {
             scores.add(new Pair<>(parts[0], Integer.parseInt(parts[1])));
           }
@@ -440,9 +451,9 @@ Online scores
   }
 
   /**
-   * Listener for communication with the server
-   * Takes in a string, splits it into parts, checks if the command is HISCORES
-   * If it is, loads the online scores(calls loadOnlineScores())
+   * Listener for communication with the server Takes in a string, splits it into parts, checks if
+   * the command is HISCORES If it is, loads the online scores(calls loadOnlineScores())
+   *
    * @param s
    */
   public void communicationListener(String s) {
@@ -457,13 +468,5 @@ Online scores
     }
   }
 
-  /**
-   * Called when a score is achieved > than the top 10 online scores from the server
-   * @param name
-   * @param score
-   */
-  public void writeOnlineScore(String name, Integer score) {
-    onlineScores.add(0, new Pair<String, Integer>(name, score));
-    communicator.send("HISCORE " + name + ":" + score);
-  }
+
 }
