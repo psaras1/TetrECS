@@ -31,6 +31,7 @@ import uk.ac.soton.comp1206.ui.GameWindow;
 public class LobbyScene extends BaseScene {
   private static final Logger logger = LogManager.getLogger(InstructionsScene.class);
   private final Communicator communicator;
+  private Text createLobby;
   private TextField sendText;
   private ArrayList<String> channels = new ArrayList<>();
   private String userTemp = "";
@@ -92,7 +93,7 @@ public class LobbyScene extends BaseScene {
     mainPane.setMaxHeight(gameWindow.getHeight()-25);
     menuPane.getChildren().add(mainPane);
 
-    var createLobby = new Text("Create Lobby");
+    createLobby = new Text("Create Lobby");
     createLobby.setOnMouseClicked(e->{
       createLobby();
     });
@@ -223,6 +224,7 @@ public class LobbyScene extends BaseScene {
         //So user can join another lobby
         inChannel = false;
         mainPane.getChildren().remove(rightPane);
+        buttons.getChildren().add(createLobby);
       });
 
       HBox optionBar = new HBox();
@@ -257,6 +259,7 @@ public class LobbyScene extends BaseScene {
 
   public void createLobby(){
     if(!inChannel){
+      buttons.getChildren().remove(createLobby);
       nameField = new TextField();
       nameField.getStyleClass().add("textField");
       nameField.setPromptText("Enter lobby name");
