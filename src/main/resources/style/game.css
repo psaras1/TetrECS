@@ -150,6 +150,9 @@
     -fx-border-color: black;
     -fx-stroke: black;
 }
+.channelItem:hover {
+    -fx-fill: gray;
+}
 .channelItem.selected {
     -fx-fill: yellow;
 }

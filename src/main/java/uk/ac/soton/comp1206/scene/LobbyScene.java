@@ -2,22 +2,27 @@ package uk.ac.soton.comp1206.scene;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Timer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.network.Communicator;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -29,14 +34,17 @@ public class LobbyScene extends BaseScene {
   private ArrayList<String> channels = new ArrayList<>();
   private String userTemp = "";
   private boolean joinedChannel = false;
-  private VBox messageContainer = new VBox();
-  private ScrollPane container = new ScrollPane(messageContainer);
+  private VBox messages = new VBox();
+  private VBox rightPane;
+  private ScrollPane scroller;
+  private TextField messageField;
   private String currentChannel;
   private StringProperty channelInfo;
   private VBox buttons;
   private VBox mainBox;
-  private boolean inChannel;
+  private boolean inChannel=false;
   private BorderPane mainPane;
+  private TextField nameField;
   /*
   Repeating timer requesting the list of channels
    */
@@ -44,7 +52,6 @@ public class LobbyScene extends BaseScene {
   public LobbyScene(GameWindow gameWindow) {
     super(gameWindow);
     communicator = gameWindow.getCommunicator();
-    inChannel = false;
     logger.info("Creating Lobby Scene");
   }
 
@@ -56,6 +63,11 @@ public class LobbyScene extends BaseScene {
     communicator.send("LIST");
     communicator.addListener(this::listenForList);
   }
+
+  /**
+   * Start a timer to request the list of channels every 5 seconds
+   * (By sending the LIST command to the server)
+   */
   private void startChannelTimer() {
     logger.info("searching for channels");
     executor = Executors.newSingleThreadScheduledExecutor();
@@ -68,26 +80,35 @@ public class LobbyScene extends BaseScene {
   public void build() {
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
 
+    //menu pane
     var menuPane = new StackPane();
     menuPane.setMaxWidth(gameWindow.getWidth());
     menuPane.setMaxHeight(gameWindow.getHeight());
     menuPane.getStyleClass().add("menu-background");
     root.getChildren().add(menuPane);
-
+    //main pane(within menu pane)
     mainPane = new BorderPane();
     mainPane.setMaxWidth(gameWindow.getWidth()-25);
     mainPane.setMaxHeight(gameWindow.getHeight()-25);
     menuPane.getChildren().add(mainPane);
 
     var createLobby = new Text("Create Lobby");
+    createLobby.setOnMouseClicked(e->{
+      createLobby();
+    });
     buttons = new VBox();
     createLobby.getStyleClass().add("option-button");
-    var channeLabel = new Text("Current lobbies: ");
-    channeLabel.getStyleClass().add("option3-button");
-    buttons.getChildren().addAll(createLobby,channeLabel);
+    var channelLabel = new Text("Current lobbies: ");
+    channelLabel.getStyleClass().add("option3-button");
+    buttons.getChildren().addAll(createLobby,channelLabel);
     buttons.setMinWidth(gameWindow.getWidth()/2);
-//    createLobby.setTextAlignment(Pos.TOP_LEFT);
+    //Buttons vbox added in MainPane, within menuPane
     mainPane.getChildren().add(buttons);
+
+    /*
+    Chat/lobby messages
+     */
+
 
   }
 
@@ -128,7 +149,8 @@ public class LobbyScene extends BaseScene {
       channelList.getChildren().add(channelID);
       channelList.setAlignment(Pos.TOP_LEFT);
       channelID.setOnMouseClicked(e->{
-//        join(channel, false);
+        communicator.send("JOIN " + channel);
+        join(channel, false);
       });
     }
 
@@ -147,18 +169,106 @@ public class LobbyScene extends BaseScene {
   }
 
   public void getMessage(String data){
-    messageContainer.getChildren().add(new Text(data));
-    container.setVvalue(container.getVmax());
+    Text newMessage = new Text(data);
+    messages.getChildren().add(newMessage);
+    scroller.setVvalue(scroller.getVmax());
   }
 
   public void join(String channel, boolean host){
     currentChannel = channel;
-    messageContainer.getChildren().clear();
-    communicator.send("JOIN " + channel);
-    inChannel = true;
-    mainBox = new VBox();
-    mainPane.setRight(mainBox);
+    messages.getChildren().clear();
+    if(!inChannel) {
+      communicator.send("JOIN " + channel);
+      inChannel = true;
 
+
+      messages.getChildren().clear();
+      rightPane = new VBox();
+      mainPane.setRight(rightPane);
+      communicator.send("USERS");
+      channelInfo = new SimpleStringProperty();
+      channelInfo.set(channel + "Users: " + userTemp);
+      Label channelLabel = new Label();
+      channelLabel.textProperty().bind(channelInfo);
+      rightPane.getChildren().add(channelLabel);
+      scroller = new ScrollPane();
+      messages.getStyleClass().add("messages");
+      scroller.getStyleClass().add("scroller");
+      scroller.setContent(messages);
+
+      /*
+      Option Bar
+       */
+      TextField sendText = new TextField();
+      sendText.getStyleClass().add("messageBox");
+      Button sendButton = new Button("Send");
+      sendButton.setAlignment(Pos.BOTTOM_RIGHT);
+      sendButton.setOnAction(e -> {
+        communicator.send("MSG " + sendText.getText());
+        sendText.clear();
+      });
+      HBox optionBar = new HBox();
+      HBox.setHgrow(sendText, javafx.scene.layout.Priority.ALWAYS);
+      optionBar.getChildren().addAll(sendText, sendButton);
+
+      scroller.setPrefHeight(gameWindow.getHeight()-100);
+      scroller.setFitToWidth(true);
+      rightPane.prefWidthProperty().bind(mainPane.widthProperty().divide(2));
+      rightPane.getChildren().addAll(scroller, optionBar);
+
+
+
+    }
+    else{
+      alreadyChanneled();
+    }
+
+  }
+
+  public void createLobby(){
+    if(!inChannel){
+      nameField = new TextField();
+      nameField.setPromptText("Enter lobby name");
+      nameField.setMinWidth(200);
+      nameField.setMinHeight(30);
+      buttons.getChildren().add(nameField);
+      nameField.setOnKeyPressed(e->{
+        if(e.getCode().getName().equals("Enter")){
+          communicator.send("CREATE " + nameField.getText());
+          join(nameField.getText(), true);
+          inChannel = true;
+          buttons.getChildren().remove(nameField);
+        }
+      });
+    }
+    else{
+      alreadyChanneled();
+    }
+  }
+
+  public void alreadyChanneled(){
+    var errMessage = new Text("You are already in a lobby");
+    errMessage.getStyleClass().add("option3-button");
+    buttons.getChildren().add(errMessage);
+    // Set up a fade-in transition
+    FadeTransition fadeIn = new FadeTransition(Duration.seconds(1), errMessage);
+    fadeIn.setFromValue(0.0);
+    fadeIn.setToValue(1.0);
+
+    // Set up a fade-out transition
+    FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), errMessage);
+    fadeOut.setFromValue(1.0);
+    fadeOut.setToValue(0.0);
+    fadeOut.setDelay(Duration.seconds(1)); // Delay fade-out by 2 seconds
+
+    // Play the fade-in transition followed by the fade-out transition
+    fadeIn.play();
+    fadeIn.setOnFinished(e -> {
+      fadeOut.play();
+    });
+    fadeOut.setOnFinished(e -> {
+      buttons.getChildren().remove(errMessage);
+    });
   }
 
 }
