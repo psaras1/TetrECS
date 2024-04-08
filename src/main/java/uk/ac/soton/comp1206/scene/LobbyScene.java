@@ -236,7 +236,15 @@ public class LobbyScene extends BaseScene {
       rightPane.prefWidthProperty().bind(mainPane.widthProperty().divide(2));
       rightPane.getChildren().addAll(scroller, optionBar);
 
-
+      if(host){
+        Button startButton = new Button("Start Game");
+        startButton.getStyleClass().add("lobby-button");
+        startButton.setAlignment(Pos.BOTTOM_RIGHT);
+        startButton.setOnMouseClicked(e->{
+          communicator.send("START");
+        });
+        optionBar.getChildren().add(startButton);
+      }
 
     }
     else{
@@ -251,7 +259,15 @@ public class LobbyScene extends BaseScene {
         String newUsername = parts[1];
         communicator.send("NICK " + newUsername);
         sendText.clear();
-      }else {
+      }
+      else if(sendText.getText().startsWith("/leave")){
+        communicator.send("LEAVE");
+        //So user can join another lobby
+        inChannel = false;
+        mainPane.getChildren().remove(rightPane);
+        buttons.getChildren().add(createLobby);
+      }
+      else {
         communicator.send("MSG " + sendText.getText());
         sendText.clear();
       }
