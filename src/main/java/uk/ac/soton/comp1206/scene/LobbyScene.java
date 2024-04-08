@@ -31,7 +31,7 @@ import uk.ac.soton.comp1206.ui.GameWindow;
 public class LobbyScene extends BaseScene {
   private static final Logger logger = LogManager.getLogger(InstructionsScene.class);
   private final Communicator communicator;
-  private Timer timer;
+  private TextField sendText;
   private ArrayList<String> channels = new ArrayList<>();
   private String userTemp = "";
   private boolean joinedChannel = false;
@@ -59,7 +59,6 @@ public class LobbyScene extends BaseScene {
   @Override
   public void initialise() {
     logger.info("Initialising Lobby Scene");
-    this.timer = new Timer();
     startChannelTimer();
     communicator.send("LIST");
     communicator.addListener(this::listenForList);
@@ -201,21 +200,27 @@ public class LobbyScene extends BaseScene {
       /*
       Option Bar
        */
-      TextField sendText = new TextField();
+      sendText = new TextField();
       sendText.getStyleClass().add("textField");
       Button sendButton = new Button("Send");
       sendButton.getStyleClass().add("lobby-button");
       sendButton.setAlignment(Pos.BOTTOM_RIGHT);
       sendButton.setOnMouseClicked(e -> {
-        communicator.send("MSG " + sendText.getText());
-        sendText.clear();
+        textFieldAction();
       });
+      sendText.setOnKeyPressed(e -> {
+        if (e.getCode().getName().equals("Enter")) {
+          textFieldAction();
+        }
+      });
+
 
       Button leaveButton = new Button("Leave");
       leaveButton.getStyleClass().add("lobby-button");
       leaveButton.setAlignment(Pos.BOTTOM_RIGHT);
       leaveButton.setOnMouseClicked(e->{
         communicator.send("LEAVE");
+        //So user can join another lobby
         inChannel = false;
         mainPane.getChildren().remove(rightPane);
       });
@@ -236,6 +241,18 @@ public class LobbyScene extends BaseScene {
       alreadyChanneled();
     }
 
+  }
+
+  public void textFieldAction(){
+      if(sendText.getText().startsWith("/nick")){
+        String[] parts = sendText.getText().split(" ");
+        String newUsername = parts[1];
+        communicator.send("NICK " + newUsername);
+        sendText.clear();
+      }else {
+        communicator.send("MSG " + sendText.getText());
+        sendText.clear();
+      }
   }
 
   public void createLobby(){
