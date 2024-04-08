@@ -215,6 +215,7 @@ Online scores
     topBox.getChildren().add(title);
     mainPane.setTop(topBox);
 
+
     /*
     Center
      */
@@ -291,10 +292,6 @@ Online scores
     }
   }
 
-  public void submitUsername() {
-
-
-  }
 
   /**
    * Finish building the scores scene Takes in the mainPane and adds the scores to it in a VBox
@@ -340,6 +337,31 @@ Online scores
     centralBox.setAlignment(Pos.CENTER);
     centralBox.getChildren().addAll(scoreBoxLocal, scoreBoxRemote);
     mainPane.setCenter(centralBox);
+        /*
+    Bottom
+     */
+    /*retry button*/
+    var retry = new Text("Retry");
+    retry.getStyleClass().add("option-button");
+    retry.setOnMouseClicked(e -> {
+      gameWindow.startChallenge();
+      scoresMusic.stopBackgroundMusic();
+    });
+
+    /*menu button*/
+    var menu = new Text("Menu");
+    menu.getStyleClass().add("option-button");
+    menu.setOnMouseClicked(e -> {
+      gameWindow.startMenu();
+      scoresMusic.stopBackgroundMusic();
+    });
+
+    var bottomBox = new HBox();
+    bottomBox.setAlignment(Pos.CENTER);
+    bottomBox.getChildren().addAll(retry, menu);
+    bottomBox.setSpacing(20);
+    bottomBox.setPadding(new Insets(10));
+    mainPane.setBottom(bottomBox);
   }
 
   /**

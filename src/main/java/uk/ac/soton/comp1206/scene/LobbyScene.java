@@ -45,12 +45,6 @@ public class LobbyScene extends BaseScene {
   public void initialise() {
     logger.info("Initialising Lobby Scene");
     this.timer = new Timer();
-//    timer.scheduleAtFixedRate(new TimerTask() {
-//      @Override
-//      public void run() {
-//        communicator.send("LIST");
-//      }
-//    }, 0, 1000);
     communicator.send("LIST");
     communicator.addListener(this::listenForList);
   }
@@ -73,7 +67,7 @@ public class LobbyScene extends BaseScene {
     var createLobby = new Text("Create Lobby");
     buttons = new VBox();
     createLobby.getStyleClass().add("option-button");
-    var channeLabel = new Text("Channels: ");
+    var channeLabel = new Text("Current lobbies: ");
     channeLabel.getStyleClass().add("option3-button");
     buttons.getChildren().addAll(createLobby,channeLabel);
     buttons.setMinWidth(gameWindow.getWidth()/2);
