@@ -1,6 +1,10 @@
 package uk.ac.soton.comp1206.game;
 
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,11 +17,12 @@ import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.network.Communicator;
+import uk.ac.soton.comp1206.scene.LobbyScene;
 
 public class MultiplayerGame extends Game{
   private static final Logger logger = LogManager.getLogger(MultiplayerGame.class);
   private Communicator communicator;
-  private IntegerProperty nextPieceFinder = new SimpleIntegerProperty();
+  private Queue<GamePiece> pieceQueue = new LinkedList<>();
 
   /**
    * Create a new game with the specified rows and columns. Creates a corresponding grid model.
@@ -25,42 +30,35 @@ public class MultiplayerGame extends Game{
    * @param cols number of columns
    * @param rows number of rows
    */
-  public MultiplayerGame(int cols, int rows) {
+  public MultiplayerGame(int cols, int rows,Communicator communicator) {
     super(cols, rows);
-    timer = Executors.newSingleThreadScheduledExecutor();
-  }
-  public void initialiseGame(){
-    logger.info("Initialising Multiplayer Game");
-    this.followingPiece = spawnPiece();
-    nextPiece();
+    this.communicator = communicator;
     communicator.addListener(this::handleCommunication);
   }
+  public void initialiseGame(){
+    while (pieceQueue.size() < 2){
+      communicator.send("PIECE");
+    }
+    this.followingPiece = pieceQueue.poll();
+    nextPiece();
+    logger.info("Initialising Multiplayer Game");
+  }
   private void handleCommunication(String message){
-    logger.info("Received message: " + message);
-    String[] parts = message.split(" ",2);
-    String command = parts[0];
-    String data = parts[1];
-    if(command.equals("PIECE")){
-      logger.info("Received piece: " + data);
-      Platform.runLater(()->{
-        nextPieceFinder.set(Integer.parseInt(data));
-        logger.info("Next piece set to: " + data);
-        spawnPiece();
-      });
+    if(message.startsWith("PIECE")){
+      String[] parts = message.split(" ");
+      GamePiece piece = GamePiece.createPiece(Integer.parseInt(parts[1]));
+      pieceQueue.add(piece);
+      logger.info("Queue size: " + pieceQueue.size());
     }
   }
-  public GamePiece spawnPieceOverwrite(){
-    communicator.send("PIECE");
-    Random random = new Random();
-    AtomicInteger piece = new AtomicInteger();
-    Platform.runLater(()->{
-      piece.set(nextPieceFinder.getValue());
-    });
-    int rotation = random.nextInt(4);
-    return GamePiece.createPiece(piece.get(),rotation);
+  @Override
+  public GamePiece nextPiece(){
+    while (pieceQueue.size() < 2){
+      communicator.send("PIECE");
+    }
+    currentPiece = followingPiece;
+    followingPiece = pieceQueue.poll();
+    return currentPiece;
   }
-  public GamePiece spawnPiece(){
-    communicator.send("PIECE");
-    return spawnPieceOverwrite();
-  }
+
 }

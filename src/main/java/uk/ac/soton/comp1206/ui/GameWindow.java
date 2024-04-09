@@ -84,7 +84,7 @@ public class GameWindow {
     /**
      * Display the single player challenge
      */
-    public void startChallenge() { loadScene(new MultiplayerScene(this)); }
+    public void startChallenge() { loadScene(new ChallengeScene(this)); }
 
     /**
      * Setup the default settings for the stage itself (the window), such as the title and minimum width and height.
@@ -94,6 +94,10 @@ public class GameWindow {
         stage.setMinWidth(width);
         stage.setMinHeight(height + 20);
         stage.setOnCloseRequest(ev -> App.getInstance().shutdown());
+    }
+
+    public void startMultiplayer() {
+        loadScene(new MultiplayerScene(this));
     }
 
     /**

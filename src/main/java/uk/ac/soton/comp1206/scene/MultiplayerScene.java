@@ -8,6 +8,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp1206.game.MultiplayerGame;
 import uk.ac.soton.comp1206.network.Communicator;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -19,15 +20,19 @@ public class MultiplayerScene extends ChallengeScene{
    * @param gameWindow the Game Window
    */
   private static final Logger logger = LogManager.getLogger(MultiplayerScene.class);
-  protected static Communicator communicator;
   public MultiplayerScene(GameWindow gameWindow) {
     super(gameWindow);
     logger.info("Creating Multiplayer Scene");
-    communicator = LobbyScene.communicator;
   }
   public void initialise(){
     super.initialise();
     logger.info("Initialising Multiplayer Scene");
+//    communicator.addListener(this::handleCommunication);
+  }
+  @Override
+  public void setupGame(){
+    logger.info("Setting up Multiplayer Game");
+    game = new MultiplayerGame(5,5);
   }
   public void build(){
     super.build();

@@ -30,8 +30,8 @@ import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class LobbyScene extends BaseScene {
-  private static final Logger logger = LogManager.getLogger(InstructionsScene.class);
-  protected static Communicator communicator;
+  private static final Logger logger = LogManager.getLogger(LobbyScene.class);
+  public static Communicator communicator;
   private Text createLobby;
   private TextField sendText;
   private ArrayList<String> channels = new ArrayList<>();
@@ -251,7 +251,7 @@ public class LobbyScene extends BaseScene {
         startButton.getStyleClass().add("option2-button");
         startButton.setOnMouseClicked(e->{
           communicator.send("START");
-          gameWindow.startChallenge();
+          gameWindow.startMultiplayer();
         });
         chatButtons.getChildren().add(startButton);
         chatButtons.setAlignment(Pos.CENTER);
