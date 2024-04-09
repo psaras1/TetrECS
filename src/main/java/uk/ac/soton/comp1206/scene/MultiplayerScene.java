@@ -26,6 +26,9 @@ public class MultiplayerScene extends ChallengeScene{
     this.communicator = gameWindow.getCommunicator();
     logger.info("Creating Multiplayer Scene");
   }
+  public String getMusic(){
+    return "";
+  }
   public void initialise(){
     super.initialise();
     logger.info("Initialising Multiplayer Scene");

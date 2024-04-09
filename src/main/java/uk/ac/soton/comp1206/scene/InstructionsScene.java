@@ -134,4 +134,9 @@ public class InstructionsScene extends BaseScene {
     root.getChildren().add(mainPane);
   }
 
+  @Override
+  String getMusic() {
+    return null;
+  }
+
 }

@@ -66,6 +66,7 @@ public class ChallengeScene extends BaseScene {
   protected Text livesLabel;
   protected Text multiplierLabel;
   protected PieceBoard currentPiece, followingPiece;
+  private String musicFile = "/music/game.wav";
   private Image muteImage = new Image(getClass().getResource("/images/mute.png").toString());
   private Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
   private ImageView muteImageView = new ImageView(unmuteImage);
@@ -109,6 +110,9 @@ public class ChallengeScene extends BaseScene {
     livesLabel.textProperty().bind(Bindings.concat(game.getLives().asString()));
     multiplierLabel.textProperty().bind(Bindings.concat(game.getMultiplier().asString()));
   }
+public String getMusic(){
+    return musicFile;
+}
 
   /**
    * Build the Challenge window
@@ -253,25 +257,25 @@ public class ChallengeScene extends BaseScene {
 
     //Create a mute button
 
-    muteImageView.setFitHeight(30);
-    muteImageView.setFitWidth(30);
-    muteImageView.styleProperty().setValue("-fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0);");
-    AnchorPane muteButtonPane = new AnchorPane();
-    muteButtonPane.getChildren().add(muteButton);
-    AnchorPane.setLeftAnchor(muteButton, 5.0);
-    AnchorPane.setBottomAnchor(muteButton, 13.0);
-    muteButtonPane.setPickOnBounds(false);
-    root.getChildren().add(muteButtonPane);
-    muteButton.setBackground(null);
-    muteButton.setOnMouseClicked(actionEvent -> {
-      if (!gameMusic.isPlaying()) {
-        gameMusic.playBackgroundMusic("/music/game.wav");
-        muteImageView.setImage(unmuteImage);
-      } else {
-        gameMusic.stopBackgroundMusic();
-        muteImageView.setImage(muteImage);
-      }
-    });
+//    muteImageView.setFitHeight(30);
+//    muteImageView.setFitWidth(30);
+//    muteImageView.styleProperty().setValue("-fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0);");
+//    AnchorPane muteButtonPane = new AnchorPane();
+//    muteButtonPane.getChildren().add(muteButton);
+//    AnchorPane.setLeftAnchor(muteButton, 5.0);
+//    AnchorPane.setBottomAnchor(muteButton, 13.0);
+//    muteButtonPane.setPickOnBounds(false);
+//    root.getChildren().add(muteButtonPane);
+//    muteButton.setBackground(null);
+//    muteButton.setOnMouseClicked(actionEvent -> {
+//      if (!gameMusic.isPlaying()) {
+//        gameMusic.playBackgroundMusic("/music/game.wav");
+//        muteImageView.setImage(unmuteImage);
+//      } else {
+//        gameMusic.stopBackgroundMusic();
+//        muteImageView.setImage(muteImage);
+//      }
+//    });
 
     //Create a menu button
     var menuButton = new Text("Menu");

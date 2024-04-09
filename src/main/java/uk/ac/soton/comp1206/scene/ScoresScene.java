@@ -292,6 +292,11 @@ Online scores
     }
   }
 
+  @Override
+  String getMusic() {
+    return null;
+  }
+
 
   /**
    * Finish building the scores scene Takes in the mainPane and adds the scores to it in a VBox

@@ -115,6 +115,11 @@ public class LobbyScene extends BaseScene {
 
   }
 
+  @Override
+  String getMusic() {
+    return null;
+  }
+
   public void listenForList(String message) {
     logger.info("Received list: " + message);
     String[] parts = message.split(" ",2);

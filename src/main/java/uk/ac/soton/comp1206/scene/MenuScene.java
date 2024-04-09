@@ -164,6 +164,11 @@ public class MenuScene extends BaseScene {
 
     }
 
+    @Override
+    String getMusic() {
+        return null;
+    }
+
 
     /**
      * Initialise the menu
