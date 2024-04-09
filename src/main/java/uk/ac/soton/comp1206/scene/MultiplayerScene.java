@@ -19,7 +19,6 @@ public class MultiplayerScene extends ChallengeScene{
    * @param gameWindow the Game Window
    */
   private static final Logger logger = LogManager.getLogger(MultiplayerScene.class);
-  private Timer timer;
   protected static Communicator communicator;
   public MultiplayerScene(GameWindow gameWindow) {
     super(gameWindow);
@@ -46,7 +45,10 @@ public class MultiplayerScene extends ChallengeScene{
     rigthBox.getChildren().addAll(scoreBox,livesBox,pieceDisplay);
     mainPane.setRight(rigthBox);
 
+    /* Left overwrite*/
+    var leftBox = new VBox();
 
+    mainPane.setLeft(leftBox);
 
   }
 }

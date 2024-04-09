@@ -251,6 +251,7 @@ public class LobbyScene extends BaseScene {
         startButton.getStyleClass().add("option2-button");
         startButton.setOnMouseClicked(e->{
           communicator.send("START");
+          gameWindow.startChallenge();
         });
         chatButtons.getChildren().add(startButton);
         chatButtons.setAlignment(Pos.CENTER);

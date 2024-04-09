@@ -31,7 +31,8 @@ public class MultiplayerGame extends Game{
   }
   public void initialiseGame(){
     logger.info("Initialising Multiplayer Game");
-    super.initialiseGame();
+    this.followingPiece = spawnPiece();
+    nextPiece();
     communicator.addListener(this::handleCommunication);
   }
   private void handleCommunication(String message){
@@ -48,7 +49,7 @@ public class MultiplayerGame extends Game{
       });
     }
   }
-  public GamePiece spawnPiece(){
+  public GamePiece spawnPieceOverwrite(){
     communicator.send("PIECE");
     Random random = new Random();
     AtomicInteger piece = new AtomicInteger();
@@ -57,5 +58,9 @@ public class MultiplayerGame extends Game{
     });
     int rotation = random.nextInt(4);
     return GamePiece.createPiece(piece.get(),rotation);
+  }
+  public GamePiece spawnPiece(){
+    communicator.send("PIECE");
+    return spawnPieceOverwrite();
   }
 }
