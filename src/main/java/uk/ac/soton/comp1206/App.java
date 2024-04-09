@@ -1,9 +1,15 @@
 package uk.ac.soton.comp1206;
 
+import javafx.animation.FadeTransition;
 import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,8 +34,12 @@ public class App extends Application {
     private static final Logger logger = LogManager.getLogger(App.class);
     private Stage stage;
 
+    private final int widthImage = 800;
+    private final int heightImage = 600;
+
     /**
      * Start the game
+     *
      * @param args commandline arguments
      */
     public static void main(String[] args) {
@@ -38,7 +48,9 @@ public class App extends Application {
     }
 
     /**
-     * Called by JavaFX with the primary stage as a parameter. Begins the game by opening the Game Window
+     * Called by JavaFX with the primary stage as a parameter. Begins the game by opening the Game
+     * Window
+     *
      * @param stage the default stage, main window
      */
     @Override
@@ -56,14 +68,14 @@ public class App extends Application {
         logger.info("Opening game window");
 
         //Change the width and height in this class to change the base rendering resolution for all game parts
-        var gameWindow = new GameWindow(stage,width,height);
+        var gameWindow = new GameWindow(stage, width, height);
 
         //Display the GameWindow
         stage.show();
     }
 
     /**
-     *  Shutdown the game
+     * Shutdown the game
      */
     public void shutdown() {
         logger.info("Shutting down");
@@ -72,10 +84,10 @@ public class App extends Application {
 
     /**
      * Get the singleton App instance
+     *
      * @return the app
      */
     public static App getInstance() {
         return instance;
     }
-
 }

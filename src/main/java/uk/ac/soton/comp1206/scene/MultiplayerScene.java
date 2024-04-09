@@ -19,20 +19,21 @@ public class MultiplayerScene extends ChallengeScene{
    *
    * @param gameWindow the Game Window
    */
+  private final Communicator communicator;
   private static final Logger logger = LogManager.getLogger(MultiplayerScene.class);
   public MultiplayerScene(GameWindow gameWindow) {
     super(gameWindow);
+    this.communicator = gameWindow.getCommunicator();
     logger.info("Creating Multiplayer Scene");
   }
   public void initialise(){
     super.initialise();
     logger.info("Initialising Multiplayer Scene");
-//    communicator.addListener(this::handleCommunication);
   }
   @Override
   public void setupGame(){
     logger.info("Setting up Multiplayer Game");
-    game = new MultiplayerGame(5,5);
+    game = new MultiplayerGame(5,5,this.communicator);
   }
   public void build(){
     super.build();

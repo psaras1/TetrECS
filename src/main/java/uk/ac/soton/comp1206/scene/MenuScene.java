@@ -1,5 +1,8 @@
 package uk.ac.soton.comp1206.scene;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -8,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.game.Multimedia;
@@ -64,10 +68,19 @@ public class MenuScene extends BaseScene {
         title.setFitWidth(400);
         title.setFitHeight(100);
         HBox titleContainer = new HBox();
-        titleContainer.setPadding(new Insets(20));
+        titleContainer.setPadding(new Insets(100));
         titleContainer.setAlignment(Pos.CENTER);
         titleContainer.getChildren().add(title);
         mainPane.setTop(titleContainer);
+        //Animation for title image
+        Timeline titleTimeline = new Timeline(
+            new KeyFrame(Duration.ZERO, new KeyValue(title.rotateProperty(), 0)),
+            new KeyFrame(Duration.seconds(1), new KeyValue(title.rotateProperty(), 10)),
+            new KeyFrame(Duration.seconds(2), new KeyValue(title.rotateProperty(), -10)),
+            new KeyFrame(Duration.seconds(3), new KeyValue(title.rotateProperty(), 0))
+        );
+        titleTimeline.setCycleCount(Timeline.INDEFINITE);
+        titleTimeline.play();
 
 
         //For now, let us just add a button that starts the game. I'm sure you'll do something way better.

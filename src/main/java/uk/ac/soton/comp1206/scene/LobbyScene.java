@@ -191,15 +191,14 @@ public class LobbyScene extends BaseScene {
       mainPane.setRight(rightPane);
       communicator.send("USERS");
       channelInfo = new SimpleStringProperty();
-      channelInfo.set("Lobby: "+channel +"\n"+ "Users: "+"\n" + userTemp);
-      Label channelLabel = new Label();
-      channelLabel.textProperty().bind(channelInfo);
-      channelLabel.getStyleClass().add("channelLabel");
+      Label channelInfoLabel = new Label();
+      channelInfo.set(channel+" Users: "+userTemp);
+      channelInfoLabel.textProperty().bind(channelInfo);
+      channelInfoLabel.getStyleClass().add("channelLabel");
 
       scroller = new ScrollPane();
       messages.getStyleClass().add("messages");
       scroller.getStyleClass().add("scroller");
-//      scroller.setStyle("-fx-border-color: white; -fx-border-width: 2px;");
       scroller.setContent(messages);
 
       /*
@@ -244,7 +243,7 @@ public class LobbyScene extends BaseScene {
       Region spacer = new Region();
       spacer.setPrefHeight(60);
       rightPane.setPadding(new javafx.geometry.Insets(10,10,10,10));
-      rightPane.getChildren().addAll(channelLabel,spacer,scroller,messageField, chatButtons);
+      rightPane.getChildren().addAll(channelInfoLabel,spacer,scroller,messageField, chatButtons);
 
       if(host){
         Text startButton = new Text("Start Game");

@@ -190,7 +190,7 @@
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-family: 'Orbitron';
-    -fx-font-size: 16px;
+    -fx-font-size: 12px;
 }
 
 TextField {

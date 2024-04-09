@@ -32,6 +32,7 @@ public class Game {
   private static final Logger logger = LogManager.getLogger(Game.class);
   //declare a listener for when the next piece is generated
   protected NextPieceListener nextPieceListener = null;
+  protected Boolean began = false;
 
   private LineClearedListener lineClearedListener = null;
   private Random random = new Random(); //Allows us to generate a random number in order to get random pieces/shapes
@@ -96,7 +97,7 @@ public class Game {
     //These should default to 0 score, level 0, 3 lives and 1 x multiplier respectively.
     this.score = new SimpleIntegerProperty(0);
     this.level = new SimpleIntegerProperty(0);
-    this.lives = new SimpleIntegerProperty(3);
+    this.lives = new SimpleIntegerProperty(0);
     this.multiplier = new SimpleIntegerProperty(1);
 
     //Create a new grid model to represent the game state
@@ -172,6 +173,7 @@ public class Game {
     initialiseGame();
     gameLoop = timer.schedule(this::gameLoop, getTimerDelay(), TimeUnit.MILLISECONDS);
     gameLoopListener();
+
   }
 
   /**
@@ -300,6 +302,7 @@ public class Game {
     logger.info("Initialising game");
     this.followingPiece = spawnPiece();
     nextPiece(); //So the game starts with a piece
+    this.began = true;
   }
 
 
