@@ -61,11 +61,11 @@ public class ChallengeScene extends BaseScene {
   /*
    * Labels for the game stats
    */
-  private Text scoreLabel;
-  private Text levelLabel;
-  private Text livesLabel;
-  private Text multiplierLabel;
-  private PieceBoard currentPiece, followingPiece;
+  protected Text scoreLabel;
+  protected Text levelLabel;
+  protected Text livesLabel;
+  protected Text multiplierLabel;
+  protected PieceBoard currentPiece, followingPiece;
   private Image muteImage = new Image(getClass().getResource("/images/mute.png").toString());
   private Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
   private ImageView muteImageView = new ImageView(unmuteImage);
@@ -77,6 +77,13 @@ public class ChallengeScene extends BaseScene {
   private GameBlock keyboardSelectedBlock = null;
   /* Holds the high score */
   private IntegerProperty highScore = new SimpleIntegerProperty();
+  protected BorderPane mainPane = new BorderPane();
+  protected VBox rightBox = new VBox();
+  protected VBox levelBox = new VBox();
+  protected VBox scoreBox = new VBox();
+  protected VBox livesBox = new VBox();
+  protected VBox multiplierBox = new VBox();
+  protected VBox centerBox = new VBox();
 
 
   /**
@@ -123,7 +130,6 @@ public class ChallengeScene extends BaseScene {
     challengePane.getStyleClass().add("challenge-background");
 
     root.getChildren().add(challengePane);
-    var mainPane = new BorderPane();
 
     /*top*/
     /*title*/
@@ -135,14 +141,12 @@ public class ChallengeScene extends BaseScene {
     mainPane.setTop(topBox);
 
     /*right*/
-    var rightBox = new VBox();
     rightBox.setAlignment(Pos.CENTER);
     rightBox.setSpacing(20);
     rightBox.setPadding(new Insets(0, 15, 0, 0));
     mainPane.setRight(rightBox);
 
     /*score*/
-    var scoreBox = new VBox();
     scoreBox.setAlignment(Pos.CENTER);
     var scoreTitle = new Text("Score:");
     scoreTitle.getStyleClass().add("heading");
@@ -150,7 +154,6 @@ public class ChallengeScene extends BaseScene {
     scoreBox.getChildren().addAll(scoreTitle, scoreLabel);
 
     /*level*/
-    var levelBox = new VBox();
     levelBox.setAlignment(Pos.CENTER);
     var levelTitle = new Text("Level:");
     levelTitle.getStyleClass().add("heading");
@@ -158,7 +161,6 @@ public class ChallengeScene extends BaseScene {
     levelBox.getChildren().addAll(levelTitle, levelLabel);
 
     /*lives*/
-    var livesBox = new VBox();
     livesBox.setAlignment(Pos.CENTER);
     var livesTitle = new Text("Lives:");
     livesTitle.getStyleClass().add("heading");
@@ -176,7 +178,6 @@ public class ChallengeScene extends BaseScene {
     livesBox.getChildren().addAll(livesTitle, livesLabel);
 
     /*multiplier*/
-    var multiplierBox = new VBox();
     multiplierBox.setAlignment(Pos.CENTER);
     var multiplierTitle = new Text("Multiplier:");
     multiplierTitle.getStyleClass().add("heading");

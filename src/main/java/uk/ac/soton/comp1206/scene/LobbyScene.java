@@ -18,6 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -30,7 +31,7 @@ import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class LobbyScene extends BaseScene {
   private static final Logger logger = LogManager.getLogger(InstructionsScene.class);
-  private final Communicator communicator;
+  protected static Communicator communicator;
   private Text createLobby;
   private TextField sendText;
   private ArrayList<String> channels = new ArrayList<>();
@@ -152,6 +153,7 @@ public class LobbyScene extends BaseScene {
       channelList.setAlignment(Pos.TOP_LEFT);
       channelID.setOnMouseClicked(e->{
         communicator.send("JOIN " + channel);
+        buttons.getChildren().remove(createLobby);
         join(channel, false);
       });
     }
@@ -189,21 +191,21 @@ public class LobbyScene extends BaseScene {
       mainPane.setRight(rightPane);
       communicator.send("USERS");
       channelInfo = new SimpleStringProperty();
-      channelInfo.set(channel + "Users: " + userTemp);
+      channelInfo.set("Lobby: "+channel +"\n"+ "Users: "+"\n" + userTemp);
       Label channelLabel = new Label();
       channelLabel.textProperty().bind(channelInfo);
-      rightPane.getChildren().add(channelLabel);
+      channelLabel.getStyleClass().add("channelLabel");
+
       scroller = new ScrollPane();
       messages.getStyleClass().add("messages");
       scroller.getStyleClass().add("scroller");
-      scroller.setStyle("-fx-border-color: white; -fx-border-width: 2px;");
+//      scroller.setStyle("-fx-border-color: white; -fx-border-width: 2px;");
       scroller.setContent(messages);
 
       /*
       Option Bar
        */
       sendText = new TextField();
-      sendText.getStyleClass().add("textField");
       Button sendButton = new Button("Send");
       sendButton.getStyleClass().add("lobby-button");
       sendButton.setAlignment(Pos.BOTTOM_RIGHT);
@@ -217,34 +219,42 @@ public class LobbyScene extends BaseScene {
       });
 
 
-      Button leaveButton = new Button("Leave");
-      leaveButton.getStyleClass().add("lobby-button");
-      leaveButton.setAlignment(Pos.BOTTOM_RIGHT);
+      Text leaveButton = new Text("Leave");
+      leaveButton.getStyleClass().add("option2-button");
       leaveButton.setOnMouseClicked(e->{
-        communicator.send("LEAVE");
+        communicator.send("PART");
         //So user can join another lobby
         inChannel = false;
         mainPane.getChildren().remove(rightPane);
         buttons.getChildren().add(createLobby);
       });
-
-      HBox optionBar = new HBox();
+      HBox messageField = new HBox();
+      messageField.getChildren().addAll(sendText,sendButton);
+      HBox chatButtons = new HBox();
       HBox.setHgrow(sendText, javafx.scene.layout.Priority.ALWAYS);
-      optionBar.getChildren().addAll(sendText, sendButton, leaveButton);
+      chatButtons.getChildren().addAll(leaveButton);
 
       scroller.setPrefHeight(gameWindow.getHeight()-100);
       scroller.setFitToWidth(true);
+
+
       rightPane.prefWidthProperty().bind(mainPane.widthProperty().divide(2));
-      rightPane.getChildren().addAll(scroller, optionBar);
+      rightPane.setStyle("-fx-border-color: white; -fx-border-width: 2px;-fx-background-color: rgba(0,0,0,0.5);");
+      rightPane.setSpacing(20);
+      Region spacer = new Region();
+      spacer.setPrefHeight(60);
+      rightPane.setPadding(new javafx.geometry.Insets(10,10,10,10));
+      rightPane.getChildren().addAll(channelLabel,spacer,scroller,messageField, chatButtons);
 
       if(host){
-        Button startButton = new Button("Start Game");
-        startButton.getStyleClass().add("lobby-button");
-        startButton.setAlignment(Pos.BOTTOM_RIGHT);
+        Text startButton = new Text("Start Game");
+        startButton.getStyleClass().add("option2-button");
         startButton.setOnMouseClicked(e->{
           communicator.send("START");
         });
-        optionBar.getChildren().add(startButton);
+        chatButtons.getChildren().add(startButton);
+        chatButtons.setAlignment(Pos.CENTER);
+        chatButtons.setSpacing(10);
       }
 
     }
@@ -262,7 +272,7 @@ public class LobbyScene extends BaseScene {
         sendText.clear();
       }
       else if(sendText.getText().startsWith("/leave")){
-        communicator.send("LEAVE");
+        communicator.send("PART");
         //So user can join another lobby
         inChannel = false;
         mainPane.getChildren().remove(rightPane);
@@ -278,7 +288,6 @@ public class LobbyScene extends BaseScene {
     if(!inChannel){
       buttons.getChildren().remove(createLobby);
       nameField = new TextField();
-      nameField.getStyleClass().add("textField");
       nameField.setPromptText("Enter lobby name");
       nameField.setMinWidth(200);
       nameField.setMinHeight(30);
@@ -326,7 +335,8 @@ public class LobbyScene extends BaseScene {
     gameWindow.getScene().setOnKeyPressed(e->{
       switch (e.getCode()){
         case ESCAPE:
-          communicator.send("LEAVE");
+          communicator.send("PART");
+          communicator.send("QUIT");
           inChannel = false;
           gameWindow.startMenu();
           break;

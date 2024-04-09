@@ -151,7 +151,7 @@
     -fx-stroke: black;
 }
 .channelItem:hover {
-    -fx-fill: gray;
+    -fx-fill: grey;
 }
 .channelItem.selected {
     -fx-fill: yellow;
@@ -186,7 +186,14 @@
     -fx-fill: white;
 }
 
-.textField {
+.channelLabel{
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 16px;
+}
+
+TextField {
     -fx-border-color: white;
     -fx-border-width: 1px;
     -fx-background-color: rgba(0,0,0,0.5);
@@ -264,6 +271,15 @@
     -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
     -fx-font-family: 'Orbitron';
     -fx-font-size: 20px;
+}
+.option2-button{
+    -fx-fill: white; /* White text color */
+    -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 14px;
+}
+.option2-button:hover{
+    -fx-effect: dropshadow(gaussian, magenta, 10, 0, 0, 0); /* Change glow to magenta on hover */
 }
 .score-title{
     -fx-fill:pink;
