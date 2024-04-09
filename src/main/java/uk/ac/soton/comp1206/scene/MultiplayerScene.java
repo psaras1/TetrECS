@@ -46,7 +46,7 @@ public class MultiplayerScene extends ChallengeScene{
     rigthBox.getChildren().addAll(scoreBox,livesBox,pieceDisplay);
     mainPane.setRight(rigthBox);
 
-    
+
 
   }
 }

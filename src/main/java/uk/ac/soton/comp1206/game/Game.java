@@ -31,7 +31,7 @@ public class Game {
 
   private static final Logger logger = LogManager.getLogger(Game.class);
   //declare a listener for when the next piece is generated
-  private NextPieceListener nextPieceListener = null;
+  protected NextPieceListener nextPieceListener = null;
 
   private LineClearedListener lineClearedListener = null;
   private Random random = new Random(); //Allows us to generate a random number in order to get random pieces/shapes
@@ -56,9 +56,9 @@ public class Game {
    */
   public GamePiece currentPiece, followingPiece, tempPiece;
   public IntegerProperty score;
-  private IntegerProperty level;
-  private IntegerProperty lives;
-  private IntegerProperty multiplier;
+  protected IntegerProperty level;
+  protected IntegerProperty lives;
+  protected IntegerProperty multiplier;
 
   private int lines;
   /**
@@ -82,6 +82,7 @@ public class Game {
    */
   public ArrayList<Pair<String,Integer>> scores = new ArrayList<>();
 
+  protected long delay;
   /**
    * Create a new game with the specified rows and columns. Creates a corresponding grid model.
    *
@@ -474,7 +475,7 @@ public class Game {
   }
 
   public long getTimerDelay() {
-    long delay = Math.max(12000 - (level.get() * 500),2500);
+    delay = Math.max(12000 - (level.get() * 500),2500);
     return delay;
   }
 
