@@ -42,7 +42,7 @@ public class LobbyScene extends BaseScene {
   private ScrollPane scroller;
   private TextField messageField;
   protected static String currentChannel;
-  private StringProperty channelInfo;
+  private StringProperty channelInfo = new SimpleStringProperty();
   private VBox buttons;
   private VBox mainBox;
   private boolean inChannel=false;
@@ -163,15 +163,17 @@ public class LobbyScene extends BaseScene {
   }
 
   public void getUsers(String data) {
+    userTemp = "";
     logger.info("Received users: {}", data);
     String[] userArray = data.split("\\R");
     for (String user : userArray) {
       userTemp += (user + "\n");
     }
-    if (joinedChannel) {
+    if(inChannel) {
       logger.info("User List new: {}", userTemp);
-      channelInfo.set(currentChannel + "Users: " + userTemp);
+      channelInfo.set("Lobby: "+currentChannel + ", Users: " +"\n"+ userTemp);
     }
+
   }
 
   public void getMessage(String data){
@@ -192,10 +194,13 @@ public class LobbyScene extends BaseScene {
       rightPane = new VBox();
       mainPane.setRight(rightPane);
       communicator.send("USERS");
-      channelInfo = new SimpleStringProperty();
-      Label channelInfoLabel = new Label();
-      channelInfo.set(channel+" Users: "+userTemp);
+      logger.info("USers testing "+userTemp.length());
+      Text channelInfoLabel = new Text();
+      channelInfoLabel.getStyleClass().add("messages");
+      channelInfoLabel.setStyle("-fx-fill: white;");
       channelInfoLabel.textProperty().bind(channelInfo);
+
+
       channelInfoLabel.getStyleClass().add("channelLabel");
 
       scroller = new ScrollPane();
