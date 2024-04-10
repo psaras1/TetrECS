@@ -406,7 +406,7 @@ public class ChallengeScene extends BaseScene {
    * (Using .setOnKeyPressed() method to listen for key presses didn't work for me
    * (arrows and space bar weren't registering)
    */
-  private void keyboardControls() {
+  protected void keyboardControls() {
     board.setOnMouseMoved((e) -> {
       mouseMode = true;
       /*

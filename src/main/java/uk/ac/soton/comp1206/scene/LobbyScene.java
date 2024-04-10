@@ -1,7 +1,9 @@
 package uk.ac.soton.comp1206.scene;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Timer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -177,7 +179,17 @@ public class LobbyScene extends BaseScene {
   }
 
   public void getMessage(String data){
-    Text newMessage = new Text(data);
+    String[] parts = data.split(":",2);
+    String username = parts[0];
+    String message = parts[1];
+
+    SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
+    Date date = new Date(System.currentTimeMillis());
+    String timeStamp = new String("[" + formatter.format(date) + "] ");
+
+    Text newMessage = new Text(timeStamp+username + ": " + message);
+
+
     messages.getChildren().add(newMessage);
     scroller.setVvalue(scroller.getVmax());
   }
@@ -246,9 +258,9 @@ public class LobbyScene extends BaseScene {
 
       rightPane.prefWidthProperty().bind(mainPane.widthProperty().divide(2));
       rightPane.setStyle("-fx-border-color: white; -fx-border-width: 2px;-fx-background-color: rgba(0,0,0,0.5);");
-      rightPane.setSpacing(20);
+      rightPane.setSpacing(10);
       Region spacer = new Region();
-      spacer.setPrefHeight(60);
+      spacer.setPrefHeight(30);
       rightPane.setPadding(new javafx.geometry.Insets(10,10,10,10));
       rightPane.getChildren().addAll(channelInfoLabel,spacer,scroller,messageField, chatButtons);
 

@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Control;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -26,6 +27,9 @@ public class MultiplayerScene extends ChallengeScene{
    * @param gameWindow the Game Window
    */
   private final Communicator communicator;
+  private Boolean sendMessageBox = false;
+  private     HBox sendBox = new HBox();
+  private VBox leftBox = new VBox();
   private VBox chatBox = new VBox();
   private ScrollPane scroller = new ScrollPane();
   private static final Logger logger = LogManager.getLogger(MultiplayerScene.class);
@@ -67,7 +71,6 @@ public class MultiplayerScene extends ChallengeScene{
     mainPane.setRight(rigthBox);
 
     /* Left overwrite*/
-    var leftBox = new VBox();
     leftBox.setSpacing(10);
     leftBox.setPadding(new Insets(10));
 
@@ -90,17 +93,24 @@ public class MultiplayerScene extends ChallengeScene{
       sendText.clear();
     });
 
-    HBox sendBox = new HBox();
+
     sendBox.getChildren().addAll(sendText,sendButton);
     HBox.setHgrow(sendText, Priority.ALWAYS);
 
     Text lobbyLabel = new Text("Current Lobby: "+LobbyScene.currentChannel);
     lobbyLabel.getStyleClass().add("multiplayer-game-label");
     Text chatHeading = new Text("Chat: ");
+    Text instruction = new Text("Press T to open/close chat");
+    instruction.getStyleClass().add("multiplayer-game-label");
+    AnchorPane instructionPane = new AnchorPane();
+    instructionPane.getChildren().add(instruction);
+    AnchorPane.setBottomAnchor(instruction,20.0);
+    AnchorPane.setRightAnchor(instruction,320.0);
+    root.getChildren().add(instructionPane);
     chatHeading.getStyleClass().add("multiplayer-game-label");
 
     leftBox.setMaxWidth(200);
-    leftBox.getChildren().addAll(lobbyLabel,chatHeading,scroller,sendBox);
+    leftBox.getChildren().addAll(lobbyLabel,chatHeading,scroller);
     scroller.setStyle("-fx-border-color: white; -fx-border-width: 2px;-fx-background-color: rgba(0,0,0,0.5);");
 
     mainPane.setLeft(leftBox);
@@ -124,4 +134,25 @@ public class MultiplayerScene extends ChallengeScene{
     logger.info("Sending message: "+message);
     this.communicator.send("MSG "+message);
   }
+  @Override
+  public void keyboardControls(){
+    super.keyboardControls();
+    scene.setOnKeyPressed(e -> {
+      switch (e.getCode()){
+        case T :
+          if(sendMessageBox){
+            leftBox.getChildren().remove(sendBox);
+            sendMessageBox = false;
+            return;
+          }
+          else{
+            sendMessageBox = true;
+            leftBox.getChildren().add(sendBox);
+          }
+          logger.info("T pressed");
+
+      }
+    });
+  }
+
 }
