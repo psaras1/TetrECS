@@ -33,6 +33,7 @@ public class Game {
   //declare a listener for when the next piece is generated
   protected NextPieceListener nextPieceListener = null;
   protected Boolean began = false;
+  protected int newScore;
 
   private LineClearedListener lineClearedListener = null;
   private Random random = new Random(); //Allows us to generate a random number in order to get random pieces/shapes
@@ -282,7 +283,7 @@ public class Game {
   public void score(int lines, int blocks) {
     int oldScore = score.get();
     setScore(score.get() + (lines * blocks * 10 * multiplier.get()));
-    int newScore = score.get();
+    newScore = score.get();
     logger.info("Score changed to: {}", score.get());
     //The level should increase per 1000 points
     if (newScore > oldScore) {
@@ -311,7 +312,7 @@ public class Game {
    *
    * @param gameBlock the block that was clicked
    */
-  public void blockClicked(GameBlock gameBlock) {
+  public boolean blockClicked(GameBlock gameBlock) {
     //Get the position of this block
     int x = gameBlock.getX();
     int y = gameBlock.getY();
@@ -326,8 +327,10 @@ public class Game {
       gameLoop = timer.schedule(this::gameLoop, getTimerDelay(), TimeUnit.MILLISECONDS);
       gameLoopListener();
       logger.info("Timer reset");
+      return true;
     } else {
       playErrorSound();
+      return false;
     }
 
   }

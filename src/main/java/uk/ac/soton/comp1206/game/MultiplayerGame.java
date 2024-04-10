@@ -5,6 +5,7 @@ import java.util.ArrayDeque;
 import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.network.Communicator;
 
 public class MultiplayerGame extends Game{
@@ -62,6 +63,34 @@ public class MultiplayerGame extends Game{
   public GamePiece spawnPiece(){
     this.communicator.send("PIECE");
     return this.pieceQueue.pop();
+  }
+
+  @Override
+  public boolean blockClicked(GameBlock block){
+    logger.info("Block clicked");
+    boolean placed = super.blockClicked(block);
+    StringBuilder toSend = new StringBuilder();
+    for(int i=0;i<this.cols;i++){
+      for(int j=0;j<this.rows;j++){
+        int val = this.grid.get(i,j);
+        toSend.append(" "+val+" ");
+      }
+    }
+    String board = toSend.toString().trim();
+    this.communicator.send("BOARD "+board);
+    return placed;
+  }
+
+  @Override
+  public void exitGame(){
+    super.exitGame();
+    this.communicator.send("DIE");
+  }
+  @Override
+  public void score(int lines,int blocks){
+    super.score(lines,blocks);
+    logger.info("Sending score");
+    this.communicator.send("SCORE "+ newScore);
   }
 
 }
