@@ -5,9 +5,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import uk.ac.soton.comp1206.game.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
@@ -22,7 +21,12 @@ public abstract class BaseScene {
 
   protected GamePane root;
   protected Scene scene;
-
+  /*
+  Mute button global
+   */
+  public Image muteImage = new Image(getClass().getResource("/images/mute.png").toString());
+  public Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
+  public ImageView muteImageView = new ImageView(unmuteImage);
   /**
    * Create a new scene, passing in the GameWindow the scene will be displayed in
    *
@@ -54,7 +58,7 @@ public abstract class BaseScene {
     this.scene = scene;
     return scene;
   }
-  abstract String getMusic();
+
 
   /**
    * Get the JavaFX scene contained inside
@@ -65,28 +69,32 @@ public abstract class BaseScene {
     return this.scene;
   }
 
-  protected void addMuteButton(Parent root){
-    ImageView muteImageView = new ImageView();
+  protected void addMuteButton(String filePath,Multimedia multimedia){
+    var muteButton = new Button("", muteImageView);
     muteImageView.setFitHeight(30);
     muteImageView.setFitWidth(30);
     muteImageView.styleProperty().setValue("-fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0);");
+    muteButton.setBackground(null);
     AnchorPane muteButtonPane = new AnchorPane();
-
-    Button muteButton = new Button("",muteImageView);
     muteButtonPane.getChildren().add(muteButton);
     AnchorPane.setLeftAnchor(muteButton, 5.0);
     AnchorPane.setBottomAnchor(muteButton, 13.0);
     muteButtonPane.setPickOnBounds(false);
-    muteButton.setBackground(null);
     muteButton.setOnMouseClicked(actionEvent -> {
-      if (!gameMusic.isPlaying()) {
-        gameMusic.playBackgroundMusic(getMusic());
+      if(!multimedia.isPlaying()){
+        multimedia.playBackgroundMusic(filePath);
         muteImageView.setImage(unmuteImage);
-      } else {
-        gameMusic.stopBackgroundMusic();
+      }else{
+        multimedia.stopBackgroundMusic();
         muteImageView.setImage(muteImage);
       }
     });
-    root.getChildren().add(muteButtonPane);
+    ((Pane)root).getChildren().add(muteButtonPane);
+  }
+  public void changeToMuteImage(){
+    muteImageView.setImage(muteImage);
+  }
+  public void changeToUnmuteImage(){
+    muteImageView.setImage(unmuteImage);
   }
 }

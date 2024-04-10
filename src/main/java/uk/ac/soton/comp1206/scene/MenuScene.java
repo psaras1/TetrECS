@@ -26,9 +26,7 @@ public class MenuScene extends BaseScene {
     private static final Logger logger = LogManager.getLogger(MenuScene.class);
     private Multimedia menuMusic = new Multimedia();
     private Multimedia transitionSound = new Multimedia();
-    public Image muteImage = new Image(getClass().getResource("/images/mute.png").toString());
-    public Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
-    public ImageView muteImageView = new ImageView(unmuteImage);
+
 
     /**
      * Create a new menu scene
@@ -141,33 +139,11 @@ public class MenuScene extends BaseScene {
         mainPane.setCenter(buttonContainer);
 
         //Mute button implementation
-        var muteButton = new Button("",muteImageView);
-        muteImageView.setFitHeight(30);
-        muteImageView.setFitWidth(30);
-        muteImageView.styleProperty().setValue("-fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0);");
-        muteButton.setBackground(null);
-        AnchorPane muteButtonPane = new AnchorPane();
-        muteButtonPane.getChildren().add(muteButton);
-        AnchorPane.setLeftAnchor(muteButton, 5.0);
-        AnchorPane.setBottomAnchor(muteButton, 13.0);
-        muteButtonPane.setPickOnBounds(false);
-        muteButton.setOnMouseClicked(actionEvent -> {
-            if(!menuMusic.isPlaying()){
-                menuMusic.playBackgroundMusic("/music/menu.mp3");
-                muteImageView.setImage(unmuteImage);
-            }else{
-                menuMusic.stopBackgroundMusic();
-                muteImageView.setImage(muteImage);
-            }
-        });
-        root.getChildren().add(muteButtonPane);
+        addMuteButton("/music/menu.mp3", menuMusic);
 
     }
 
-    @Override
-    String getMusic() {
-        return null;
-    }
+
 
 
     /**
@@ -189,10 +165,10 @@ public class MenuScene extends BaseScene {
                 case M :
                     if(!menuMusic.isPlaying()){
                         menuMusic.playBackgroundMusic("/music/menu.mp3");
-                        muteImageView.setImage(unmuteImage);
+                        changeToUnmuteImage();
                     }else{
                         menuMusic.stopBackgroundMusic();
-                        muteImageView.setImage(muteImage);
+                        changeToMuteImage();
                     }
                     break;
             }

@@ -290,12 +290,12 @@ Online scores
       });
 
     }
+    /*
+    Mute button
+     */
+    addMuteButton("/music/end.wav", scoresMusic);
   }
 
-  @Override
-  String getMusic() {
-    return null;
-  }
 
 
   /**
