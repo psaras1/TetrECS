@@ -1,6 +1,7 @@
 package uk.ac.soton.comp1206.scene;
 
 import java.util.Timer;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -84,6 +85,11 @@ public class MultiplayerScene extends ChallengeScene{
     sendButton.setMinWidth(Button.USE_PREF_SIZE);
     sendButton.setMinHeight(28);
 
+    sendButton.setOnMouseClicked(e -> {
+      this.sendMessage(sendText.getText());
+      sendText.clear();
+    });
+
     HBox sendBox = new HBox();
     sendBox.getChildren().addAll(sendText,sendButton);
     HBox.setHgrow(sendText, Priority.ALWAYS);
@@ -103,14 +109,19 @@ public class MultiplayerScene extends ChallengeScene{
     String[] parts = s.split(" ",2);
     String command = parts[0];
     if(command.equals("MSG")){
-      recieveMessage(parts[1]);
+      Platform.runLater(() -> this.recieveMessage(parts[1]));
     }
   }
   public void recieveMessage(String message){
-    String[] data = message.split(":",2);
-    String user = data[0];
-    String text = data[1];
-    chatBox.getChildren().add(new Text(user + ": " + text));
+    logger.info("Recieving message: "+message);
+    Text newMessage = new Text(message);
+    chatBox.getChildren().add(newMessage);
+    logger.info("Current messages: "+chatBox.getChildren().size());
     scroller.setVvalue(scroller.getVmax());
+  }
+
+  public void sendMessage(String message){
+    logger.info("Sending message: "+message);
+    this.communicator.send("MSG "+message);
   }
 }
