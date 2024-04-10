@@ -311,3 +311,17 @@ TextField {
     -fx-font-weight: bold;
     -fx-border-color: white;
 }
+.multiplayer-game-label{
+    -fx-fill: white; /* White text color */
+    -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 12px;
+}
+
+.multiplayer-button{
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-border-color: white;
+}

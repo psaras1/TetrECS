@@ -65,6 +65,7 @@ public class ChallengeScene extends BaseScene {
   protected Text levelLabel;
   protected Text livesLabel;
   protected Text multiplierLabel;
+  protected Text title;
   protected PieceBoard currentPiece, followingPiece;
   private int coordX = 0, coordY = 0;
   private boolean mouseMode;
@@ -129,7 +130,7 @@ public class ChallengeScene extends BaseScene {
 
     /*top*/
     /*title*/
-    var title = new Text("TetrECS");
+    title = new Text("TetrECS");
     title.getStyleClass().add("bigtitle");
     var topBox = new HBox();
     topBox.setAlignment(Pos.CENTER);
@@ -524,6 +525,7 @@ public class ChallengeScene extends BaseScene {
       }
     });
   }
+
 
 
 }

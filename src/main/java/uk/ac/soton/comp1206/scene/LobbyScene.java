@@ -41,7 +41,7 @@ public class LobbyScene extends BaseScene {
   private VBox rightPane;
   private ScrollPane scroller;
   private TextField messageField;
-  private String currentChannel;
+  protected static String currentChannel;
   private StringProperty channelInfo;
   private VBox buttons;
   private VBox mainBox;
@@ -82,6 +82,7 @@ public class LobbyScene extends BaseScene {
   @Override
   public void build() {
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
+
 
     //menu pane
     var menuPane = new StackPane();
@@ -162,7 +163,7 @@ public class LobbyScene extends BaseScene {
   }
 
   public void getUsers(String data) {
-    logger.info("Users: " + data);
+    logger.info("Received users: {}", data);
     String[] userArray = data.split("\\R");
     for (String user : userArray) {
       userTemp += (user + "\n");
@@ -344,5 +345,6 @@ public class LobbyScene extends BaseScene {
       }
   });
   }
+
 
 }
