@@ -102,11 +102,8 @@ public class MultiplayerScene extends ChallengeScene{
     Text chatHeading = new Text("Chat: ");
     Text instruction = new Text("Press T to open/close chat");
     instruction.getStyleClass().add("multiplayer-game-label");
-    AnchorPane instructionPane = new AnchorPane();
-    instructionPane.getChildren().add(instruction);
-    AnchorPane.setBottomAnchor(instruction,20.0);
-    AnchorPane.setRightAnchor(instruction,320.0);
-    root.getChildren().add(instructionPane);
+    topBox.setSpacing(10);
+    topBox.getChildren().add(instruction);
     chatHeading.getStyleClass().add("multiplayer-game-label");
 
     leftBox.setMaxWidth(200);

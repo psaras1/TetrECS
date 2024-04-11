@@ -80,6 +80,7 @@ public class ChallengeScene extends BaseScene {
   protected VBox livesBox = new VBox();
   protected VBox multiplierBox = new VBox();
   protected VBox centerBox = new VBox();
+  protected VBox topBox = new VBox();
 
 
   /**
@@ -132,7 +133,7 @@ public class ChallengeScene extends BaseScene {
     /*title*/
     title = new Text("TetrECS");
     title.getStyleClass().add("bigtitle");
-    var topBox = new HBox();
+
     topBox.setAlignment(Pos.CENTER);
     topBox.getChildren().add(title);
     mainPane.setTop(topBox);
