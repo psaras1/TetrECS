@@ -52,6 +52,7 @@ public class ChallengeScene extends BaseScene {
   game loop implementation
    */
   private Rectangle timeBar;
+  protected Boolean sendMessageBox = false;
   private long timeBarWidth;
   private Timeline timeline;
 
@@ -423,6 +424,7 @@ public class ChallengeScene extends BaseScene {
     });
     gameWindow.getScene().addEventFilter(KeyEvent.KEY_PRESSED,event -> {
       logger.info("Key pressed: {}", event.getCode());
+      if(!sendMessageBox){
       switch (event.getCode()) {
         //Go back to menu
         case ESCAPE:
@@ -522,8 +524,9 @@ public class ChallengeScene extends BaseScene {
           }
           break;
         case ENTER, X:
+
           game.blockClicked(board.getBlock(coordX, coordY));
-      }
+      }}
     });
   }
 

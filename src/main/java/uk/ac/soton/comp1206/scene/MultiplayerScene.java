@@ -27,7 +27,6 @@ public class MultiplayerScene extends ChallengeScene{
    * @param gameWindow the Game Window
    */
   private final Communicator communicator;
-  private Boolean sendMessageBox = false;
   private     HBox sendBox = new HBox();
   private VBox leftBox = new VBox();
   private VBox chatBox = new VBox();
@@ -82,6 +81,14 @@ public class MultiplayerScene extends ChallengeScene{
     scroller.setPrefViewportHeight(200);
 
     var sendText = new TextField();
+    sendText.setPromptText("Type a message...");
+    sendText.setOnKeyPressed(e -> {
+      if(e.getCode().toString().equals("ENTER")){
+        this.sendMessage(sendText.getText());
+        sendText.clear();
+        e.consume();
+      }
+    });
     sendText.setMaxWidth(Double.MAX_VALUE);
     Button sendButton = new Button("Send");
     sendButton.getStyleClass().add("multiplayer-button");
@@ -100,7 +107,7 @@ public class MultiplayerScene extends ChallengeScene{
     Text lobbyLabel = new Text("Current Lobby: "+LobbyScene.currentChannel);
     lobbyLabel.getStyleClass().add("multiplayer-game-label");
     Text chatHeading = new Text("Chat: ");
-    Text instruction = new Text("Press T to open/close chat");
+    Text instruction = new Text("Press <control> to open/close chat");
     instruction.getStyleClass().add("multiplayer-game-label");
     topBox.setSpacing(10);
     topBox.getChildren().add(instruction);
@@ -136,7 +143,7 @@ public class MultiplayerScene extends ChallengeScene{
     super.keyboardControls();
     scene.setOnKeyPressed(e -> {
       switch (e.getCode()){
-        case T :
+        case CONTROL   :
           if(sendMessageBox){
             leftBox.getChildren().remove(sendBox);
             sendMessageBox = false;
@@ -146,7 +153,7 @@ public class MultiplayerScene extends ChallengeScene{
             sendMessageBox = true;
             leftBox.getChildren().add(sendBox);
           }
-          logger.info("T pressed");
+          logger.info("control pressed");
 
       }
     });
