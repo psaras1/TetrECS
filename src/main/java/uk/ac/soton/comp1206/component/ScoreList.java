@@ -27,12 +27,12 @@ public class ScoreList extends VBox {
   Temporarily stores scores
    */
 
-  private SimpleListProperty<Pair<String, Integer>> scores = new SimpleListProperty<>();
-  StringProperty name = new SimpleStringProperty();
+  protected SimpleListProperty<Pair<String, Integer>> scores = new SimpleListProperty<>();
+  protected StringProperty name = new SimpleStringProperty();
   /*
   Used to loop through the scores and apply animation to them
    */
-  ArrayList<HBox> scoresAnimated = new ArrayList<>();
+  protected ArrayList<HBox> scoresAnimated = new ArrayList<>();
 
   /*
   Constructor for the ScoreList class. It sets the style of the component and adds a listener to the scores property to update the list when the scores change.

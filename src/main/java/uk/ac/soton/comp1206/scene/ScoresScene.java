@@ -74,8 +74,8 @@ List of scores (Observable means it can be observed for changes, have a listener
   /*
 Online scores
    */
-  private ScoreList remoteScoresList;
-  public ObservableList<Pair<String, Integer>> remoteScores = new SimpleListProperty<>();
+  protected ScoreList remoteScoresList;
+  protected ObservableList<Pair<String, Integer>> remoteScores = new SimpleListProperty<>();
   private final Communicator communicator;
   private final SimpleStringProperty onlineNames = new SimpleStringProperty("");
   /*

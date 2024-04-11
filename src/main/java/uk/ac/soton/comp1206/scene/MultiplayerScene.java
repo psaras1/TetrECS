@@ -1,7 +1,13 @@
 package uk.ac.soton.comp1206.scene;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -13,8 +19,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp1206.component.Leaderboard;
 import uk.ac.soton.comp1206.game.MultiplayerGame;
 import uk.ac.soton.comp1206.network.Communicator;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -31,6 +40,12 @@ public class MultiplayerScene extends ChallengeScene{
   private VBox leftBox = new VBox();
   private VBox chatBox = new VBox();
   private ScrollPane scroller = new ScrollPane();
+
+  private ObservableList<Pair<String,Integer>> remoteScoreList;
+  private ArrayList<Pair<String,Integer>> remoteScores = new ArrayList<>();
+  private Leaderboard leaderboard;
+  private StringProperty name = new SimpleStringProperty();
+
   private static final Logger logger = LogManager.getLogger(MultiplayerScene.class);
   public MultiplayerScene(GameWindow gameWindow) {
     super(gameWindow);
@@ -44,6 +59,14 @@ public class MultiplayerScene extends ChallengeScene{
     this.communicator.addListener((message) -> {
       this.handleCommunication(message.trim());
     });
+    this.updateName();
+    this.updateScores();
+  }
+  private void updateScores(){
+    this.communicator.send("SCORES");
+  }
+  private void updateName(){
+    this.communicator.send("NICK");
   }
   @Override
   public void setupGame(){
@@ -113,8 +136,21 @@ public class MultiplayerScene extends ChallengeScene{
     topBox.getChildren().add(instruction);
     chatHeading.getStyleClass().add("multiplayer-game-label");
 
+    this.remoteScoreList = FXCollections.observableArrayList(this.remoteScores);
+    SimpleListProperty<Pair<String,Integer>> remoteScoresWrapper = new SimpleListProperty<>(this.remoteScoreList);
+    this.leaderboard = new Leaderboard();
+    this.leaderboard.scoreProperty().bind(remoteScoresWrapper);
+    this.leaderboard.nameProperty().bind(this.name);
+
+    var leaderboardHeading = new Text("Leaderboard: ");
+    leaderboardHeading.getStyleClass().add("multiplayer-game-label");
+
+    var leaderboardBox = new VBox();
+    leaderboardBox.getChildren().addAll(leaderboardHeading,leaderboard);
+    leaderboardBox.setAlignment(Pos.CENTER);
+
     leftBox.setMaxWidth(200);
-    leftBox.getChildren().addAll(lobbyLabel,chatHeading,scroller);
+    leftBox.getChildren().addAll(lobbyLabel,leaderboardBox,chatHeading,scroller);
     scroller.setStyle("-fx-border-color: white; -fx-border-width: 2px;-fx-background-color: rgba(0,0,0,0.5);");
 
     mainPane.setLeft(leftBox);
@@ -125,6 +161,39 @@ public class MultiplayerScene extends ChallengeScene{
     if(command.equals("MSG")){
       Platform.runLater(() -> this.recieveMessage(parts[1]));
     }
+    if(command.equals("SCORES")){
+      Platform.runLater(() -> this.recieveScores(parts[1]));
+    }
+    if(command.equals("NICK")){
+      if(!parts[1].contains(":")){
+        this.name.set(parts[1]);
+      }
+    }
+  }
+  private void recieveScores(String data){
+    logger.info("Recieving scores: "+data);
+    this.remoteScores.clear();
+    String[] scoreIndLines = data.split("\\R");
+    String[] scoreIndLinesSplit = scoreIndLines;
+    int numScores = scoreIndLines.length;
+
+    for(int i=0;i<numScores;i++){
+      String scoreLine = scoreIndLinesSplit[i];
+      String[] parts = scoreLine.split(":");
+      String player = parts[0];
+      int score = Integer.parseInt(parts[1]);
+      logger.info("Recieved score: "+player+" = "+score);
+      String lives = parts[2];
+      if(lives.equals("DEAD")){
+        this.leaderboard.died(player);
+      }
+      this.remoteScores.add(new Pair(player,score));
+    }
+    this.remoteScores.sort((a,b) -> {
+      return ((Integer)b.getValue()).compareTo((Integer)a.getValue());
+    });
+    this.remoteScoreList.clear();
+    this.remoteScoreList.addAll(this.remoteScores);
   }
   public void recieveMessage(String message){
     logger.info("Recieving message: "+message);
@@ -134,7 +203,7 @@ public class MultiplayerScene extends ChallengeScene{
     scroller.setVvalue(scroller.getVmax());
   }
 
-  public void sendMessage(String message){
+  private void sendMessage(String message){
     logger.info("Sending message: "+message);
     this.communicator.send("MSG "+message);
   }
