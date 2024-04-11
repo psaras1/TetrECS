@@ -29,6 +29,8 @@ public class ScoreList extends VBox {
 
   protected SimpleListProperty<Pair<String, Integer>> scores = new SimpleListProperty<>();
   protected StringProperty name = new SimpleStringProperty();
+  public Text playerName;
+  public Text playerScore;
   /*
   Used to loop through the scores and apply animation to them
    */
@@ -61,14 +63,15 @@ public class ScoreList extends VBox {
       HBox indLine = new HBox();
       indLine.setAlignment(Pos.CENTER);
 
-      var playerName = new Text(pair.getKey() + ": ");
+      playerName = new Text(pair.getKey() + ": ");
       playerName.getStyleClass().add("player-name");
 
       playerName.setTextAlignment(TextAlignment.CENTER);
       HBox.setHgrow(playerName, javafx.scene.layout.Priority.ALWAYS);
 
-      var playerScore = new Text(pair.getValue().toString());
+      playerScore = new Text(pair.getValue().toString());
       playerScore.getStyleClass().add("player-score");
+
 
       playerScore.setTextAlignment(TextAlignment.CENTER);
       HBox.setHgrow(playerScore, javafx.scene.layout.Priority.ALWAYS);

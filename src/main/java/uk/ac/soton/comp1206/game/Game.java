@@ -59,7 +59,7 @@ public class Game {
   public GamePiece currentPiece, followingPiece, tempPiece;
   public IntegerProperty score;
   protected IntegerProperty level;
-  protected IntegerProperty lives;
+  public IntegerProperty lives;
   protected IntegerProperty multiplier;
 
   private int lines;
@@ -98,7 +98,7 @@ public class Game {
     //These should default to 0 score, level 0, 3 lives and 1 x multiplier respectively.
     this.score = new SimpleIntegerProperty(0);
     this.level = new SimpleIntegerProperty(0);
-    this.lives = new SimpleIntegerProperty(0);
+    this.lives = new SimpleIntegerProperty(4);
     this.multiplier = new SimpleIntegerProperty(1);
 
     //Create a new grid model to represent the game state

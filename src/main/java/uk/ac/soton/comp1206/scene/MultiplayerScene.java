@@ -45,6 +45,7 @@ public class MultiplayerScene extends ChallengeScene{
   private ArrayList<Pair<String,Integer>> remoteScores = new ArrayList<>();
   private Leaderboard leaderboard;
   private StringProperty name = new SimpleStringProperty();
+  SimpleListProperty<Pair<String,Integer>> remoteScoresWrapper;
 
   private static final Logger logger = LogManager.getLogger(MultiplayerScene.class);
   public MultiplayerScene(GameWindow gameWindow) {
@@ -65,6 +66,7 @@ public class MultiplayerScene extends ChallengeScene{
   private void updateScores(){
     this.communicator.send("SCORES");
   }
+
   private void updateName(){
     this.communicator.send("NICK");
   }
@@ -137,7 +139,7 @@ public class MultiplayerScene extends ChallengeScene{
     chatHeading.getStyleClass().add("multiplayer-game-label");
 
     this.remoteScoreList = FXCollections.observableArrayList(this.remoteScores);
-    SimpleListProperty<Pair<String,Integer>> remoteScoresWrapper = new SimpleListProperty<>(this.remoteScoreList);
+    remoteScoresWrapper = new SimpleListProperty<>(this.remoteScoreList);
     this.leaderboard = new Leaderboard();
     this.leaderboard.scoreProperty().bind(remoteScoresWrapper);
     this.leaderboard.nameProperty().bind(this.name);
@@ -150,6 +152,7 @@ public class MultiplayerScene extends ChallengeScene{
     leaderboardBox.setAlignment(Pos.CENTER);
 
     leftBox.setMaxWidth(200);
+    leftBox.setAlignment(Pos.CENTER);
     leftBox.getChildren().addAll(lobbyLabel,leaderboardBox,chatHeading,scroller);
     scroller.setStyle("-fx-border-color: white; -fx-border-width: 2px;-fx-background-color: rgba(0,0,0,0.5);");
 
@@ -169,9 +172,12 @@ public class MultiplayerScene extends ChallengeScene{
         this.name.set(parts[1]);
       }
     }
+    if(command.equals("DIE")){
+      this.leaderboard.died(parts[1]);
+    }
   }
   private void recieveScores(String data){
-    logger.info("Recieving scores: "+data);
+    logger.info("Recieving data: "+data);
     this.remoteScores.clear();
     String[] scoreIndLines = data.split("\\R");
     String[] scoreIndLinesSplit = scoreIndLines;
@@ -184,9 +190,10 @@ public class MultiplayerScene extends ChallengeScene{
       int score = Integer.parseInt(parts[1]);
       logger.info("Recieved score: "+player+" = "+score);
       String lives = parts[2];
-      if(lives.equals("DEAD")){
-        this.leaderboard.died(player);
-      }
+//      if(lives.equals("DEAD")){
+//        logger.info("Player "+player+" has died in a fight");
+//        this.leaderboard.died(player);
+//      }
       this.remoteScores.add(new Pair(player,score));
     }
     this.remoteScores.sort((a,b) -> {
