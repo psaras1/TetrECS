@@ -286,6 +286,9 @@ public class LobbyScene extends BaseScene {
   public void textFieldAction(){
       if(sendText.getText().startsWith("/nick")){
         String[] parts = sendText.getText().split(" ");
+        if(parts.length<2){
+          return;
+        }
         String newUsername = parts[1];
         communicator.send("NICK " + newUsername);
         sendText.clear();
