@@ -47,6 +47,7 @@ public class ScoresScene extends BaseScene {
    */
 
   private Game game;
+  public Boolean worthy;
   private Multimedia scoresMusic = new Multimedia();
 
   /*
@@ -57,6 +58,7 @@ List of scores (Observable means it can be observed for changes, have a listener
   private TextField nameField = new TextField();
   private VBox display = new VBox();
   private BorderPane mainPane = new BorderPane();
+  protected Text title;
 
   /*
   Temporary score storage
@@ -82,7 +84,13 @@ Online scores
   Used to store top 10 online scores, current score is compared to these
    */
   private ArrayList<Pair<String, Integer>> onlineScores;
+  protected SimpleListProperty<Pair<String, Integer>> remoteScoresWrapper;
+  protected Text scoreBoxRemoteLabel;
+  protected VBox scoreBoxRemote;
+  protected HBox centralBox;
 
+  protected VBox scoreBoxLocal;
+  protected Text scoreBoxLocalLabel;
 
   private static final Logger logger = LogManager.getLogger(ScoresScene.class);
 
@@ -131,7 +139,7 @@ Online scores
     toReturn.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
     onlineScores = toReturn;
     remoteScores = FXCollections.observableArrayList(toReturn);
-    SimpleListProperty<Pair<String, Integer>> remoteScoresWrapper = new SimpleListProperty<>(remoteScores);
+    remoteScoresWrapper = new SimpleListProperty<>(remoteScores);
     remoteScoresList.returnScores().bind(remoteScoresWrapper);
     remoteScoresList.returnName().bind(onlineNames);
     remoteScoresList.updateList();
@@ -206,7 +214,7 @@ Online scores
     Top
      */
     /*title*/
-    var title = new Text("Scores:  ");
+    title = new Text("Scores:  ");
     title.getStyleClass().add("bigtitle");
     title.styleProperty().setValue("-fx-effect: dropshadow(gaussian, magenta, 40, 0, 0, 0);");
     var topBox = new HBox();
@@ -304,7 +312,7 @@ Online scores
    * @param mainPane
    */
   public void finishBuild(BorderPane mainPane) {
-    Boolean worthy = false;
+    worthy = false;
     for (Pair<String, Integer> score : onlineScores) {
       if (currentScore > score.getValue()) {
         worthy = true;
@@ -316,27 +324,27 @@ Online scores
     /*
     Local scores
      */
-    var scoreBoxLocalLabel = new Text("Local Scores");
+    scoreBoxLocalLabel = new Text("Local Scores");
     Region spacer = new Region();
     spacer.setPrefHeight(20);
     scoreBoxLocalLabel.getStyleClass().add("heading");
-    var scoreBoxLocal = new VBox();
+    scoreBoxLocal = new VBox();
     scoreBoxLocal.setAlignment(Pos.CENTER);
     scoreBoxLocal.getChildren().addAll(scoreBoxLocalLabel, spacer, scoreList);
   /*
   Remote scores
    */
-    var scoreBoxRemoteLabel = new Text("Remote Scores");
+    scoreBoxRemoteLabel = new Text("Remote Scores");
     Region spacer1 = new Region();
     spacer1.setPrefHeight(20);
     scoreBoxRemoteLabel.getStyleClass().add("heading");
-    var scoreBoxRemote = new VBox();
+    scoreBoxRemote = new VBox();
     scoreBoxRemote.setAlignment(Pos.CENTER);
     scoreBoxRemote.getChildren().addAll(scoreBoxRemoteLabel, spacer1, remoteScoresList);
     /*
     Scores container
      */
-    var centralBox = new HBox();
+    centralBox = new HBox();
     centralBox.setAlignment(Pos.CENTER);
     centralBox.getChildren().addAll(scoreBoxLocal, scoreBoxRemote);
     mainPane.setCenter(centralBox);
@@ -375,9 +383,10 @@ Online scores
    */
   public void writeOnlineScore(String name, int score) {
     logger.info("New online high score: {}", score);
-    remoteScores.add(0, new Pair<>(name, score));
+    remoteScoresWrapper.add(0, new Pair<>(name, score));
     logger.info("Number of online scores: {}", onlineScores.size());
     communicator.send("HISCORE " + name + ":" + score);
+
   }
 
   /**

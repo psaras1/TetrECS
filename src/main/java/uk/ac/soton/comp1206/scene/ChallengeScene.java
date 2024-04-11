@@ -58,7 +58,7 @@ public class ChallengeScene extends BaseScene {
 
   private static final Logger logger = LogManager.getLogger(ChallengeScene.class);
   protected Game game;
-  private Multimedia gameMusic = new Multimedia();
+  protected Multimedia gameMusic = new Multimedia();
   /*
    * Labels for the game stats
    */

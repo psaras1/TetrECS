@@ -150,7 +150,7 @@ public class GameBlock extends Canvas {
     gc.clearRect(0, 0, width, height);
 
     //Fill
-    gc.setFill(Color.rgb(255,255,255,0.5));
+    gc.setFill(Color.rgb(255,255,255,0.3));
     gc.fillRect(0, 0, width, height);
 
     //Border

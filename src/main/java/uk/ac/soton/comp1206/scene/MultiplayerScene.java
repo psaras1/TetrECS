@@ -62,6 +62,12 @@ public class MultiplayerScene extends ChallengeScene{
     });
     this.updateName();
     this.updateScores();
+    game.setOnGameEnd(() -> {
+      logger.info("Game over");
+      game.endTimer();
+      gameMusic.stopBackgroundMusic();
+      gameWindow.showOnlineScores(game,leaderboard);
+    });
   }
   private void updateScores(){
     this.communicator.send("SCORES");
@@ -222,12 +228,14 @@ public class MultiplayerScene extends ChallengeScene{
         case CONTROL   :
           if(sendMessageBox){
             leftBox.getChildren().remove(sendBox);
+
             sendMessageBox = false;
             return;
           }
           else{
             sendMessageBox = true;
-            leftBox.getChildren().add(sendBox);
+            leftBox.getChildren().add(sendBox);;
+            sendBox.getChildren().get(0).requestFocus();
           }
           logger.info("control pressed");
 
