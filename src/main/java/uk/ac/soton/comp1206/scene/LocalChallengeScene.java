@@ -6,6 +6,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +17,8 @@ import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class LocalChallengeScene extends ChallengeScene {
   private static final Logger logger  = LogManager.getLogger(LocalChallengeScene.class);
+  private Text eraseBlock;
+  private Text eraseBlockCost;
 
   /**
    * Create a new Single Player challenge scene
@@ -77,6 +81,7 @@ public class LocalChallengeScene extends ChallengeScene {
     getPiece.getStyleClass().add("option1-button");
     getPiece.setOnMouseClicked(e -> {
       Boolean changed = game.powerPiece();
+
       if(!changed) {
         getPiece.getStyleClass().remove("option1-button");
         getPiece.getStyleClass().add("noPower");
@@ -93,8 +98,8 @@ public class LocalChallengeScene extends ChallengeScene {
     getPieceContainer.getChildren().addAll(getPiece, getPieceCost);
 
     /*Erase block*/
-    var eraseBlock = new Text("Erase Block");
-    var eraseBlockCost = new Text("Cost: 500");
+    eraseBlock = new Text("Erase Block");
+    eraseBlockCost = new Text("Cost: 500");
     eraseBlockCost.getStyleClass().add("option3-button");
     eraseBlock.getStyleClass().add("option1-button");
     eraseBlock.setOnMouseClicked(e -> {
@@ -124,8 +129,9 @@ public class LocalChallengeScene extends ChallengeScene {
 
 
   }
-  public Boolean powerErase(){
+  public void powerErase(){
     if(this.game.getScore().get() >= 500){
+      powerUpSound();
       logger.info("Erase block power up activated");
       game.eraseMode = true;
       logger.info("Erase mode activated, eraseMode: {}", game.eraseMode);
@@ -138,9 +144,21 @@ public class LocalChallengeScene extends ChallengeScene {
         board.setOnMouseClicked(null);
         logger.info("Erase mode deactivated, eraseMode: {}", game.eraseMode);
       });
-
-      return true;
+    }else{
+      logger.info("Not enough points to activate erase block power up");
+      eraseBlock.getStyleClass().remove("option1-button");
+      eraseBlock.getStyleClass().add("noPower");
+      Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2),change->{
+        eraseBlock.getStyleClass().remove("noPower");
+        eraseBlock.getStyleClass().add("option1-button");
+      }));
+      timeline.play();
     }
-    return false;
+  }
+  private void powerUpSound(){
+    String soundFile = getClass().getResource("/sounds/wow.mp3").toExternalForm();
+    Media sound = new Media(soundFile);
+    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    mediaPlayer.play();
   }
 }

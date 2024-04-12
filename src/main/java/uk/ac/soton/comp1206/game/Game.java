@@ -21,6 +21,7 @@ import uk.ac.soton.comp1206.event.GameEndListener;
 import uk.ac.soton.comp1206.event.GameLoopListener;
 import uk.ac.soton.comp1206.event.LineClearedListener;
 import uk.ac.soton.comp1206.event.NextPieceListener;
+import uk.ac.soton.comp1206.scene.LocalChallengeScene;
 
 /**
  * The Game class handles the main logic, state and properties of the TetrECS game. Methods to
@@ -558,6 +559,7 @@ public class Game {
    */
   public Boolean powerLives(){
     if(this.getScore().get() >= 100){
+      powerUpSound();
       setLives(this.getLives().get() + 1);
       setScore(this.getScore().get() - 100);
       logger.info("Lives increased by 1, lives left: {}", this.getLives().get());
@@ -567,12 +569,19 @@ public class Game {
   }
   public Boolean powerPiece(){
     if(this.getScore().get() >= 300){
+      powerUpSound();
       nextPiece();
       setScore(this.getScore().get() - 300);
       logger.info("Current piece changed to: {}", this.currentPiece);
       return true;
     }
     return false;
+  }
+  private void powerUpSound(){
+    String soundFile = getClass().getResource("/sounds/wow.mp3").toExternalForm();
+    Media sound = new Media(soundFile);
+    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    mediaPlayer.play();
   }
 
 }
