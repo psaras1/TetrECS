@@ -137,6 +137,13 @@
     -fx-font-size: 20px;
 }
 
+.insufficientScore{
+    -fx-fill: red;
+    -fx-effect: dropshadow(gaussian, white, 10, 0, 0, 0); /* Aqua glow effect */
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 10px;
+}
+
 .scorelist {
     -fx-font-size: 20px;
     -fx-font-weight: 700;;

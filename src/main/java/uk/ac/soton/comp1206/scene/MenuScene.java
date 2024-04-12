@@ -74,8 +74,7 @@ public class MenuScene extends BaseScene {
         new KeyFrame(Duration.ZERO, new KeyValue(title.rotateProperty(), 0)),
         new KeyFrame(Duration.seconds(1), new KeyValue(title.rotateProperty(), 10)),
         new KeyFrame(Duration.seconds(2), new KeyValue(title.rotateProperty(), -10)),
-        new KeyFrame(Duration.seconds(3), new KeyValue(title.rotateProperty(), 0))
-    );
+        new KeyFrame(Duration.seconds(3), new KeyValue(title.rotateProperty(), 0)));
     titleTimeline.setCycleCount(Timeline.INDEFINITE);
     titleTimeline.play();
 
@@ -113,15 +112,6 @@ public class MenuScene extends BaseScene {
       gameWindow.loadScene(new LobbyScene(gameWindow));
     });
 
-    /*
-     *Scores button
-     */
-    var scoresButton = new Text("Scores");
-    scoresButton.getStyleClass().add("option-button");
-    scoresButton.setOnMouseClicked(e -> {
-      menuMusic.stopBackgroundMusic();
-      transitionSound.playAudio("/sounds/transition.wav");
-    });
         /*
         Settings button
          */
@@ -138,7 +128,7 @@ public class MenuScene extends BaseScene {
      */
     var buttonContainer = new VBox();
     buttonContainer.getChildren()
-        .addAll(playButton, instructionsButton, scoresButton, multiplayerButton, settingsButton);
+        .addAll(playButton, instructionsButton, multiplayerButton, settingsButton);
     buttonContainer.setAlignment(Pos.CENTER);
     buttonContainer.setSpacing(20);
     mainPane.setCenter(buttonContainer);

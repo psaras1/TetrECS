@@ -192,4 +192,5 @@ public class GameWindow {
     logger.info("Loading online score screen");
     loadScene(new ScoresSceneMultiplayer(this, game, leaderboard));
   }
+
 }

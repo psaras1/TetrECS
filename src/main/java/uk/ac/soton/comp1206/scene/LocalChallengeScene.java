@@ -12,7 +12,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.ac.soton.comp1206.component.GameBlock;
+
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 /**
@@ -26,6 +26,8 @@ public class LocalChallengeScene extends ChallengeScene {
   private static final Logger logger = LogManager.getLogger(LocalChallengeScene.class);
   private Text eraseBlock;
   private Text eraseBlockCost;
+  private Text insufficientScore = new Text("Insufficient Score");
+  private VBox eraseBlockContainer;
 
   /**
    * Create a new Single Player challenge scene
@@ -57,6 +59,8 @@ public class LocalChallengeScene extends ChallengeScene {
         /*
     left override
      */
+    insufficientScore.getStyleClass().add("insufficientScore");
+
     var powerUp = new Text("Power Ups:");
     powerUp.getStyleClass().add("powerUp");
     /*lives*/
@@ -64,45 +68,55 @@ public class LocalChallengeScene extends ChallengeScene {
     var getLivesCost = new Text("Cost: 100");
     getLivesCost.getStyleClass().add("option3-button");
     getLives.getStyleClass().add("option1-button");
+
+    var getLivesContainer = new VBox();
+    getLivesContainer.setSpacing(5);
+    getLivesContainer.setAlignment(Pos.CENTER);
+    getLivesContainer.getChildren().addAll(getLives, getLivesCost);
+
     getLives.setOnMouseClicked(e -> {
       Boolean changed = game.powerLives();
       if (!changed) {
         getLives.getStyleClass().remove("option1-button");
         getLives.getStyleClass().add("noPower");
+        getLivesContainer.getChildren().add(insufficientScore);
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), change -> {
           getLives.getStyleClass().remove("noPower");
           getLives.getStyleClass().add("option1-button");
+          getLivesContainer.getChildren().remove(insufficientScore);
         }));
         timeline.play();
       }
     });
-    var getLivesContainer = new VBox();
-    getLivesContainer.setSpacing(5);
-    getLivesContainer.setAlignment(Pos.CENTER);
-    getLivesContainer.getChildren().addAll(getLives, getLivesCost);
+
 
     /*piece*/
     var getPiece = new Text("New Piece");
     var getPieceCost = new Text("Cost: 300");
     getPieceCost.getStyleClass().add("option3-button");
     getPiece.getStyleClass().add("option1-button");
+
+    var getPieceContainer = new VBox();
+    getPieceContainer.setSpacing(5);
+    getPieceContainer.setAlignment(Pos.CENTER);
+    getPieceContainer.getChildren().addAll(getPiece, getPieceCost);
+
     getPiece.setOnMouseClicked(e -> {
       Boolean changed = game.powerPiece();
 
       if (!changed) {
         getPiece.getStyleClass().remove("option1-button");
         getPiece.getStyleClass().add("noPower");
+        getPieceContainer.getChildren().add(insufficientScore);
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), change -> {
           getPiece.getStyleClass().remove("noPower");
           getPiece.getStyleClass().add("option1-button");
+          getPieceContainer.getChildren().remove(insufficientScore);
         }));
         timeline.play();
       }
     });
-    var getPieceContainer = new VBox();
-    getPieceContainer.setSpacing(5);
-    getPieceContainer.setAlignment(Pos.CENTER);
-    getPieceContainer.getChildren().addAll(getPiece, getPieceCost);
+
 
     /*Erase block*/
     eraseBlock = new Text("Erase Block");
@@ -112,7 +126,7 @@ public class LocalChallengeScene extends ChallengeScene {
     eraseBlock.setOnMouseClicked(e -> {
       powerErase();
     });
-    var eraseBlockContainer = new VBox();
+    eraseBlockContainer = new VBox();
     eraseBlockContainer.setSpacing(5);
     eraseBlockContainer.setAlignment(Pos.CENTER);
     eraseBlockContainer.getChildren().addAll(eraseBlock, eraseBlockCost);
@@ -160,9 +174,11 @@ public class LocalChallengeScene extends ChallengeScene {
       logger.info("Not enough points to activate erase block power up");
       eraseBlock.getStyleClass().remove("option1-button");
       eraseBlock.getStyleClass().add("noPower");
+      eraseBlockContainer.getChildren().add(insufficientScore);
       Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), change -> {
         eraseBlock.getStyleClass().remove("noPower");
         eraseBlock.getStyleClass().add("option1-button");
+        eraseBlockContainer.getChildren().remove(insufficientScore);
       }));
       timeline.play();
     }
