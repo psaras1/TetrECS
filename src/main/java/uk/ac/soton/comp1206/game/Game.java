@@ -545,4 +545,16 @@ public class Game {
   public void endTimer(){
     this.timer.shutdown();
   }
+  /**
+   * POWER UPS
+   */
+  public Boolean powerLives(){
+    if(this.getScore().get() >= 100){
+      setLives(this.getLives().get() + 1);
+      setScore(this.getScore().get() - 100);
+      logger.info("Lives increased by 1, lives left: {}", this.getLives().get());
+      return true;
+    }
+    return false;
+  }
 }

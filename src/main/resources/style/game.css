@@ -120,6 +120,22 @@
     -fx-text-alignment: center;
     -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
 }
+.livesPower{
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 32px;
+    -fx-font-weight: 700;
+    -fx-border-color: black;
+    -fx-stroke: black;
+    -fx-text-alignment: center;
+    -fx-effect: dropshadow(gaussian, white, 10, 0, 0, 0);;
+}
+
+.noPower{
+    -fx-fill: red;
+    -fx-effect: dropshadow(gaussian, white, 10, 0, 0, 0); /* Aqua glow effect */
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 20px;
+}
 
 .scorelist {
     -fx-font-size: 20px;

@@ -277,6 +277,10 @@ public class ChallengeScene extends BaseScene {
    *Update lives label based on the number of lives
    */
   public void updateLivesLabel(int lives) {
+    if(lives>3){
+      livesLabel.getStyleClass().add("livesPower");
+      livesLabel.styleProperty().setValue("-fx-fill: aqua;");
+    }
     if (lives == 3) {
       livesLabel.getStyleClass().add("lives");
       livesLabel.styleProperty().setValue("-fx-fill: green;");
