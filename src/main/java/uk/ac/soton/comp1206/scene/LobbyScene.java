@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Timer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -14,12 +13,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -31,7 +28,12 @@ import uk.ac.soton.comp1206.network.Communicator;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
+/**
+ * The main lobby scene of the game. Provides a gateway to the rest of the game. Players can host
+ * games, join existing ones and chat with other players in the lobby.
+ */
 public class LobbyScene extends BaseScene {
+
   private static final Logger logger = LogManager.getLogger(LobbyScene.class);
   public static Communicator communicator;
   private Text createLobby;
@@ -47,13 +49,14 @@ public class LobbyScene extends BaseScene {
   private StringProperty channelInfo = new SimpleStringProperty();
   private VBox buttons;
   private VBox mainBox;
-  private boolean inChannel=false;
+  private boolean inChannel = false;
   private BorderPane mainPane;
   private TextField nameField;
   /*
   Repeating timer requesting the list of channels
    */
   private ScheduledExecutorService executor;
+
   public LobbyScene(GameWindow gameWindow) {
     super(gameWindow);
     communicator = gameWindow.getCommunicator();
@@ -70,8 +73,8 @@ public class LobbyScene extends BaseScene {
   }
 
   /**
-   * Start a timer to request the list of channels every 5 seconds
-   * (By sending the LIST command to the server)
+   * Start a timer to request the list of channels every 5 seconds (By sending the LIST command to
+   * the server)
    */
   private void startChannelTimer() {
     logger.info("searching for channels");
@@ -85,7 +88,6 @@ public class LobbyScene extends BaseScene {
   public void build() {
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
 
-
     //menu pane
     var menuPane = new StackPane();
     menuPane.setMaxWidth(gameWindow.getWidth());
@@ -94,20 +96,20 @@ public class LobbyScene extends BaseScene {
     root.getChildren().add(menuPane);
     //main pane(within menu pane)
     mainPane = new BorderPane();
-    mainPane.setMaxWidth(gameWindow.getWidth()-25);
-    mainPane.setMaxHeight(gameWindow.getHeight()-25);
+    mainPane.setMaxWidth(gameWindow.getWidth() - 25);
+    mainPane.setMaxHeight(gameWindow.getHeight() - 25);
     menuPane.getChildren().add(mainPane);
 
     createLobby = new Text("Create Lobby");
-    createLobby.setOnMouseClicked(e->{
+    createLobby.setOnMouseClicked(e -> {
       createLobby();
     });
     buttons = new VBox();
     createLobby.getStyleClass().add("option-button");
     var channelLabel = new Text("Current lobbies: ");
     channelLabel.getStyleClass().add("option3-button");
-    buttons.getChildren().addAll(createLobby,channelLabel);
-    buttons.setMinWidth(gameWindow.getWidth()/2);
+    buttons.getChildren().addAll(createLobby, channelLabel);
+    buttons.setMinWidth(gameWindow.getWidth() / 2);
     //Buttons vbox added in MainPane, within menuPane
     mainPane.getChildren().add(buttons);
 
@@ -115,32 +117,36 @@ public class LobbyScene extends BaseScene {
     Chat/lobby messages
      */
 
-
   }
 
-
+  /*
+  Handles server communication
+   */
   public void listenForList(String message) {
     logger.info("Received list: " + message);
-    String[] parts = message.split(" ",2);
+    String[] parts = message.split(" ", 2);
     String command = parts[0];
     String data = parts[1];
-    if (command.equals("CHANNELS")){
-      Platform.runLater(()->
+    if (command.equals("CHANNELS")) {
+      Platform.runLater(() ->
           getChannels(data));
     }
-    if(command.equals("USERS")){
-      Platform.runLater(()->
+    if (command.equals("USERS")) {
+      Platform.runLater(() ->
           getUsers(data));
     }
-    if(command.equals("MSG")){
-      Platform.runLater(()->
+    if (command.equals("MSG")) {
+      Platform.runLater(() ->
           getMessage(data));
     }
   }
 
-  public void getChannels(String data){
+  /*
+  Handles updated list of channels
+   */
+  public void getChannels(String data) {
     logger.info("Channels: " + data);
-    if(channels!=null){
+    if (channels != null) {
       channels.clear();
     }
 
@@ -148,14 +154,14 @@ public class LobbyScene extends BaseScene {
     channelList.setAlignment(Pos.BOTTOM_LEFT);
     String[] channelArray = data.split("\\R");
     channels.addAll(Arrays.asList(channelArray));
-    channelList.setPadding(new javafx.geometry.Insets(100,0,0,0));
+    channelList.setPadding(new javafx.geometry.Insets(100, 0, 0, 0));
     mainPane.setLeft(channelList);
-    for(String channel : channels){
+    for (String channel : channels) {
       var channelID = new Text(channel);
       channelID.getStyleClass().add("channelItem");
       channelList.getChildren().add(channelID);
       channelList.setAlignment(Pos.TOP_LEFT);
-      channelID.setOnMouseClicked(e->{
+      channelID.setOnMouseClicked(e -> {
         communicator.send("JOIN " + channel);
         buttons.getChildren().remove(createLobby);
         join(channel, false);
@@ -164,6 +170,9 @@ public class LobbyScene extends BaseScene {
 
   }
 
+  /*
+  Handles updated list of users
+   */
   public void getUsers(String data) {
     userTemp = "";
     logger.info("Received users: {}", data);
@@ -171,15 +180,18 @@ public class LobbyScene extends BaseScene {
     for (String user : userArray) {
       userTemp += (user + "\n");
     }
-    if(inChannel) {
+    if (inChannel) {
       logger.info("User List new: {}", userTemp);
-      channelInfo.set("Lobby: "+currentChannel + ", Users: " +"\n"+ userTemp);
+      channelInfo.set("Lobby: " + currentChannel + ", Users: " + "\n" + userTemp);
     }
 
   }
 
-  public void getMessage(String data){
-    String[] parts = data.split(":",2);
+  /*
+  Handles incoming messages
+   */
+  public void getMessage(String data) {
+    String[] parts = data.split(":", 2);
     String username = parts[0];
     String message = parts[1];
 
@@ -187,31 +199,31 @@ public class LobbyScene extends BaseScene {
     Date date = new Date(System.currentTimeMillis());
     String timeStamp = new String("[" + formatter.format(date) + "] ");
 
-    Text newMessage = new Text(timeStamp+username + ": " + message);
-
+    Text newMessage = new Text(timeStamp + username + ": " + message);
 
     messages.getChildren().add(newMessage);
     scroller.setVvalue(scroller.getVmax());
   }
 
-  public void join(String channel, boolean host){
+  /**
+   * Join a channel, creates a new chat window If hosting, option to start a game is shown
+   */
+  public void join(String channel, boolean host) {
     currentChannel = channel;
-    if(!inChannel) {
+    if (!inChannel) {
       messages.getChildren().clear();
       communicator.send("JOIN " + channel);
       inChannel = true;
-
 
       messages.getChildren().clear();
       rightPane = new VBox();
       mainPane.setRight(rightPane);
       communicator.send("USERS");
-      logger.info("USers testing "+userTemp.length());
+      logger.info("USers testing " + userTemp.length());
       Text channelInfoLabel = new Text();
       channelInfoLabel.getStyleClass().add("messages");
       channelInfoLabel.setStyle("-fx-fill: white;");
       channelInfoLabel.textProperty().bind(channelInfo);
-
 
       channelInfoLabel.getStyleClass().add("channelLabel");
 
@@ -236,10 +248,9 @@ public class LobbyScene extends BaseScene {
         }
       });
 
-
       Text leaveButton = new Text("Leave");
       leaveButton.getStyleClass().add("option2-button");
-      leaveButton.setOnMouseClicked(e->{
+      leaveButton.setOnMouseClicked(e -> {
         communicator.send("PART");
         //So user can join another lobby
         inChannel = false;
@@ -247,27 +258,27 @@ public class LobbyScene extends BaseScene {
         buttons.getChildren().add(createLobby);
       });
       HBox messageField = new HBox();
-      messageField.getChildren().addAll(sendText,sendButton);
+      messageField.getChildren().addAll(sendText, sendButton);
       HBox chatButtons = new HBox();
       HBox.setHgrow(sendText, javafx.scene.layout.Priority.ALWAYS);
       chatButtons.getChildren().addAll(leaveButton);
 
-      scroller.setPrefHeight(gameWindow.getHeight()-100);
+      scroller.setPrefHeight(gameWindow.getHeight() - 100);
       scroller.setFitToWidth(true);
 
-
       rightPane.prefWidthProperty().bind(mainPane.widthProperty().divide(2));
-      rightPane.setStyle("-fx-border-color: white; -fx-border-width: 2px;-fx-background-color: rgba(0,0,0,0.5);");
+      rightPane.setStyle(
+          "-fx-border-color: white; -fx-border-width: 2px;-fx-background-color: rgba(0,0,0,0.5);");
       rightPane.setSpacing(10);
       Region spacer = new Region();
       spacer.setPrefHeight(30);
-      rightPane.setPadding(new javafx.geometry.Insets(10,10,10,10));
-      rightPane.getChildren().addAll(channelInfoLabel,spacer,scroller,messageField, chatButtons);
+      rightPane.setPadding(new javafx.geometry.Insets(10, 10, 10, 10));
+      rightPane.getChildren().addAll(channelInfoLabel, spacer, scroller, messageField, chatButtons);
 
-      if(host){
+      if (host) {
         Text startButton = new Text("Start Game");
         startButton.getStyleClass().add("option2-button");
-        startButton.setOnMouseClicked(e->{
+        startButton.setOnMouseClicked(e -> {
           communicator.send("START");
           gameWindow.startMultiplayer();
         });
@@ -276,59 +287,61 @@ public class LobbyScene extends BaseScene {
         chatButtons.setSpacing(10);
       }
 
-    }
-    else{
+    } else {
       alreadyChanneled();
     }
 
   }
 
-  public void textFieldAction(){
-      if(sendText.getText().startsWith("/nick")){
-        String[] parts = sendText.getText().split(" ");
-        if(parts.length<2){
-          return;
-        }
-        String newUsername = parts[1];
-        communicator.send("NICK " + newUsername);
-        sendText.clear();
+  /*
+  Some commands are handled differently, such as changing username or leaving a lobby
+   */
+  public void textFieldAction() {
+    if (sendText.getText().startsWith("/nick")) {
+      String[] parts = sendText.getText().split(" ");
+      if (parts.length < 2) {
+        return;
       }
-      else if(sendText.getText().startsWith("/leave")){
-        communicator.send("PART");
-        //So user can join another lobby
-        inChannel = false;
-        mainPane.getChildren().remove(rightPane);
-        buttons.getChildren().add(createLobby);
-      }
-      else {
-        communicator.send("MSG " + sendText.getText());
-        sendText.clear();
-      }
+      String newUsername = parts[1];
+      communicator.send("NICK " + newUsername);
+      sendText.clear();
+    } else if (sendText.getText().startsWith("/leave")) {
+      communicator.send("PART");
+      //So user can join another lobby
+      inChannel = false;
+      mainPane.getChildren().remove(rightPane);
+      buttons.getChildren().add(createLobby);
+    } else {
+      communicator.send("MSG " + sendText.getText());
+      sendText.clear();
+    }
   }
 
-  public void createLobby(){
-    if(!inChannel){
+  public void createLobby() {
+    if (!inChannel) {
       buttons.getChildren().remove(createLobby);
       nameField = new TextField();
       nameField.setPromptText("Enter lobby name");
       nameField.setMinWidth(200);
       nameField.setMinHeight(30);
       buttons.getChildren().add(nameField);
-      nameField.setOnKeyPressed(e->{
-        if(e.getCode().getName().equals("Enter")){
+      nameField.setOnKeyPressed(e -> {
+        if (e.getCode().getName().equals("Enter")) {
           communicator.send("CREATE " + nameField.getText());
           join(nameField.getText(), true);
           inChannel = true;
           buttons.getChildren().remove(nameField);
         }
       });
-    }
-    else{
+    } else {
       alreadyChanneled();
     }
   }
 
-  public void alreadyChanneled(){
+  /*
+  Error message if user tries to join a lobby while already in one
+   */
+  public void alreadyChanneled() {
     var errMessage = new Text("You are already in a lobby");
     errMessage.getStyleClass().add("option3-button");
     buttons.getChildren().add(errMessage);
@@ -353,9 +366,12 @@ public class LobbyScene extends BaseScene {
     });
   }
 
-  private void keyboardControls(){
-    gameWindow.getScene().setOnKeyPressed(e->{
-      switch (e.getCode()){
+  /*
+  Keyboard controls for the lobby scene
+   */
+  private void keyboardControls() {
+    gameWindow.getScene().setOnKeyPressed(e -> {
+      switch (e.getCode()) {
         case ESCAPE:
           communicator.send("PART");
           communicator.send("QUIT");
@@ -363,7 +379,7 @@ public class LobbyScene extends BaseScene {
           gameWindow.startMenu();
           break;
       }
-  });
+    });
   }
 
 

@@ -1,7 +1,6 @@
 package uk.ac.soton.comp1206.scene;
 
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
@@ -14,6 +13,10 @@ import uk.ac.soton.comp1206.game.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
+/**
+ * The Settings Scene displays the settings of the game
+ * Currently only the volume can be adjusted
+ */
 public class SettingsScene extends BaseScene{
 
   /**
@@ -32,7 +35,7 @@ public class SettingsScene extends BaseScene{
   @Override
   public void initialise() {
     volumeSlider.setValue(App.getCurrentVolume()*100);
-    keybinds();
+    keybindings();
 
   }
 
@@ -90,7 +93,10 @@ public class SettingsScene extends BaseScene{
 
 
   }
-  public void keybinds(){
+  /*
+  * Keybinds for the scene
+   */
+  public void keybindings(){
     scene.setOnKeyPressed(e->{
       switch (e.getCode()){
         case ESCAPE:

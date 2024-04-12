@@ -48,9 +48,12 @@ public class InstructionsScene extends BaseScene {
 
   }
 
-  private void controls(){
+  /**
+   * Keyboard controls for the instructions scene
+   */
+  private void controls() {
     scene.setOnKeyPressed(e -> {
-      logger.info("Key Pressed: {}" ,e.getCode());
+      logger.info("Key Pressed: {}", e.getCode());
       switch (e.getCode()) {
         case ESCAPE:
           logger.info("Escape pressed, returning to menu");
@@ -60,7 +63,9 @@ public class InstructionsScene extends BaseScene {
     });
   }
 
-
+  /**
+   * Build the instructions layout
+   */
   @Override
   public void build() {
     logger.info("Building " + this.getClass().getName());
@@ -70,7 +75,6 @@ public class InstructionsScene extends BaseScene {
     //Set the image to fit the top half of the window
     imageView.setPreserveRatio(true);
     imageView.setFitHeight(gameWindow.getHeight() / 2 - 40);
-
 
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
     mainPane.setMaxWidth(gameWindow.getWidth());
@@ -82,8 +86,8 @@ public class InstructionsScene extends BaseScene {
     top.setSpacing(10);
     var controlsLabel = new Text("Controls:");
     controlsLabel.getStyleClass().add("heading");
-    controlsLabel.setStyle("-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
-
+    controlsLabel.setStyle(
+        "-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
 
     //Add the instructions to the main pane
 
@@ -92,8 +96,8 @@ public class InstructionsScene extends BaseScene {
     escape.getStyleClass().add("option1-button");
     AnchorPane menuButton = new AnchorPane();
     menuButton.getChildren().add(escape);
-    AnchorPane.setLeftAnchor(escape,10.0);
-    AnchorPane.setTopAnchor(escape,5.0);
+    AnchorPane.setLeftAnchor(escape, 10.0);
+    AnchorPane.setTopAnchor(escape, 5.0);
 
     top.getChildren().addAll(menuButton, controlsLabel, imageView);
     top.setSpacing(10);
@@ -118,7 +122,7 @@ public class InstructionsScene extends BaseScene {
       }
     }
     gridPane.setPrefSize(paneWidth, paneHeight / 2);
-    var  optionsLabel = new Text("Piece Options:");
+    var optionsLabel = new Text("Piece Options:");
     optionsLabel.getStyleClass().add("heading");
     optionsLabel.setStyle("-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
     var bottom = new VBox();
@@ -133,7 +137,6 @@ public class InstructionsScene extends BaseScene {
 
     root.getChildren().add(mainPane);
   }
-
 
 
 }

@@ -1,29 +1,31 @@
 package uk.ac.soton.comp1206.scene;
 
-import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
-import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import uk.ac.soton.comp1206.game.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
-public class LoadingScene extends BaseScene{
+/**
+ * The loading scene that is displayed when the game is booting up
+ */
+public class LoadingScene extends BaseScene {
+
   private Multimedia loadingMusic = new Multimedia();
   private Boolean skipped = false;
+
   public LoadingScene(GameWindow gameWindow) {
     super(gameWindow);
   }
 
   @Override
   public void initialise() {
-    scene.setOnKeyPressed(e->{
-      switch (e.getCode()){
+    scene.setOnKeyPressed(e -> {
+      switch (e.getCode()) {
         case ESCAPE, SPACE, ENTER:
           skipped = true;
           loadingMusic.stopBackgroundMusic();
@@ -54,11 +56,13 @@ public class LoadingScene extends BaseScene{
 
     SequentialTransition sequence = new SequentialTransition(fIn, fOut);
     sequence.play();
-      sequence.setOnFinished(e -> {
-        if(skipped) return;
-        loadingMusic.stopBackgroundMusic();
-        gameWindow.startMenu();
-      });
+    sequence.setOnFinished(e -> {
+      if (skipped) {
+        return;
+      }
+      loadingMusic.stopBackgroundMusic();
+      gameWindow.startMenu();
+    });
 
   }
 

@@ -9,7 +9,6 @@ import javafx.scene.effect.Light;
 import javafx.scene.effect.Lighting;
 import javafx.scene.paint.*;
 import javafx.scene.effect.*;
-import javafx.scene.paint.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,7 +69,7 @@ public class GameBlock extends Canvas {
       0); //each block has a unique IntegerProperty
 
 
-  //used to check if the block is in the center of the pieceboard, if so, a circle is drawn
+  /*used to check if the block is in the center of the pieceboard, if so, a circle is drawn*/
   public Boolean center;
 
 
@@ -120,7 +119,7 @@ public class GameBlock extends Canvas {
     if (value.get() == 0) {
       paintEmpty();
     } else {
-      if(!center){
+      if (!center) {
         paintColor(COLOURS[value.get()]);
       } else {
         paintColorWithCircle(COLOURS[value.get()]);
@@ -130,14 +129,12 @@ public class GameBlock extends Canvas {
   }
 
   /**
-   * Sets the middle of the block to be a circle
-   * Calls paint again to update the block
+   * Sets the middle of the block to be a circle Calls paint again to update the block
    */
-  public void setCenter(){
+  public void setCenter() {
     center = true;
     paint();
   }
-
 
 
   /**
@@ -150,7 +147,7 @@ public class GameBlock extends Canvas {
     gc.clearRect(0, 0, width, height);
 
     //Fill
-    gc.setFill(Color.rgb(255,255,255,0.3));
+    gc.setFill(Color.rgb(255, 255, 255, 0.3));
     gc.fillRect(0, 0, width, height);
 
     //Border
@@ -185,7 +182,8 @@ public class GameBlock extends Canvas {
     gc.strokeRect(0, 0, width, height);
 
   }
-/**
+
+  /**
    * Paint this canvas with the given colour and a circle in the middle(pieceboard middle piece)
    *
    * @param colour the colour to paint
@@ -234,15 +232,6 @@ public class GameBlock extends Canvas {
   }
 
   /**
-   * Get the current value held by this block, representing it's colour
-   *
-   * @return value
-   */
-  public int getValue() {
-    return this.value.get();
-  }
-
-  /**
    * Bind the value of this block to another property. Used to link the visual block to a
    * corresponding block in the Grid.
    *
@@ -278,7 +267,7 @@ public class GameBlock extends Canvas {
 
 
   /*
-  *Handles the fading out of individual block when a line is cleared
+   *Handles the fading out of individual blocks when a line is cleared
    */
   public void fadeOut() {
     logger.info("Fading out block at {}, {}", x, y);

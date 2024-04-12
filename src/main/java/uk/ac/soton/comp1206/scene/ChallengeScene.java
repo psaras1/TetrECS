@@ -1,13 +1,7 @@
 package uk.ac.soton.comp1206.scene;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
 import java.util.HashSet;
-import javafx.animation.AnimationTimer;
 import javafx.animation.FillTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -18,23 +12,18 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBlockCoordinate;
 import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.component.PieceBoard;
-import uk.ac.soton.comp1206.event.GameLoopListener;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.game.Multimedia;
@@ -80,7 +69,6 @@ public class ChallengeScene extends BaseScene {
   protected VBox scoreBox = new VBox();
   protected VBox livesBox = new VBox();
   protected VBox multiplierBox = new VBox();
-  protected VBox centerBox = new VBox();
   protected VBox topBox = new VBox();
 
   protected VBox leftBox = new VBox();
@@ -277,7 +265,7 @@ public class ChallengeScene extends BaseScene {
    *Update lives label based on the number of lives
    */
   public void updateLivesLabel(int lives) {
-    if(lives>3){
+    if (lives > 3) {
       livesLabel.getStyleClass().add("livesPower");
       livesLabel.styleProperty().setValue("-fx-fill: aqua;");
     }
@@ -298,6 +286,9 @@ public class ChallengeScene extends BaseScene {
       livesLabel.styleProperty().setValue("-fx-fill: red;");
     }
   }
+  /*
+   *Handles the time bar animation
+   */
 
   public void gameLoopAnimation() {
     timeBar.setScaleX(1);
@@ -322,6 +313,9 @@ public class ChallengeScene extends BaseScene {
     currentPiece.displayPiece(piece);
     followingPiece.displayPiece(game.followingPiece);
   }
+  /*
+   *Handles the cleared lines
+   */
 
   protected void clearedLines(HashSet<GameBlockCoordinate> linesCleared) {
     logger.info("Lines cleared: {}", linesCleared);

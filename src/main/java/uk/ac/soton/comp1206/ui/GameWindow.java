@@ -15,167 +15,181 @@ import uk.ac.soton.comp1206.network.Communicator;
 import uk.ac.soton.comp1206.scene.*;
 
 /**
- * The GameWindow is the single window for the game where everything takes place. To move between screens in the game,
- * we simply change the scene.
- *
- * The GameWindow has methods to launch each of the different parts of the game by switching scenes. You can add more
- * methods here to add more screens to the game.
+ * The GameWindow is the single window for the game where everything takes place. To move between
+ * screens in the game, we simply change the scene.
+ * <p>
+ * The GameWindow has methods to launch each of the different parts of the game by switching scenes.
+ * You can add more methods here to add more screens to the game.
  */
 public class GameWindow {
 
-    private static final Logger logger = LogManager.getLogger(GameWindow.class);
+  private static final Logger logger = LogManager.getLogger(GameWindow.class);
 
-    private final int width;
-    private final int height;
+  private final int width;
+  private final int height;
 
-    private final Stage stage;
+  private final Stage stage;
 
-    private BaseScene currentScene;
-    private Scene scene;
+  private BaseScene currentScene;
+  private Scene scene;
 
-    final Communicator communicator;
+  final Communicator communicator;
 
-    /**
-     * Create a new GameWindow attached to the given stage with the specified width and height
-     * @param stage stage
-     * @param width width
-     * @param height height
-     */
-    public GameWindow(Stage stage, int width, int height) {
-        this.width = width;
-        this.height = height;
+  /**
+   * Create a new GameWindow attached to the given stage with the specified width and height
+   *
+   * @param stage  stage
+   * @param width  width
+   * @param height height
+   */
+  public GameWindow(Stage stage, int width, int height) {
+    this.width = width;
+    this.height = height;
 
-        this.stage = stage;
+    this.stage = stage;
 
-        //Setup window
-        setupStage();
+    //Setup window
+    setupStage();
 
-        //Setup resources
-        setupResources();
+    //Setup resources
+    setupResources();
 
-        //Setup default scene
-        setupDefaultScene();
+    //Setup default scene
+    setupDefaultScene();
 
-        //Setup communicator
-        communicator = new Communicator("ws://ofb-labs.soton.ac.uk:9700");
+    //Setup communicator
+    communicator = new Communicator("ws://ofb-labs.soton.ac.uk:9700");
 
-        //Go to menu
-        startLoading();
-    }
+    //Go to menu
+    startLoading();
+  }
 
-    /**
-     * Setup the font and any other resources we need
-     */
-    private void setupResources() {
-        logger.info("Loading resources");
+  /**
+   * Setup the font and any other resources we need
+   */
+  private void setupResources() {
+    logger.info("Loading resources");
 
-        //We need to load fonts here due to the Font loader bug with spaces in URLs in the CSS files
-        Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-Regular.ttf"),32);
-        Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-Bold.ttf"),32);
-        Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-ExtraBold.ttf"),32);
-    }
+    //We need to load fonts here due to the Font loader bug with spaces in URLs in the CSS files
+    Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-Regular.ttf"), 32);
+    Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-Bold.ttf"), 32);
+    Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-ExtraBold.ttf"), 32);
+  }
 
-    /**
-     * Display the main menu
-     */
-    public void startMenu() {
-        loadScene(new MenuScene(this));
-    }
-    public void startLoading(){
-        loadScene(new LoadingScene(this));
-    }
+  /**
+   * Display the main menu
+   */
+  public void startMenu() {
+    loadScene(new MenuScene(this));
+  }
 
-    /**
-     * Display the single player challenge
-     */
-    public void startChallenge() { loadScene(new LocalChallengeScene(this)); }
+  /**
+   * Called on boot to display the intro scene
+   */
+  public void startLoading() {
+    loadScene(new LoadingScene(this));
+  }
 
-    /**
-     * Setup the default settings for the stage itself (the window), such as the title and minimum width and height.
-     */
-    public void setupStage() {
-        stage.setTitle("TetrECS");
-        stage.setMinWidth(width);
-        stage.setMinHeight(height + 20);
-        stage.setOnCloseRequest(ev -> App.getInstance().shutdown());
-    }
+  /**
+   * Display the single player challenge
+   */
+  public void startChallenge() {
+    loadScene(new LocalChallengeScene(this));
+  }
 
-    public void startMultiplayer() {
-        loadScene(new MultiplayerScene(this));
-    }
+  /**
+   * Set up the default settings for the stage itself (the window), such as the title and minimum
+   * width and height.
+   */
+  public void setupStage() {
+    stage.setTitle("TetrECS");
+    stage.setMinWidth(width);
+    stage.setMinHeight(height + 20);
+    stage.setOnCloseRequest(ev -> App.getInstance().shutdown());
+  }
 
-    /**
-     * Load a given scene which extends BaseScene and switch over.
-     * @param newScene new scene to load
-     */
-    public void loadScene(BaseScene newScene) {
-        //Cleanup remains of the previous scene
-        cleanup();
+  public void startMultiplayer() {
+    loadScene(new MultiplayerScene(this));
+  }
 
-        //Create the new scene and set it up
-        newScene.build();
-        currentScene = newScene;
-        scene = newScene.setScene();
-        stage.setScene(scene);
+  /**
+   * Load a given scene which extends BaseScene and switch over.
+   *
+   * @param newScene new scene to load
+   */
+  public void loadScene(BaseScene newScene) {
+    //Cleanup remains of the previous scene
+    cleanup();
 
-        //Initialise the scene when ready
-        Platform.runLater(() -> currentScene.initialise());
-    }
+    //Create the new scene and set it up
+    newScene.build();
+    currentScene = newScene;
+    scene = newScene.setScene();
+    stage.setScene(scene);
 
-    /**
-     * Setup the default scene (an empty black scene) when no scene is loaded
-     */
-    public void setupDefaultScene() {
-        this.scene = new Scene(new Pane(),width,height, Color.BLACK);
-        stage.setScene(this.scene);
-    }
+    //Initialise the scene when ready
+    Platform.runLater(() -> currentScene.initialise());
+  }
 
-    /**
-     * When switching scenes, perform any cleanup needed, such as removing previous listeners
-     */
-    public void cleanup() {
-        logger.info("Clearing up previous scene");
-        communicator.clearListeners();
-    }
+  /**
+   * Setup the default scene (an empty black scene) when no scene is loaded
+   */
+  public void setupDefaultScene() {
+    this.scene = new Scene(new Pane(), width, height, Color.BLACK);
+    stage.setScene(this.scene);
+  }
 
-    /**
-     * Get the current scene being displayed
-     * @return scene
-     */
-    public Scene getScene() {
-        return scene;
-    }
+  /**
+   * When switching scenes, perform any cleanup needed, such as removing previous listeners
+   */
+  public void cleanup() {
+    logger.info("Clearing up previous scene");
+    communicator.clearListeners();
+  }
 
-    /**
-     * Get the width of the Game Window
-     * @return width
-     */
-    public int getWidth() {
-        return this.width;
-    }
+  /**
+   * Get the current scene being displayed
+   *
+   * @return scene
+   */
+  public Scene getScene() {
+    return scene;
+  }
 
-    /**
-     * Get the height of the Game Window
-     * @return height
-     */
-    public int getHeight() {
-        return this.height;
-    }
+  /**
+   * Get the width of the Game Window
+   *
+   * @return width
+   */
+  public int getWidth() {
+    return this.width;
+  }
 
-    /**
-     * Get the communicator
-     * @return communicator
-     */
-    public Communicator getCommunicator() {
-        return communicator;
-    }
-    public void showScores(Game game) {
-        logger.info("Loading score screen");
-        loadScene(new ScoresScene(this,game));
-    }
+  /**
+   * Get the height of the Game Window
+   *
+   * @return height
+   */
+  public int getHeight() {
+    return this.height;
+  }
 
-    public void showOnlineScores(Game game, Leaderboard leaderboard){
-        logger.info("Loading online score screen");
-        loadScene(new ScoresSceneMultiplayer(this,game,leaderboard));
-    }
+  /**
+   * Get the communicator
+   *
+   * @return communicator
+   */
+  public Communicator getCommunicator() {
+    return communicator;
+  }
+
+  public void showScores(Game game) {
+    logger.info("Loading score screen");
+    loadScene(new ScoresScene(this, game));
+  }
+
+  public void showOnlineScores(Game game, Leaderboard leaderboard) {
+    logger.info("Loading online score screen");
+    loadScene(new ScoresSceneMultiplayer(this, game, leaderboard));
+  }
 }

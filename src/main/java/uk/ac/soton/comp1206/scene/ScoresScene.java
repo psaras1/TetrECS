@@ -8,9 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -47,6 +44,7 @@ public class ScoresScene extends BaseScene {
    */
 
   private Game game;
+  /*Used to check if the current score is worthy of being in the top 10 online scores*/
   public Boolean worthy;
   private Multimedia scoresMusic = new Multimedia();
 
@@ -107,17 +105,10 @@ Online scores
   }
 
   /**
-   * Second constructor for ScoresScene, allows it to be scene from menu scene No need to have a
-   * game instance
-   * TODO: Hasn't been implemented yet
+   * Load online scores from the server
    *
-   * @param gameWindow
+   * @param s
    */
-  public ScoresScene(GameWindow gameWindow) {
-    super(gameWindow);
-    logger.info("Creating Scores Scene");
-    communicator = gameWindow.getCommunicator();
-  }
 
   public void loadOnlineScores(String s) {
     remoteScoresList.getChildren().clear();
@@ -147,21 +138,12 @@ Online scores
   }
 
 
-  /**
-   * Method to handle the end of the game Loads the score scene
-   */
-  public void onGameEnd() {
-    logger.info("Game has ended");
-    gameWindow.showScores(game);
-  }
-
   @Override
   public void initialise() {
 
     logger.info("Initialising " + this.getClass().getName());
     remoteScoresList = new ScoreList();
     communicator.addListener(this::communicationListener);
-    communicator.send("HISCORE " + "bobTest:" + "55000");
     communicator.send("HISCORES");
     /*
     Return to menu on escape pressed
@@ -305,9 +287,10 @@ Online scores
   }
 
 
-
   /**
-   * Finish building the scores scene Takes in the mainPane and adds the scores to it in a VBox
+   * Finish building the scores scene Takes in the mainPane and adds the scores to it in a VBox If a
+   * score is "worthy" of being in the top 10 online scores, it is added to the list and sent to the
+   * server
    *
    * @param mainPane
    */

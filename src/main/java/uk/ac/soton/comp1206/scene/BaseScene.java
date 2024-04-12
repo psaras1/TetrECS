@@ -27,6 +27,7 @@ public abstract class BaseScene {
   public Image muteImage = new Image(getClass().getResource("/images/mute.png").toString());
   public Image unmuteImage = new Image(getClass().getResource("/images/play.png").toString());
   public ImageView muteImageView = new ImageView(unmuteImage);
+
   /**
    * Create a new scene, passing in the GameWindow the scene will be displayed in
    *
@@ -69,7 +70,7 @@ public abstract class BaseScene {
     return this.scene;
   }
 
-  protected void addMuteButton(String filePath,Multimedia multimedia){
+  protected void addMuteButton(String filePath, Multimedia multimedia) {
     var muteButton = new Button("", muteImageView);
     muteImageView.setFitHeight(30);
     muteImageView.setFitWidth(30);
@@ -81,20 +82,22 @@ public abstract class BaseScene {
     AnchorPane.setBottomAnchor(muteButton, 13.0);
     muteButtonPane.setPickOnBounds(false);
     muteButton.setOnMouseClicked(actionEvent -> {
-      if(!multimedia.isPlaying()){
+      if (!multimedia.isPlaying()) {
         multimedia.playBackgroundMusic(filePath);
         muteImageView.setImage(unmuteImage);
-      }else{
+      } else {
         multimedia.stopBackgroundMusic();
         muteImageView.setImage(muteImage);
       }
     });
-    ((Pane)root).getChildren().add(muteButtonPane);
+    root.getChildren().add(muteButtonPane);
   }
-  public void changeToMuteImage(){
+
+  public void changeToMuteImage() {
     muteImageView.setImage(muteImage);
   }
-  public void changeToUnmuteImage(){
+
+  public void changeToUnmuteImage() {
     muteImageView.setImage(unmuteImage);
   }
 }

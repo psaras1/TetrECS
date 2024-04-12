@@ -141,7 +141,7 @@ public class Grid {
           //Check if it's possible to place block
           var gridValue = get(topX + blockX, topY + blockY);//can only be placed if 0
           if (gridValue != 0) {
-            logger.info("Unable to place {}, conflict at {},{}", gamePiece,placeX + blockX,
+            logger.info("Unable to place {}, conflict at {},{}", gamePiece, placeX + blockX,
                 placeY + blockY);
             return false;
           }

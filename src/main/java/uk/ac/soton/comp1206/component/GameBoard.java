@@ -8,7 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.event.BlockClickedListener;
 import uk.ac.soton.comp1206.event.RightClickListener;
-import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.game.Grid;
 
 /**
@@ -64,6 +63,7 @@ public class GameBoard extends GridPane {
    */
   private BlockClickedListener blockClickedListener; //called by blockClicked method
 
+
   public GameBlock currentBlock;
 
   /**
@@ -80,9 +80,8 @@ public class GameBoard extends GridPane {
     this.height = height;
     this.grid = grid;
     this.getStyleClass().add("gameBox");
-//        mouseMode = true;
-    //Build the GameBoard
     build();
+    /*current block reset to 0,0 on mouse mode*/
     currentBlock = getBlock(0, 0);
 
 
@@ -252,11 +251,12 @@ public class GameBoard extends GridPane {
       block.paint();
     }
   }
-/*
-Called when a line is cleared, fades out the blocks in the line
 
- */
-  public void fadeOut(HashSet<GameBlockCoordinate> blocks){
+  /*
+  Called when a line is cleared, fades out the blocks in the line
+
+   */
+  public void fadeOut(HashSet<GameBlockCoordinate> blocks) {
     for (GameBlockCoordinate block : blocks) {
       GameBlock gameBlock = getBlock(block.getX(), block.getY());
       gameBlock.fadeOut();

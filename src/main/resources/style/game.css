@@ -276,7 +276,7 @@ TextField {
     -fx-fill: white; /* White text color */
     -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
     -fx-font-family: 'Orbitron';
-    -fx-font-size: 30px;
+    -fx-font-size: 26px;
 }
 .option-button:hover{
     -fx-effect: dropshadow(gaussian, magenta, 10, 0, 0, 0); /* Change glow to magenta on hover */

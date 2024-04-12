@@ -10,11 +10,14 @@ import javafx.util.Duration;
  * A utility class for playing sounds
  */
 public class Multimedia {
-  private  MediaPlayer audioPlayer;
-  private  MediaPlayer musicPlayer;
+
+  private MediaPlayer audioPlayer;
+  private MediaPlayer musicPlayer;
   public static double globalVolume = 1.0;
+
   /**
    * Play a sound from a file
+   *
    * @param file the file to play
    */
   public void playAudio(String file) {
@@ -22,6 +25,7 @@ public class Multimedia {
     audioPlayer.setVolume(globalVolume);
     audioPlayer.play();
   }
+
   /**
    * Handles background music
    */
@@ -32,6 +36,7 @@ public class Multimedia {
     musicPlayer.setVolume(globalVolume);
     musicPlayer.play();
   }
+
   /**
    * Background music fades out instead of stopping abruptly
    */
@@ -41,11 +46,17 @@ public class Multimedia {
 
   /**
    * Check if the music is playing
+   *
    * @return
    */
   public boolean isPlaying() {
     return musicPlayer.getStatus() == MediaPlayer.Status.PLAYING;
   }
+
+  /*
+   *Adjust the global volume of any Multimedia object
+   * (Intialises all objects to the same volume)
+   */
   public static void adjustGlobalVolume(double volume) {
     globalVolume = volume;
   }

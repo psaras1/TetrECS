@@ -72,7 +72,6 @@ public class ScoreList extends VBox {
       playerScore = new Text(pair.getValue().toString());
       playerScore.getStyleClass().add("player-score");
 
-
       playerScore.setTextAlignment(TextAlignment.CENTER);
       HBox.setHgrow(playerScore, javafx.scene.layout.Priority.ALWAYS);
 

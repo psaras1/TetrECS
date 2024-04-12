@@ -21,7 +21,6 @@ import uk.ac.soton.comp1206.event.GameEndListener;
 import uk.ac.soton.comp1206.event.GameLoopListener;
 import uk.ac.soton.comp1206.event.LineClearedListener;
 import uk.ac.soton.comp1206.event.NextPieceListener;
-import uk.ac.soton.comp1206.scene.LocalChallengeScene;
 
 /**
  * The Game class handles the main logic, state and properties of the TetrECS game. Methods to
@@ -83,9 +82,10 @@ public class Game {
   /*
   Array List to store the scores, passed to scores scene
    */
-  public ArrayList<Pair<String,Integer>> scores = new ArrayList<>();
+  public ArrayList<Pair<String, Integer>> scores = new ArrayList<>();
 
   protected long delay;
+
   /**
    * Create a new game with the specified rows and columns. Creates a corresponding grid model.
    *
@@ -116,6 +116,7 @@ public class Game {
   public void setNextPieceListener(NextPieceListener listener) {
     nextPieceListener = listener;
   }
+
   /**
    * Set the listener for when a line is cleared
    *
@@ -209,52 +210,51 @@ public class Game {
   }
 
   /**
-   * Handles game mechanics after a block is placed
-   * Checks if any lines are cleared
-   * Updates the score, multiplier and level
+   * Handles game mechanics after a block is placed Checks if any lines are cleared Updates the
+   * score, multiplier and level
    */
-  public void afterPiece(){
+  public void afterPiece() {
     var clearedBlocks = new HashSet<GameBlockCoordinate>();
     var cleared = new HashSet<GameBlockCoordinate>();
 
     int totalCleared = 0;
 
     //check all rows
-    for(int x = 0; x < cols;x++){
-      int counter =0;
-      for(int y=0;y<rows;y++){
-        if(grid.get(x,y) == 0){
+    for (int x = 0; x < cols; x++) {
+      int counter = 0;
+      for (int y = 0; y < rows; y++) {
+        if (grid.get(x, y) == 0) {
           break;
         }
         counter++;
       }
-      if(counter == rows){
+      if (counter == rows) {
         totalCleared++;
-        for(int y=0;y<rows;y++){
-          clearedBlocks.add(new GameBlockCoordinate(x,y));
-          cleared.add(new GameBlockCoordinate(x,y));
+        for (int y = 0; y < rows; y++) {
+          clearedBlocks.add(new GameBlockCoordinate(x, y));
+          cleared.add(new GameBlockCoordinate(x, y));
         }
       }
     }
     //check all columns
-    for(int y = 0; y < rows;y++){
-      int counter =0;
-      for(int x=0;x<cols;x++){
-        if(grid.get(x,y) == 0){
+    for (int y = 0; y < rows; y++) {
+      int counter = 0;
+      for (int x = 0; x < cols; x++) {
+        if (grid.get(x, y) == 0) {
           break;
         }
         counter++;
       }
-      if(counter == cols){
+      if (counter == cols) {
         totalCleared++;
-        for(int x=0;x<cols;x++){
-          clearedBlocks.add(new GameBlockCoordinate(x,y));
-          cleared.add(new GameBlockCoordinate(x,y));
+        for (int x = 0; x < cols; x++) {
+          clearedBlocks.add(new GameBlockCoordinate(x, y));
+          cleared.add(new GameBlockCoordinate(x, y));
         }
       }
     }
     //If any lines were cleared
-    if(totalCleared > 0){
+    if (totalCleared > 0) {
       //update the score
       score(totalCleared, clearedBlocks.size());
       //update the multiplier
@@ -262,14 +262,13 @@ public class Game {
       //update the level
       level.set(Math.floorDiv(score.get(), 1000));
       //if a LineClearedListener is set, the listener should be called with the set of cleared blocks
-      if(lineClearedListener != null){
+      if (lineClearedListener != null) {
         lineClearedListener.linesCleaned(cleared);
       }
-      for(var block : clearedBlocks){
+      for (var block : clearedBlocks) {
         grid.set(block.getX(), block.getY(), 0);
       }
-    }
-    else{
+    } else {
       //If no lines were cleared, the multiplier should be reset to 1
       multiplier.set(1);
     }
@@ -314,12 +313,11 @@ public class Game {
    * @param gameBlock the block that was clicked
    */
   public boolean blockClicked(GameBlock gameBlock) {
-    if(eraseMode){
+    if (eraseMode) {
       logger.info("Erasing block(paint empty)");
       grid.set(gameBlock.getX(), gameBlock.getY(), 0);
       return true;
-    }
-    else {
+    } else {
       //Get the position of this block
       int x = gameBlock.getX();
       int y = gameBlock.getY();
@@ -419,6 +417,7 @@ public class Game {
   public int getLines() {
     return lines;
   }
+
   /**
    * Get the current piece in the game
    *
@@ -496,17 +495,19 @@ public class Game {
   }
 
   public long getTimerDelay() {
-    delay = Math.max(12000 - (level.get() * 500),2500);
+    delay = Math.max(12000 - (level.get() * 500), 2500);
     return delay;
   }
 
   /**
    * Handles execution after timeline ends
+   *
    * @param listener
    */
   public void setOnGameLoop(GameLoopListener listener) {
     gameLoopListener = listener;
   }
+
   public void setOnGameEnd(GameEndListener listener) {
     gameEndListener = listener;
   }
@@ -523,21 +524,20 @@ public class Game {
   /**
    * Reset the game after timer  ends
    */
-  public void gameLoop(){
+  public void gameLoop() {
     setLives(lives.get() - 1);
     Multimedia lifeLost = new Multimedia();
     lifeLost.playAudio("/sounds/lifelose.wav");
-    if(lives.get() < 0){
-      if(gameEndListener != null){
+    if (lives.get() < 0) {
+      if (gameEndListener != null) {
         Platform.runLater(() -> gameEndListener.onGameEnd());
       }
-    }
-    else{
+    } else {
       setMultiplier(1);
       nextPiece();
       gameLoopListener();
       gameLoop = timer.schedule(this::gameLoop, getTimerDelay(), TimeUnit.MILLISECONDS);
-      logger.info("Lives left: {}", lives.get()+", Multiplier reset");
+      logger.info("Lives left: {}", lives.get() + ", Multiplier reset");
     }
   }
 
@@ -556,15 +556,17 @@ public class Game {
     gameLoop.cancel(false);
 
   }
+
   /* Called on game over */
-  public void endTimer(){
+  public void endTimer() {
     this.timer.shutdown();
   }
+
   /**
    * POWER UPS
    */
-  public Boolean powerLives(){
-    if(this.getScore().get() >= 100){
+  public Boolean powerLives() {
+    if (this.getScore().get() >= 100) {
       powerUpSound();
       setLives(this.getLives().get() + 1);
       setScore(this.getScore().get() - 100);
@@ -573,8 +575,9 @@ public class Game {
     }
     return false;
   }
-  public Boolean powerPiece(){
-    if(this.getScore().get() >= 300){
+
+  public Boolean powerPiece() {
+    if (this.getScore().get() >= 300) {
       powerUpSound();
       nextPiece();
       setScore(this.getScore().get() - 300);
@@ -583,7 +586,11 @@ public class Game {
     }
     return false;
   }
-  private void powerUpSound(){
+
+  /*
+  Plays a sound on successful power up
+   */
+  private void powerUpSound() {
     String soundFile = getClass().getResource("/sounds/wow.mp3").toExternalForm();
     Media sound = new Media(soundFile);
     MediaPlayer mediaPlayer = new MediaPlayer(sound);
