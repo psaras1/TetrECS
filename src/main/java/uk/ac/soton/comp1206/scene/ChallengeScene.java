@@ -199,7 +199,7 @@ public class ChallengeScene extends BaseScene {
       game.rotateCurrentPieceLeft();
     });
     var currentPieceLabel = new Text("Current Piece:");
-    currentPieceLabel.getStyleClass().add("heading");
+    currentPieceLabel.getStyleClass().add("powerUp");
 
     followingPiece = new PieceBoard(80, 80);
     followingPiece.setPadding(new Insets(5, 0, 0, 0));
@@ -208,7 +208,7 @@ public class ChallengeScene extends BaseScene {
       game.swapCurrentPiece();
     });
     var nextPieceLabel = new Text("Next Piece:");
-    nextPieceLabel.getStyleClass().add("heading");
+    nextPieceLabel.getStyleClass().add("powerUp");
 
     /*
     Current High Score

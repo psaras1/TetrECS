@@ -557,4 +557,13 @@ public class Game {
     }
     return false;
   }
+  public Boolean powerPiece(){
+    if(this.getScore().get() >= 300){
+      nextPiece();
+      setScore(this.getScore().get() - 300);
+      logger.info("Current piece changed to: {}", this.currentPiece);
+      return true;
+    }
+    return false;
+  }
 }
