@@ -69,11 +69,20 @@
     -fx-stroke: black;
     -fx-effect: dropshadow(gaussian, aqua, 3, 0, 0, 0);
 }
+.powerUp{
+    -fx-fill: yellow;
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 22px;
+    -fx-font-weight: 700;
+    -fx-border-color: black;
+    -fx-stroke: black;
+    -fx-effect: dropshadow(gaussian, white, 3, 0, 0, 0);
+}
 
 .score {
     -fx-fill: yellow;
     -fx-font-family: 'Orbitron';
-    -fx-font-size: 36px;
+    -fx-font-size: 32px;
     -fx-font-weight: 700;
     -fx-border-color: black;
     -fx-stroke: black;
@@ -84,7 +93,7 @@
 .level {
     -fx-fill: #ff6600;
     -fx-font-family: 'Orbitron';
-    -fx-font-size: 30px;
+    -fx-font-size: 32px;
     -fx-font-weight: 700;
     -fx-border-color: black;
     -fx-stroke: black;
@@ -104,7 +113,7 @@
 }
 .lives {
     -fx-font-family: 'Orbitron';
-    -fx-font-size: 36px;
+    -fx-font-size: 32px;
     -fx-font-weight: 700;
     -fx-border-color: black;
     -fx-stroke: black;

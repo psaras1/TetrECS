@@ -83,6 +83,8 @@ public class ChallengeScene extends BaseScene {
   protected VBox centerBox = new VBox();
   protected VBox topBox = new VBox();
 
+  protected VBox leftBox = new VBox();
+
 
   /**
    * Create a new Single Player challenge scene
@@ -185,7 +187,6 @@ public class ChallengeScene extends BaseScene {
     rightBox.getChildren().addAll(scoreBox, livesBox, levelBox, multiplierBox);
 
     /*left*/
-    var leftBox = new VBox();
     leftBox.setAlignment(Pos.CENTER);
     leftBox.setPadding(new Insets(0, 5, 0, 15));
     mainPane.setLeft(leftBox);
@@ -222,8 +223,9 @@ public class ChallengeScene extends BaseScene {
     Region spacing = new Region();
     spacing.setPrefHeight(50);
 
-    leftBox.getChildren().addAll(currentPieceLabel, currentPiece, nextPieceLabel, followingPiece,spacing,
-        highScoreLabel, highScoreVal);
+    leftBox.getChildren()
+        .addAll(currentPieceLabel, currentPiece, nextPieceLabel, followingPiece, spacing,
+            highScoreLabel, highScoreVal);
 
     /*botom*/
     /*
@@ -251,8 +253,7 @@ public class ChallengeScene extends BaseScene {
     board.setOnBlockClick(this::blockClicked); //calls blockClicked from GameBoard class
 
     //Create a mute button
-    addMuteButton("/music/game.wav",gameMusic);
-
+    addMuteButton("/music/game.wav", gameMusic);
 
     //Create a menu button
     var menuButton = new Text("Menu");
@@ -273,7 +274,7 @@ public class ChallengeScene extends BaseScene {
   }
 
   /*
-  *Update lives label based on the number of lives
+   *Update lives label based on the number of lives
    */
   public void updateLivesLabel(int lives) {
     if (lives == 3) {
@@ -381,32 +382,33 @@ public class ChallengeScene extends BaseScene {
 
   /**
    * Update the high score
-
-   * Called in the initialise method
-   * Added a listener to the score, so whenever it changes updateHighScore is called
+   * <p>
+   * Called in the initialise method Added a listener to the score, so whenever it changes
+   * updateHighScore is called
+   *
    * @param observable
    * @param oldValue
    * @param newValue
    */
-  public void updateHighScore(ObservableValue<? extends Number> observable, Number oldValue, Number newValue){
-    if(newValue.intValue() > this.highScore.get()){
+  public void updateHighScore(ObservableValue<? extends Number> observable, Number oldValue,
+      Number newValue) {
+    if (newValue.intValue() > this.highScore.get()) {
       this.highScore.set(newValue.intValue());
       logger.info("High Score updated to: {}", newValue.intValue());
     }
-    if(newValue.intValue() < this.highScore.get()){
-      if(newValue.intValue() > ScoresScene.loadScores().get(0).getValue()){
+    if (newValue.intValue() < this.highScore.get()) {
+      if (newValue.intValue() > ScoresScene.loadScores().get(0).getValue()) {
         this.highScore.set(newValue.intValue());
         logger.info("High Score updated to: {}", newValue.intValue());
-      }else{
+      } else {
         this.highScore.set(ScoresScene.loadScores().get(0).getValue());
       }
     }
   }
 
   /**
-   * Keyboard controls for the game
-   * (Using .setOnKeyPressed() method to listen for key presses didn't work for me
-   * (arrows and space bar weren't registering)
+   * Keyboard controls for the game (Using .setOnKeyPressed() method to listen for key presses
+   * didn't work for me (arrows and space bar weren't registering)
    */
   protected void keyboardControls() {
     board.setOnMouseMoved((e) -> {
@@ -422,114 +424,114 @@ public class ChallengeScene extends BaseScene {
       coordX = board.currentBlock.getX();
       coordY = board.currentBlock.getY();
     });
-    gameWindow.getScene().addEventFilter(KeyEvent.KEY_PRESSED,event -> {
+    gameWindow.getScene().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
       logger.info("Key pressed: {}", event.getCode());
-      if(!sendMessageBox){
-      switch (event.getCode()) {
-        //Go back to menu
-        case ESCAPE:
-          logger.info("Escape pressed, returning to menu");
-          game.exitGame();
-          gameMusic.stopBackgroundMusic();
-          gameWindow.startMenu();
-          break;
-        //Move the current piece left
-        case M:
-          if (!gameMusic.isPlaying()) {
-            gameMusic.playBackgroundMusic("/music/game.wav");
-            changeToUnmuteImage();
-          } else {
+      if (!sendMessageBox) {
+        switch (event.getCode()) {
+          //Go back to menu
+          case ESCAPE:
+            logger.info("Escape pressed, returning to menu");
+            game.exitGame();
             gameMusic.stopBackgroundMusic();
-            changeToMuteImage();
-          }
-          break;
-        case CLOSE_BRACKET, E, C:
-          game.rotateCurrentPieceRight();
-          break;
-        //Rotate the current piece
-        case OPEN_BRACKET, Q, Z:
-          game.rotateCurrentPieceLeft();
-          break;
-        //Swap the current piece(TODO: Fix spacebar)
-        case R, SPACE:
-          game.swapCurrentPiece();
-          break;
+            gameWindow.startMenu();
+            break;
+          //Move the current piece left
+          case M:
+            if (!gameMusic.isPlaying()) {
+              gameMusic.playBackgroundMusic("/music/game.wav");
+              changeToUnmuteImage();
+            } else {
+              gameMusic.stopBackgroundMusic();
+              changeToMuteImage();
+            }
+            break;
+          case CLOSE_BRACKET, E, C:
+            game.rotateCurrentPieceRight();
+            break;
+          //Rotate the current piece
+          case OPEN_BRACKET, Q, Z:
+            game.rotateCurrentPieceLeft();
+            break;
+          //Swap the current piece(TODO: Fix spacebar)
+          case R, SPACE:
+            game.swapCurrentPiece();
+            break;
 
-        case W, UP:
-          if (mouseMode) {
-            mouseMode = false;
-            board.mouseExitBlock(board.getBlock(coordX, coordY));
-            coordY = 0;
-            coordX = 0;
-            keyboardSelectedBlock = board.getBlock(coordX, coordY);
-            board.mouseEnterBlock(board.getBlock(coordX, coordY));
-          } else {
-            if (coordY != 0) {
+          case W, UP:
+            if (mouseMode) {
+              mouseMode = false;
               board.mouseExitBlock(board.getBlock(coordX, coordY));
-              coordY--;
+              coordY = 0;
+              coordX = 0;
               keyboardSelectedBlock = board.getBlock(coordX, coordY);
               board.mouseEnterBlock(board.getBlock(coordX, coordY));
+            } else {
+              if (coordY != 0) {
+                board.mouseExitBlock(board.getBlock(coordX, coordY));
+                coordY--;
+                keyboardSelectedBlock = board.getBlock(coordX, coordY);
+                board.mouseEnterBlock(board.getBlock(coordX, coordY));
+              }
             }
-          }
-          break;
-        case S, DOWN:
-          if (mouseMode) {
-            mouseMode = false;
-            board.mouseExitBlock(board.getBlock(coordX, coordY));
-            coordY = 0;
-            coordX = 0;
-            keyboardSelectedBlock = board.getBlock(coordX, coordY);
-            board.mouseEnterBlock(board.getBlock(coordX, coordY));
-          } else {
-            if (coordY != 4) {
+            break;
+          case S, DOWN:
+            if (mouseMode) {
+              mouseMode = false;
               board.mouseExitBlock(board.getBlock(coordX, coordY));
-              coordY++;
+              coordY = 0;
+              coordX = 0;
               keyboardSelectedBlock = board.getBlock(coordX, coordY);
               board.mouseEnterBlock(board.getBlock(coordX, coordY));
+            } else {
+              if (coordY != 4) {
+                board.mouseExitBlock(board.getBlock(coordX, coordY));
+                coordY++;
+                keyboardSelectedBlock = board.getBlock(coordX, coordY);
+                board.mouseEnterBlock(board.getBlock(coordX, coordY));
+              }
             }
-          }
-          break;
-        case A, LEFT:
-          if (mouseMode) {
-            mouseMode = false;
-            board.mouseExitBlock(board.getBlock(coordX, coordY));
-            coordY = 0;
-            coordX = 0;
-            keyboardSelectedBlock = board.getBlock(coordX, coordY);
-            board.mouseEnterBlock(board.getBlock(coordX, coordY));
-          } else {
-            if (coordX != 0) {
+            break;
+          case A, LEFT:
+            if (mouseMode) {
+              mouseMode = false;
               board.mouseExitBlock(board.getBlock(coordX, coordY));
-              coordX--;
+              coordY = 0;
+              coordX = 0;
               keyboardSelectedBlock = board.getBlock(coordX, coordY);
               board.mouseEnterBlock(board.getBlock(coordX, coordY));
+            } else {
+              if (coordX != 0) {
+                board.mouseExitBlock(board.getBlock(coordX, coordY));
+                coordX--;
+                keyboardSelectedBlock = board.getBlock(coordX, coordY);
+                board.mouseEnterBlock(board.getBlock(coordX, coordY));
+              }
             }
-          }
-          break;
-        case D, RIGHT:
-          if (mouseMode) {
-            mouseMode = false;
-            board.mouseExitBlock(board.getBlock(coordX, coordY));
-            coordY = 0;
-            coordX = 0;
-            keyboardSelectedBlock = board.getBlock(coordX, coordY);
-            board.mouseEnterBlock(board.getBlock(coordX, coordY));
-          } else {
-            if (coordX != 4) {
+            break;
+          case D, RIGHT:
+            if (mouseMode) {
+              mouseMode = false;
               board.mouseExitBlock(board.getBlock(coordX, coordY));
-              coordX++;
+              coordY = 0;
+              coordX = 0;
               keyboardSelectedBlock = board.getBlock(coordX, coordY);
               board.mouseEnterBlock(board.getBlock(coordX, coordY));
+            } else {
+              if (coordX != 4) {
+                board.mouseExitBlock(board.getBlock(coordX, coordY));
+                coordX++;
+                keyboardSelectedBlock = board.getBlock(coordX, coordY);
+                board.mouseEnterBlock(board.getBlock(coordX, coordY));
+              }
             }
-          }
-          break;
-        case ENTER, X:
+            break;
+          case ENTER, X:
 
-          game.blockClicked(board.getBlock(coordX, coordY));
-      }}
+            game.blockClicked(board.getBlock(coordX, coordY));
+        }
+      }
     });
   }
-
 
 
 }
