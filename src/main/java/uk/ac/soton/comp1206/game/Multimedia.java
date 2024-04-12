@@ -12,12 +12,14 @@ import javafx.util.Duration;
 public class Multimedia {
   private  MediaPlayer audioPlayer;
   private  MediaPlayer musicPlayer;
+  public static double globalVolume = 1.0;
   /**
    * Play a sound from a file
    * @param file the file to play
    */
   public void playAudio(String file) {
     this.audioPlayer = new MediaPlayer(new Media(getClass().getResource(file).toExternalForm()));
+    audioPlayer.setVolume(globalVolume);
     audioPlayer.play();
   }
   /**
@@ -27,6 +29,7 @@ public class Multimedia {
     musicPlayer = new MediaPlayer(new Media(getClass().getResource(file).toExternalForm()));
 //    The background music should loop
     musicPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+    musicPlayer.setVolume(globalVolume);
     musicPlayer.play();
   }
   /**
@@ -42,6 +45,9 @@ public class Multimedia {
    */
   public boolean isPlaying() {
     return musicPlayer.getStatus() == MediaPlayer.Status.PLAYING;
+  }
+  public static void adjustGlobalVolume(double volume) {
+    globalVolume = volume;
   }
 
 }

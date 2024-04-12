@@ -116,9 +116,6 @@ public class MenuScene extends BaseScene {
         });
 
         /*
-        *Chat button
-         */
-        /*
         *Scores button
          */
         var scoresButton = new Text("Scores");
@@ -128,12 +125,22 @@ public class MenuScene extends BaseScene {
             transitionSound.playAudio("/sounds/transition.wav");
             gameWindow.loadScene(new ScoresScene(gameWindow));
         });
+        /*
+        Settings button
+         */
+        var settingsButton = new Text("Settings");
+        settingsButton.getStyleClass().add("option-button");
+        settingsButton.setOnMouseClicked(e->{
+            menuMusic.stopBackgroundMusic();
+            transitionSound.playAudio("/sounds/transition.wav");
+            gameWindow.loadScene(new SettingsScene(gameWindow));
+        });
 
         /*
         *Button container
          */
         var buttonContainer = new VBox();
-        buttonContainer.getChildren().addAll(playButton, instructionsButton, scoresButton, multiplayerButton);
+        buttonContainer.getChildren().addAll(playButton, instructionsButton, scoresButton, multiplayerButton, settingsButton);
         buttonContainer.setAlignment(Pos.CENTER);
         buttonContainer.setSpacing(20);
         mainPane.setCenter(buttonContainer);

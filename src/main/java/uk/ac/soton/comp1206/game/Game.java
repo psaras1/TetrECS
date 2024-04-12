@@ -351,6 +351,7 @@ public class Game {
     String soundFile = getClass().getResource("/sounds/fail.wav").toExternalForm();
     Media sound = new Media(soundFile);
     MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    mediaPlayer.setVolume(Multimedia.globalVolume);
     mediaPlayer.play();
   }
 
@@ -361,6 +362,7 @@ public class Game {
     String soundFile = getClass().getResource("/sounds/level.wav").toExternalForm();
     Media sound = new Media(soundFile);
     MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    mediaPlayer.setVolume(Multimedia.globalVolume);
     mediaPlayer.play();
   }
 
@@ -371,6 +373,7 @@ public class Game {
     String soundFile = getClass().getResource("/sounds/place.wav").toExternalForm();
     Media sound = new Media(soundFile);
     MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    mediaPlayer.setVolume(Multimedia.globalVolume);
     mediaPlayer.play();
   }
 
@@ -381,6 +384,7 @@ public class Game {
     String soundFile = getClass().getResource("/sounds/rotate.wav").toExternalForm();
     Media sound = new Media(soundFile);
     MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    mediaPlayer.setVolume(Multimedia.globalVolume);
     mediaPlayer.play();
   }
 
@@ -391,6 +395,7 @@ public class Game {
     String soundFile = getClass().getResource("/sounds/clear.wav").toExternalForm();
     Media sound = new Media(soundFile);
     MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    mediaPlayer.setVolume(Multimedia.globalVolume);
     mediaPlayer.play();
   }
 
@@ -401,6 +406,7 @@ public class Game {
     String soundFile = getClass().getResource("/sounds/pling.wav").toExternalForm();
     Media sound = new Media(soundFile);
     MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    mediaPlayer.setVolume(Multimedia.globalVolume);
     mediaPlayer.play();
   }
 
@@ -581,6 +587,7 @@ public class Game {
     String soundFile = getClass().getResource("/sounds/wow.mp3").toExternalForm();
     Media sound = new Media(soundFile);
     MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    mediaPlayer.setVolume(Multimedia.globalVolume);
     mediaPlayer.play();
   }
 

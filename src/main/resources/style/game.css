@@ -364,3 +364,24 @@ TextField {
     -fx-font-weight: bold;
     -fx-border-color: white;
 }
+
+.slider .track{
+    -fx-background-color: linear-gradient(to left, cyan,magenta);
+
+}
+
+.slider .thumb{
+    -fx-background-color: linear-gradient(to top, royalblue,cyan);
+
+}
+/*.slider .axis .tick-mark{*/
+/*    -fx-stroke: white;*/
+/*}*/
+
+
+.setting{
+    -fx-fill: white; /* White text color */
+    -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 20px;
+}

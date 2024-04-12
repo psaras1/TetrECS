@@ -15,6 +15,7 @@ import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class LoadingScene extends BaseScene{
   private Multimedia loadingMusic = new Multimedia();
+  private Boolean skipped = false;
   public LoadingScene(GameWindow gameWindow) {
     super(gameWindow);
   }
@@ -24,10 +25,9 @@ public class LoadingScene extends BaseScene{
     scene.setOnKeyPressed(e->{
       switch (e.getCode()){
         case ESCAPE, SPACE, ENTER:
+          skipped = true;
           loadingMusic.stopBackgroundMusic();
           gameWindow.startMenu();
-          break;
-        default:
           break;
       }
     });
@@ -54,10 +54,12 @@ public class LoadingScene extends BaseScene{
 
     SequentialTransition sequence = new SequentialTransition(fIn, fOut);
     sequence.play();
-    sequence.setOnFinished(e -> {
-      loadingMusic.stopBackgroundMusic();
-      gameWindow.startMenu();
-    });
+      sequence.setOnFinished(e -> {
+        if(skipped) return;
+        loadingMusic.stopBackgroundMusic();
+        gameWindow.startMenu();
+      });
+
   }
 
 }
