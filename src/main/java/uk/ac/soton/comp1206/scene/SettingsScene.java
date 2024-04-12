@@ -7,6 +7,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp1206.App;
 import uk.ac.soton.comp1206.game.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -19,6 +22,8 @@ public class SettingsScene extends BaseScene{
    * @param gameWindow the game window
    */
   private Slider volumeSlider;
+  private static final Logger logger = LogManager.getLogger(SettingsScene.class);
+
 
   public SettingsScene(GameWindow gameWindow) {
     super(gameWindow);
@@ -26,6 +31,7 @@ public class SettingsScene extends BaseScene{
 
   @Override
   public void initialise() {
+    volumeSlider.setValue(App.getCurrentVolume()*100);
     keybinds();
 
   }
@@ -57,7 +63,8 @@ public class SettingsScene extends BaseScene{
 
     var volumeLabel = new Text("Volume");
     volumeLabel.getStyleClass().add("setting");
-    volumeSlider = new Slider(0, 100, 50);//min, max, default
+    double volumeTemp = App.getCurrentVolume()*100;
+    volumeSlider = new Slider(0, 100, volumeTemp);//min, max, default
     volumeSlider.setShowTickLabels(true);
     volumeSlider.setShowTickMarks(true);
     volumeSlider.setMajorTickUnit(50);
@@ -68,7 +75,7 @@ public class SettingsScene extends BaseScene{
 
     volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
       double volume = newValue.doubleValue() / 100;
-
+      App.setCurrentVolume(volume);
       Multimedia.adjustGlobalVolume(volume);
     });
 
@@ -87,6 +94,7 @@ public class SettingsScene extends BaseScene{
     scene.setOnKeyPressed(e->{
       switch (e.getCode()){
         case ESCAPE:
+          logger.info("Volume set to: " + App.getCurrentVolume()*100);
           gameWindow.startMenu();
           break;
       }

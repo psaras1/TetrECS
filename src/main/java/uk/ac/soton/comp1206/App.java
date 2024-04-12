@@ -36,6 +36,13 @@ public class App extends Application {
 
     private final int widthImage = 800;
     private final int heightImage = 600;
+    private static double currentVolume = 0.5;
+    public static double getCurrentVolume() {
+        return currentVolume;
+    }
+    public static void setCurrentVolume(double currentVolume) {
+        App.currentVolume = currentVolume;
+    }
 
     /**
      * Start the game
