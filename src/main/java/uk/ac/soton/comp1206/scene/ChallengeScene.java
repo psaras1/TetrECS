@@ -68,9 +68,9 @@ public class ChallengeScene extends BaseScene {
   protected Text multiplierLabel;
   protected Text title;
   protected PieceBoard currentPiece, followingPiece;
-  private int coordX = 0, coordY = 0;
+  protected int coordX = 0, coordY = 0;
   private boolean mouseMode;
-  private GameBoard board;
+  protected GameBoard board;
   private GameBlock keyboardSelectedBlock = null;
   /* Holds the high score */
   private IntegerProperty highScore = new SimpleIntegerProperty();

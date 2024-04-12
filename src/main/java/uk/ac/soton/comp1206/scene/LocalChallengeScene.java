@@ -8,15 +8,20 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class LocalChallengeScene extends ChallengeScene {
+  private static final Logger logger  = LogManager.getLogger(LocalChallengeScene.class);
 
   /**
    * Create a new Single Player challenge scene
    *
    * @param gameWindow the Game Window
    */
+
   public LocalChallengeScene(GameWindow gameWindow) {
     super(gameWindow);
   }
@@ -87,13 +92,26 @@ public class LocalChallengeScene extends ChallengeScene {
     getPieceContainer.setAlignment(Pos.CENTER);
     getPieceContainer.getChildren().addAll(getPiece, getPieceCost);
 
+    /*Erase block*/
+    var eraseBlock = new Text("Erase Block");
+    var eraseBlockCost = new Text("Cost: 500");
+    eraseBlockCost.getStyleClass().add("option3-button");
+    eraseBlock.getStyleClass().add("option1-button");
+    eraseBlock.setOnMouseClicked(e -> {
+      powerErase();
+    });
+    var eraseBlockContainer = new VBox();
+    eraseBlockContainer.setSpacing(5);
+    eraseBlockContainer.setAlignment(Pos.CENTER);
+    eraseBlockContainer.getChildren().addAll(eraseBlock, eraseBlockCost);
+
 
     var leftContainer = new VBox();
     leftContainer.setPadding(new Insets(10));
     leftContainer.setSpacing(20);
     leftContainer.setAlignment(Pos.CENTER);
 
-    leftContainer.getChildren().addAll(powerUp, getLivesContainer,getPieceContainer);
+    leftContainer.getChildren().addAll(powerUp, getLivesContainer,getPieceContainer,eraseBlockContainer);
 
     mainPane.setLeft(leftContainer);
 
@@ -105,5 +123,24 @@ public class LocalChallengeScene extends ChallengeScene {
     mainPane.setRight(leftBox);
 
 
+  }
+  public Boolean powerErase(){
+    if(this.game.getScore().get() >= 500){
+      logger.info("Erase block power up activated");
+      game.eraseMode = true;
+      logger.info("Erase mode activated, eraseMode: {}", game.eraseMode);
+      board.setOnMouseClicked(e->{
+        coordX = board.currentBlock.getX();
+        coordY = board.currentBlock.getY();
+        game.blockClicked(board.getBlock(coordX,coordY));
+        this.game.setScore(this.game.getScore().get()-500);
+        game.eraseMode = false;
+        board.setOnMouseClicked(null);
+        logger.info("Erase mode deactivated, eraseMode: {}", game.eraseMode);
+      });
+
+      return true;
+    }
+    return false;
   }
 }

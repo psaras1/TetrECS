@@ -37,7 +37,7 @@ public class Game {
 
   private LineClearedListener lineClearedListener = null;
   private Random random = new Random(); //Allows us to generate a random number in order to get random pieces/shapes
-
+  public Boolean eraseMode = false;
   /**
    * Number of rows
    */
@@ -96,7 +96,7 @@ public class Game {
     this.cols = cols;
     this.rows = rows;
     //These should default to 0 score, level 0, 3 lives and 1 x multiplier respectively.
-    this.score = new SimpleIntegerProperty(0);
+    this.score = new SimpleIntegerProperty(600);
     this.level = new SimpleIntegerProperty(0);
     this.lives = new SimpleIntegerProperty(3);
     this.multiplier = new SimpleIntegerProperty(1);
@@ -313,24 +313,32 @@ public class Game {
    * @param gameBlock the block that was clicked
    */
   public boolean blockClicked(GameBlock gameBlock) {
-    //Get the position of this block
-    int x = gameBlock.getX();
-    int y = gameBlock.getY();
-    if (grid.canPlayPiece(currentPiece, x, y)) {
-      //Can play the piece
-      grid.playPiece(currentPiece, x, y);
-      playPlaceSound();
-      nextPiece(); //Once one piece has been placed, generate a new one
-      afterPiece();
-      /* if a block is placed, the game loop should be reset */
-      gameLoop.cancel(false);
-      gameLoop = timer.schedule(this::gameLoop, getTimerDelay(), TimeUnit.MILLISECONDS);
-      gameLoopListener();
-      logger.info("Timer reset");
+    if(eraseMode){
+      logger.info("Erasing block(paint empty)");
+      grid.set(gameBlock.getX(), gameBlock.getY(), 0);
       return true;
-    } else {
-      playErrorSound();
-      return false;
+    }
+    else {
+      //Get the position of this block
+      int x = gameBlock.getX();
+      int y = gameBlock.getY();
+      if (grid.canPlayPiece(currentPiece, x, y)) {
+        //Can play the piece
+        grid.playPiece(currentPiece, x, y);
+        playPlaceSound();
+        nextPiece(); //Once one piece has been placed, generate a new one
+        afterPiece();
+        /* if a block is placed, the game loop should be reset */
+        gameLoop.cancel(false);
+        gameLoop = timer.schedule(this::gameLoop, getTimerDelay(), TimeUnit.MILLISECONDS);
+        gameLoopListener();
+        logger.info("Timer reset");
+        return true;
+      } else {
+        playErrorSound();
+        logger.info("Cannot place piece at: {}, {}", x, y);
+        return false;
+      }
     }
 
   }
@@ -566,4 +574,5 @@ public class Game {
     }
     return false;
   }
+
 }
