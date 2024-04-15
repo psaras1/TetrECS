@@ -39,6 +39,7 @@ public class SettingsScene extends BaseScene {
   private Slider volumeSlider;
 
   private static final Logger logger = LogManager.getLogger(SettingsScene.class);
+  private Multimedia multimedia = new Multimedia();
   private static double volume = 0.3;
   public static Text theme = new Text("challenge-background1");
 
@@ -84,7 +85,7 @@ public class SettingsScene extends BaseScene {
     center
      */
     /*Sound volume*/
-    var volumeLabel = new Text("Music Volume: ");
+    var volumeLabel = new Text("Master Volume: ");
     volumeLabel.getStyleClass().add("option3-button");
     double volumeTemp = volume * 100;
     volumeSlider = new Slider(0, 100, volumeTemp);//min, max, default
@@ -128,47 +129,59 @@ public class SettingsScene extends BaseScene {
 
     one.setFitWidth(240);
     one.setPreserveRatio(true);
+    one.getStyleClass().add("setting-image");
     imageGrid.add(one, 0, 1);
     one.setOnMouseClicked(e -> {
       logger.info("Image 1 selected");
+      multimedia.playAudio("/sounds/transition.wav");
       this.theme.setText("challenge-background1");
     });
     two.setFitWidth(240);
     two.setPreserveRatio(true);
+    two.getStyleClass().add("setting-image");
     imageGrid.add(two, 1, 1);
     two.setOnMouseClicked(e -> {
       logger.info("Image 2 selected");
+      multimedia.playAudio("/sounds/transition.wav");
       this.theme.setText("challenge-background2");
     });
     three.setFitWidth(240);
     three.setPreserveRatio(true);
+    three.getStyleClass().add("setting-image");
     imageGrid.add(three, 2, 1);
     three.setOnMouseClicked(e -> {
       logger.info("Image 3 selected");
+      multimedia.playAudio("/sounds/transition.wav");
       this.theme.setText("challenge-background3");
     });
 
     four.setFitWidth(240);
     four.setPreserveRatio(true);
+    four.getStyleClass().add("setting-image");
     imageGrid.add(four, 0, 2);
     four.setOnMouseClicked(e -> {
       logger.info("Image 4 selected");
+      multimedia.playAudio("/sounds/transition.wav");
       this.theme.setText("challenge-background4");
     });
 
     five.setFitWidth(240);
     five.setPreserveRatio(true);
+    five.getStyleClass().add("setting-image");
     imageGrid.add(five, 1, 2);
     five.setOnMouseClicked(e -> {
       logger.info("Image 5 selected");
+      multimedia.playAudio("/sounds/transition.wav");
       this.theme.setText("challenge-background5");
     });
 
     six.setFitWidth(240);
     six.setPreserveRatio(true);
+    six.getStyleClass().add("setting-image");
     imageGrid.add(six, 2, 2);
     six.setOnMouseClicked(e -> {
       logger.info("Image 6 selected");
+      multimedia.playAudio("/sounds/transition.wav");
       this.theme.setText("challenge-background6");
     });
 

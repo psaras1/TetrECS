@@ -10,8 +10,6 @@ import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,6 +32,7 @@ public class Game {
   protected NextPieceListener nextPieceListener = null;
   protected Boolean began = false;
   protected int newScore;
+  private Multimedia multimedia = new Multimedia();
 
   private LineClearedListener lineClearedListener = null;
   private Random random = new Random(); //Allows us to generate a random number in order to get random pieces/shapes
@@ -97,7 +96,7 @@ public class Game {
     this.cols = cols;
     this.rows = rows;
     //These should default to 0 score, level 0, 3 lives and 1 x multiplier respectively.
-    this.score = new SimpleIntegerProperty(0);
+    this.score = new SimpleIntegerProperty(1000);
     this.level = new SimpleIntegerProperty(0);
     this.lives = new SimpleIntegerProperty(3);
     this.multiplier = new SimpleIntegerProperty(1);
@@ -154,10 +153,6 @@ public class Game {
 
   public void setMultiplier(int multiplier) {
     this.multiplier.set(multiplier);
-  }
-
-  public void setLevel(int level) {
-    this.level.set(level);
   }
 
   public void setLives(int lives) {
@@ -287,11 +282,11 @@ public class Game {
     logger.info("Score changed to: {}", score.get());
     //The level should increase per 1000 points
     if (newScore > oldScore) {
-      playClearSound();
+      multimedia.playAudio("/sounds/clear.wav");
     }
     if (score.get() >= 1000 * (level.get() + 1)) {
       incrementLevel();
-      playLevelUpSound();
+      multimedia.playAudio("/sounds/level.wav");
       logger.info("Level changed to: {}", level.get());
     }
   }
@@ -324,7 +319,7 @@ public class Game {
       if (grid.canPlayPiece(currentPiece, x, y)) {
         //Can play the piece
         grid.playPiece(currentPiece, x, y);
-        playPlaceSound();
+        multimedia.playAudio("/sounds/place.wav");
         nextPiece(); //Once one piece has been placed, generate a new one
         afterPiece();
         /* if a block is placed, the game loop should be reset */
@@ -334,7 +329,7 @@ public class Game {
         logger.info("Timer reset");
         return true;
       } else {
-        playErrorSound();
+        multimedia.playAudio("/sounds/fail.wav");
         logger.info("Cannot place piece at: {}, {}", x, y);
         return false;
       }
@@ -342,90 +337,9 @@ public class Game {
 
   }
 
-  /**
-   * Handles misplaced pieces by playing a sound(to be fixed)
-   */
-  private void playErrorSound() {
-    String soundFile = getClass().getResource("/sounds/fail.wav").toExternalForm();
-    Media sound = new Media(soundFile);
-    MediaPlayer mediaPlayer = new MediaPlayer(sound);
-    mediaPlayer.setVolume(Multimedia.globalVolume);
-    mediaPlayer.play();
-  }
-
-  /**
-   * Handles level up sound
-   */
-  private void playLevelUpSound() {
-    String soundFile = getClass().getResource("/sounds/level.wav").toExternalForm();
-    Media sound = new Media(soundFile);
-    MediaPlayer mediaPlayer = new MediaPlayer(sound);
-    mediaPlayer.setVolume(Multimedia.globalVolume);
-    mediaPlayer.play();
-  }
-
-  /**
-   * Handles placement sound
-   */
-  private void playPlaceSound() {
-    String soundFile = getClass().getResource("/sounds/place.wav").toExternalForm();
-    Media sound = new Media(soundFile);
-    MediaPlayer mediaPlayer = new MediaPlayer(sound);
-    mediaPlayer.setVolume(Multimedia.globalVolume);
-    mediaPlayer.play();
-  }
-
-  /**
-   * Handles rotate sound
-   */
-  private void playRotateSound() {
-    String soundFile = getClass().getResource("/sounds/rotate.wav").toExternalForm();
-    Media sound = new Media(soundFile);
-    MediaPlayer mediaPlayer = new MediaPlayer(sound);
-    mediaPlayer.setVolume(Multimedia.globalVolume);
-    mediaPlayer.play();
-  }
-
-  /**
-   * Handles clear sound
-   */
-  private void playClearSound() {
-    String soundFile = getClass().getResource("/sounds/clear.wav").toExternalForm();
-    Media sound = new Media(soundFile);
-    MediaPlayer mediaPlayer = new MediaPlayer(sound);
-    mediaPlayer.setVolume(Multimedia.globalVolume);
-    mediaPlayer.play();
-  }
-
-  /**
-   * Handles swap sound
-   */
-  private void playSwapSound() {
-    String soundFile = getClass().getResource("/sounds/pling.wav").toExternalForm();
-    Media sound = new Media(soundFile);
-    MediaPlayer mediaPlayer = new MediaPlayer(sound);
-    mediaPlayer.setVolume(Multimedia.globalVolume);
-    mediaPlayer.play();
-  }
 
 
-  /**
-   * Get the number of lines cleared
-   *
-   * @return number of lines cleared
-   */
-  public int getLines() {
-    return lines;
-  }
 
-  /**
-   * Get the current piece in the game
-   *
-   * @return current piece
-   */
-  public GamePiece getCurrentPiece() {
-    return currentPiece;
-  }
 
   /**
    * Get the grid model inside this game representing the game state of the board
@@ -437,29 +351,11 @@ public class Game {
   }
 
   /**
-   * Get the number of columns in this game
-   *
-   * @return number of columns
-   */
-  public int getCols() {
-    return cols;
-  }
-
-  /**
-   * Get the number of rows in this game
-   *
-   * @return number of rows
-   */
-  public int getRows() {
-    return rows;
-  }
-
-  /**
    * Rotating once, rotates piece to the right
    */
   public void rotateCurrentPieceRight() {
     currentPiece.rotate();
-    playRotateSound();
+    multimedia.playAudio("/sounds/rotate.wav");
     updateListener();
   }
 
@@ -468,7 +364,7 @@ public class Game {
    */
   public void rotateCurrentPieceLeft() {
     currentPiece.rotate(3);
-    playRotateSound();
+    multimedia.playAudio("/sounds/rotate.wav");
     updateListener();
   }
 
@@ -480,7 +376,7 @@ public class Game {
     tempPiece = currentPiece;
     currentPiece = followingPiece;
     followingPiece = tempPiece;
-    playSwapSound();
+    multimedia.playAudio("/sounds/pling.wav");
     updateListener();
   }
 
@@ -567,7 +463,7 @@ public class Game {
    */
   public Boolean powerLives() {
     if (this.getScore().get() >= 100) {
-      powerUpSound();
+      multimedia.playAudio("/sounds/wow.mp3");
       setLives(this.getLives().get() + 1);
       setScore(this.getScore().get() - 100);
       logger.info("Lives increased by 1, lives left: {}", this.getLives().get());
@@ -578,7 +474,7 @@ public class Game {
 
   public Boolean powerPiece() {
     if (this.getScore().get() >= 300) {
-      powerUpSound();
+      multimedia.playAudio("/sounds/wow.mp3");
       nextPiece();
       setScore(this.getScore().get() - 300);
       logger.info("Current piece changed to: {}", this.currentPiece);
@@ -587,15 +483,5 @@ public class Game {
     return false;
   }
 
-  /*
-  Plays a sound on successful power up
-   */
-  private void powerUpSound() {
-    String soundFile = getClass().getResource("/sounds/wow.mp3").toExternalForm();
-    Media sound = new Media(soundFile);
-    MediaPlayer mediaPlayer = new MediaPlayer(sound);
-    mediaPlayer.setVolume(Multimedia.globalVolume);
-    mediaPlayer.play();
-  }
 
 }

@@ -453,3 +453,13 @@ TextField {
   -fx-font-family: 'Orbitron';
   -fx-font-size: 20px;
 }
+
+/* Hover effect */
+.setting-image:hover {
+  -fx-effect: dropshadow(gaussian, cyan, 10, 0.7, 0, 0); /* Cyan glow */
+}
+
+/* Click effect */
+.setting-image-clicked {
+  -fx-effect: dropshadow(gaussian, magenta, 10, 0.7, 0, 0); /* Magenta glow */
+}
