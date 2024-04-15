@@ -14,6 +14,7 @@ public class Multimedia {
   private MediaPlayer audioPlayer;
   private MediaPlayer musicPlayer;
   public static double globalVolume = 1.0;
+  public static double globalSoundVolume = 1.0;
 
   /**
    * Play a sound from a file
@@ -60,5 +61,4 @@ public class Multimedia {
   public static void adjustGlobalVolume(double volume) {
     globalVolume = volume;
   }
-
 }

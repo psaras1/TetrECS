@@ -118,10 +118,7 @@ public class ChallengeScene extends BaseScene {
     challengePane = new StackPane();
     challengePane.setMaxWidth(gameWindow.getWidth());
     challengePane.setMaxHeight(gameWindow.getHeight());
-    challengePane.getStyleClass().add("challenge-background2");
-
-      changeBackground(App.challengeBackground);
-
+    challengePane.getStyleClass().add(SettingsScene.theme.getText());
 
     root.getChildren().add(challengePane);
 
@@ -534,35 +531,6 @@ public class ChallengeScene extends BaseScene {
         }
       }
     });
-  }
-  public static void changeBackground(int image) {
-    switch (image) {
-      case 1:
-        logger.info("background image 1 selected");
-        challengePane.getStyleClass().add("challenge-background1");
-        break;
-      case 2:
-        logger.info("Image 2 selected");
-        challengePane.getStyleClass().add("challenge-background2");
-        break;
-      case 3:
-        logger.info("Image 3 selected");
-        challengePane.getStyleClass().add("challenge-background3");
-        break;
-      case 4:
-        logger.info("Image 4 selected");
-        challengePane.getStyleClass().add("challenge-background4");
-        break;
-      case 5:
-        logger.info("Image 5 selected");
-        challengePane.getStyleClass().add("challenge-background5");
-        break;
-      case 6:
-        logger.info("Image 6 selected");
-        challengePane.getStyleClass().add("challenge-background6");
-        break;
-    }
-
   }
 }
 

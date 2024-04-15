@@ -6,36 +6,47 @@
   -fx-background-color: black;
 }
 
-.menu-background {
-  -fx-background-image: url("../images/6.jpg");
-  -fx-background-size: cover;
-  -fx-background-color: transparent;
-  -fx-background-position: center center;
-}
-
 .challenge-background2 {
   -fx-background-image: url("../images/2.jpg");
-  -fx-background-size: cover;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+  -fx-background-position: center center;
+  -fx-background-color: transparent;
 }
 .challenge-background1 {
   -fx-background-image: url("../images/1.jpg");
-  -fx-background-size: cover;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+  -fx-background-position: center center;
+  -fx-background-color: transparent;
 }
 .challenge-background3{
   -fx-background-image: url("../images/3.jpg");
-  -fx-background-size: cover;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+  -fx-background-position: center center;
+  -fx-background-color: transparent;
 }
 .challenge-background4{
   -fx-background-image: url("../images/4.jpg");
-  -fx-background-size: cover;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+  -fx-background-position: center center;
+  -fx-background-color: transparent;
 }
 .challenge-background5{
   -fx-background-image: url("../images/5.jpg");
-  -fx-background-size: cover;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+  -fx-background-position: center center;
+  -fx-background-color: transparent;
 }
 .challenge-background6{
   -fx-background-image: url("../images/6.jpg");
-  -fx-background-size: cover;
+  -fx-background-size: stretch;
+  -fx-background-repeat: no-repeat;
+  -fx-background-position: center center;
+  -fx-background-color: transparent;
 }
 
 .menu {

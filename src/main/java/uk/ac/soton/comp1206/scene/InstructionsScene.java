@@ -79,7 +79,7 @@ public class InstructionsScene extends BaseScene {
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
     mainPane.setMaxWidth(gameWindow.getWidth());
     mainPane.setMaxHeight(gameWindow.getHeight());
-    mainPane.getStyleClass().add("menu-background");
+    mainPane.getStyleClass().add(SettingsScene.theme.getText());
 
     VBox top = new VBox();
     top.setAlignment(Pos.CENTER);
