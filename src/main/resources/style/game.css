@@ -457,6 +457,8 @@ TextField {
 /* Hover effect */
 .setting-image:hover {
   -fx-effect: dropshadow(gaussian, cyan, 10, 0.7, 0, 0); /* Cyan glow */
+  -fx-scale-x: 1.05;
+  -fx-scale-y: 1.05;
 }
 
 /* Click effect */

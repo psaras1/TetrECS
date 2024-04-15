@@ -50,7 +50,7 @@ public class MenuScene extends BaseScene {
     var menuPane = new StackPane();
     menuPane.setMaxWidth(gameWindow.getWidth());
     menuPane.setMaxHeight(gameWindow.getHeight());
-    menuPane.getStyleClass().add(SettingsScene.theme.getText());
+    menuPane.getStyleClass().add(SettingsScene.theme.get());
     root.getChildren().add(menuPane);
 
 //        Implement background music on the Menu

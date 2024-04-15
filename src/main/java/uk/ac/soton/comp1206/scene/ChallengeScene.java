@@ -118,7 +118,7 @@ public class ChallengeScene extends BaseScene {
     challengePane = new StackPane();
     challengePane.setMaxWidth(gameWindow.getWidth());
     challengePane.setMaxHeight(gameWindow.getHeight());
-    challengePane.getStyleClass().add(SettingsScene.theme.getText());
+    challengePane.getStyleClass().add(SettingsScene.theme.get());
 
     root.getChildren().add(challengePane);
 

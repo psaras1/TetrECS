@@ -92,7 +92,7 @@ public class LobbyScene extends BaseScene {
     var menuPane = new StackPane();
     menuPane.setMaxWidth(gameWindow.getWidth());
     menuPane.setMaxHeight(gameWindow.getHeight());
-    menuPane.getStyleClass().add(SettingsScene.theme.getText());
+    menuPane.getStyleClass().add(SettingsScene.theme.get());
     root.getChildren().add(menuPane);
     //main pane(within menu pane)
     mainPane = new BorderPane();

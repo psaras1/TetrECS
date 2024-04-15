@@ -7,6 +7,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Slider;
@@ -39,9 +41,13 @@ public class SettingsScene extends BaseScene {
   private Slider volumeSlider;
 
   private static final Logger logger = LogManager.getLogger(SettingsScene.class);
+  /*Multimedia object to play audio*/
   private Multimedia multimedia = new Multimedia();
+  /*Default volume*/
   private static double volume = 0.3;
-  public static Text theme = new Text("challenge-background1");
+  private StackPane menuPane = new StackPane();
+  /*Default theme*/
+  public static StringProperty theme = new SimpleStringProperty("challenge-background1");
 
 
   public SettingsScene(GameWindow gameWindow) {
@@ -50,6 +56,11 @@ public class SettingsScene extends BaseScene {
 
   @Override
   public void initialise() {
+    this.theme.addListener((e) -> {
+      logger.info("Theme changed to {}", theme.get());
+      menuPane.getStyleClass().clear();
+      menuPane.getStyleClass().add(theme.get());
+    });
     volumeSlider.setValue(volume*100);
     keybindings();
 
@@ -59,14 +70,12 @@ public class SettingsScene extends BaseScene {
   public void build() {
     this.root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
 
-    var menuPane = new StackPane();
     menuPane.setMaxWidth(gameWindow.getWidth());
     menuPane.setMaxHeight(gameWindow.getHeight());
-    menuPane.getStyleClass().add(theme.getText());
+    menuPane.getStyleClass().add(theme.get());
     root.getChildren().add(menuPane);
 
     var mainPane = new BorderPane();
-    menuPane.setStyle("-fx-background-color: transparent;");
     menuPane.getChildren().add(mainPane);
 
     VBox settings = new VBox(10);
@@ -127,6 +136,11 @@ public class SettingsScene extends BaseScene {
     var five = new ImageView(new Image(getClass().getResource("/images/5.jpg").toString()));
     var six = new ImageView(new Image(getClass().getResource("/images/6.jpg").toString()));
 
+    /*
+    Each image is a clickable object that changes the theme of the game
+    On hover, the image will enlarge and add a glow effect
+    On click, sound effect will play
+     */
     one.setFitWidth(240);
     one.setPreserveRatio(true);
     one.getStyleClass().add("setting-image");
@@ -134,7 +148,7 @@ public class SettingsScene extends BaseScene {
     one.setOnMouseClicked(e -> {
       logger.info("Image 1 selected");
       multimedia.playAudio("/sounds/transition.wav");
-      this.theme.setText("challenge-background1");
+      this.theme.set("challenge-background1");
     });
     two.setFitWidth(240);
     two.setPreserveRatio(true);
@@ -143,7 +157,7 @@ public class SettingsScene extends BaseScene {
     two.setOnMouseClicked(e -> {
       logger.info("Image 2 selected");
       multimedia.playAudio("/sounds/transition.wav");
-      this.theme.setText("challenge-background2");
+      this.theme.set("challenge-background2");
     });
     three.setFitWidth(240);
     three.setPreserveRatio(true);
@@ -152,7 +166,7 @@ public class SettingsScene extends BaseScene {
     three.setOnMouseClicked(e -> {
       logger.info("Image 3 selected");
       multimedia.playAudio("/sounds/transition.wav");
-      this.theme.setText("challenge-background3");
+      this.theme.set("challenge-background3");
     });
 
     four.setFitWidth(240);
@@ -162,7 +176,7 @@ public class SettingsScene extends BaseScene {
     four.setOnMouseClicked(e -> {
       logger.info("Image 4 selected");
       multimedia.playAudio("/sounds/transition.wav");
-      this.theme.setText("challenge-background4");
+      this.theme.set("challenge-background4");
     });
 
     five.setFitWidth(240);
@@ -172,7 +186,7 @@ public class SettingsScene extends BaseScene {
     five.setOnMouseClicked(e -> {
       logger.info("Image 5 selected");
       multimedia.playAudio("/sounds/transition.wav");
-      this.theme.setText("challenge-background5");
+      this.theme.set("challenge-background5");
     });
 
     six.setFitWidth(240);
@@ -182,7 +196,7 @@ public class SettingsScene extends BaseScene {
     six.setOnMouseClicked(e -> {
       logger.info("Image 6 selected");
       multimedia.playAudio("/sounds/transition.wav");
-      this.theme.setText("challenge-background6");
+      this.theme.set("challenge-background6");
     });
 
     settings.getChildren().add(imageGrid);
@@ -219,7 +233,7 @@ public class SettingsScene extends BaseScene {
     try {
       BufferedWriter writer = new BufferedWriter(new FileWriter("settings.txt"));
       writer.write(volume + " ");
-      writer.write(theme.getText());
+      writer.write(theme.get());
       writer.close();
       logger.info("Settings written to file");
     } catch (IOException e) {
@@ -238,7 +252,7 @@ public class SettingsScene extends BaseScene {
           String line = reader.readLine();
           String[] settings = line.split(" ");
           volume = Double.parseDouble(settings[0]);
-          theme.setText(settings[1]);
+          theme.set(settings[1]);
           reader.close();
         } catch (IOException e) {
           e.printStackTrace();

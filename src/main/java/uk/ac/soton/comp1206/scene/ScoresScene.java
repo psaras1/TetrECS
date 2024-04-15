@@ -188,7 +188,7 @@ Online scores
     var scorePane = new StackPane();
     scorePane.setMaxWidth(gameWindow.getWidth());
     scorePane.setMaxHeight(gameWindow.getHeight());
-    scorePane.getStyleClass().add(SettingsScene.theme.getText());
+    scorePane.getStyleClass().add(SettingsScene.theme.get());
     root.getChildren().add(scorePane);
     scorePane.getChildren().add(mainPane);
 
