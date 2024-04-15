@@ -226,7 +226,9 @@ public class SettingsScene extends BaseScene {
       }
     });
   }
-
+/**
+ * Save the current configuration to a file called settings.txt
+ */
   public static void writeSettings() {
     logger.info("Writing settings to file");
     try {
@@ -249,6 +251,10 @@ public class SettingsScene extends BaseScene {
     }
   }
 
+  /**
+   * Read the settings from the file settings.txt
+   * Called when building the MenuScene
+   */
   public static void readSettings() {
     logger.info("Reading settings from file");
     if (new File("settings.txt").exists()) {
@@ -275,9 +281,14 @@ public class SettingsScene extends BaseScene {
     }
   }
 
+  /**
+   * On exiting the settings scene, write the settings to file and return to the menu
+   */
   private void exit() {
     writeSettings();
     gameWindow.startMenu();
   }
 
 }
+
+
