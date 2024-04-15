@@ -14,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -22,14 +23,12 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.ac.soton.comp1206.App;
 import uk.ac.soton.comp1206.game.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 /**
- * The Settings Scene displays the settings of the game
- * Currently only the volume can be adjusted
+ * The Settings Scene displays the settings of the game Currently only the volume can be adjusted
  */
 public class SettingsScene extends BaseScene {
 
@@ -61,7 +60,7 @@ public class SettingsScene extends BaseScene {
       menuPane.getStyleClass().clear();
       menuPane.getStyleClass().add(theme.get());
     });
-    volumeSlider.setValue(volume*100);
+    volumeSlider.setValue(volume * 100);
     keybindings();
 
   }
@@ -110,7 +109,6 @@ public class SettingsScene extends BaseScene {
       volume = newValue.doubleValue() / 100;
       Multimedia.adjustGlobalVolume(volume);
     });
-
 
     var volumeBox = new VBox();
     volumeBox.setSpacing(15);
@@ -204,7 +202,16 @@ public class SettingsScene extends BaseScene {
     BorderPane.setMargin(title, new Insets(20, 0, 0, 0));
     mainPane.setCenter(settings);
 
+    /*menu button, top left*/
+    var escape = new Text("Menu");
+    escape.setOnMouseClicked(e->exit());
+    escape.getStyleClass().add("option1-button");
+    AnchorPane menuButton = new AnchorPane();
+    menuButton.getChildren().add(escape);
+    AnchorPane.setLeftAnchor(escape, 10.0);
+    AnchorPane.setTopAnchor(escape, 5.0);
 
+    mainPane.getChildren().add(menuButton);
   }
 
   /*
@@ -252,6 +259,7 @@ public class SettingsScene extends BaseScene {
           String line = reader.readLine();
           String[] settings = line.split(" ");
           volume = Double.parseDouble(settings[0]);
+          Multimedia.adjustGlobalVolume(volume);
           theme.set(settings[1]);
           reader.close();
         } catch (IOException e) {
@@ -261,13 +269,13 @@ public class SettingsScene extends BaseScene {
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
-    }
-    else{
+    } else {
       logger.info("Settings file does not exist,creating a new one");
       writeSettings();
     }
   }
-  private void exit(){
+
+  private void exit() {
     writeSettings();
     gameWindow.startMenu();
   }

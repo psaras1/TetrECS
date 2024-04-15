@@ -12,6 +12,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp1206.App;
 import uk.ac.soton.comp1206.game.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -123,13 +124,22 @@ public class MenuScene extends BaseScene {
       transitionSound.playAudio("/sounds/transition.wav");
       gameWindow.loadScene(new SettingsScene(gameWindow));
     });
+    /*
+    Exit button
+     */
+    var exitButton = new Text("Exit");
+    exitButton.getStyleClass().add("exit-button");
+    exitButton.setOnMouseClicked(e -> {
+      menuMusic.stopBackgroundMusic();
+      App.getInstance().shutdown();
+    });
 
     /*
      *Button container
      */
     var buttonContainer = new VBox();
     buttonContainer.getChildren()
-        .addAll(playButton, instructionsButton, multiplayerButton, settingsButton);
+        .addAll(playButton, instructionsButton, multiplayerButton, settingsButton, exitButton);
     buttonContainer.setAlignment(Pos.CENTER);
     buttonContainer.setSpacing(20);
     mainPane.setCenter(buttonContainer);
