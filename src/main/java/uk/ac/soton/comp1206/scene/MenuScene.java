@@ -50,6 +50,7 @@ public class MenuScene extends BaseScene {
     menuPane.setMaxWidth(gameWindow.getWidth());
     menuPane.setMaxHeight(gameWindow.getHeight());
     menuPane.getStyleClass().add("menu-background");
+    menuPane.setStyle("-fx-border-color: red;-fx-border-width: 5px;");
     root.getChildren().add(menuPane);
 
 //        Implement background music on the Menu

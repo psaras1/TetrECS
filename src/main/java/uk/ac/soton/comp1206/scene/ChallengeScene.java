@@ -20,6 +20,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp1206.App;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBlockCoordinate;
 import uk.ac.soton.comp1206.component.GameBoard;
@@ -72,6 +73,7 @@ public class ChallengeScene extends BaseScene {
   protected VBox topBox = new VBox();
 
   protected VBox leftBox = new VBox();
+  private static StackPane challengePane;
 
 
   /**
@@ -113,10 +115,13 @@ public class ChallengeScene extends BaseScene {
     bindProperties();
 
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
-    var challengePane = new StackPane();
+    challengePane = new StackPane();
     challengePane.setMaxWidth(gameWindow.getWidth());
     challengePane.setMaxHeight(gameWindow.getHeight());
-    challengePane.getStyleClass().add("challenge-background");
+    challengePane.getStyleClass().add("challenge-background2");
+
+      changeBackground(App.challengeBackground);
+
 
     root.getChildren().add(challengePane);
 
@@ -530,8 +535,35 @@ public class ChallengeScene extends BaseScene {
       }
     });
   }
+  public static void changeBackground(int image) {
+    switch (image) {
+      case 1:
+        logger.info("background image 1 selected");
+        challengePane.getStyleClass().add("challenge-background1");
+        break;
+      case 2:
+        logger.info("Image 2 selected");
+        challengePane.getStyleClass().add("challenge-background2");
+        break;
+      case 3:
+        logger.info("Image 3 selected");
+        challengePane.getStyleClass().add("challenge-background3");
+        break;
+      case 4:
+        logger.info("Image 4 selected");
+        challengePane.getStyleClass().add("challenge-background4");
+        break;
+      case 5:
+        logger.info("Image 5 selected");
+        challengePane.getStyleClass().add("challenge-background5");
+        break;
+      case 6:
+        logger.info("Image 6 selected");
+        challengePane.getStyleClass().add("challenge-background6");
+        break;
+    }
 
-
+  }
 }
 
 

@@ -28,6 +28,7 @@ public class App extends Application {
   private static final Logger logger = LogManager.getLogger(App.class);
   private Stage stage;
   private static double currentVolume = 0.5;
+  public static int challengeBackground ;
 
   public static double getCurrentVolume() {
     return currentVolume;

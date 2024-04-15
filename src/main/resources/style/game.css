@@ -1,154 +1,187 @@
 .gamepane {
-    -fx-background-color: black;
+  -fx-background-color: black;
 }
 
 .intro {
-    -fx-background-color: black;
+  -fx-background-color: black;
 }
 
 .menu-background {
-    -fx-background-image: url("../images/5.jpg");
-    -fx-background-size: cover;
-    -fx-background-color: transparent;
+  -fx-background-image: url("../images/6.jpg");
+  -fx-background-size: cover;
+  -fx-background-color: transparent;
+  -fx-background-position: center center;
 }
 
-.challenge-background {
-    -fx-background-image: url("../images/2.jpg");
-    -fx-background-size: cover;
+.challenge-background2 {
+  -fx-background-image: url("../images/2.jpg");
+  -fx-background-size: cover;
+}
+.challenge-background1 {
+  -fx-background-image: url("../images/1.jpg");
+  -fx-background-size: cover;
+}
+.challenge-background3{
+  -fx-background-image: url("../images/3.jpg");
+  -fx-background-size: cover;
+}
+.challenge-background4{
+  -fx-background-image: url("../images/4.jpg");
+  -fx-background-size: cover;
+}
+.challenge-background5{
+  -fx-background-image: url("../images/5.jpg");
+  -fx-background-size: cover;
+}
+.challenge-background6{
+  -fx-background-image: url("../images/6.jpg");
+  -fx-background-size: cover;
 }
 
 .menu {
-    -fx-padding: 10;
+  -fx-padding: 10;
 }
 
 
 .menuItem {
-    -fx-fill: white;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 32px;
-    -fx-font-weight: 700;
-    -fx-border-color: black;
-    -fx-stroke: black;
-    -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
+  -fx-fill: white;
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 32px;
+  -fx-font-weight: 700;
+  -fx-border-color: black;
+  -fx-stroke: black;
+  -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
 }
 
 .menuItem:hover {
-    -fx-fill: yellow;
+  -fx-fill: yellow;
 }
 
 .menuItem.selected {
-    -fx-fill: yellow;
+  -fx-fill: yellow;
 }
 
 .bigtitle {
-    -fx-fill: yellow;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 64px;
-    -fx-font-weight: 900;
-    -fx-border-color: black;
-    -fx-stroke: black;
-    -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
+  -fx-fill: yellow;
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 64px;
+  -fx-font-weight: 900;
+  -fx-border-color: black;
+  -fx-stroke: black;
+  -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
+}
+.bigtitle1 {
+  -fx-fill: white;
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 64px;
+  -fx-font-weight: 900;
+  -fx-border-color: black;
+  -fx-stroke: black;
+  -fx-effect: dropshadow(gaussian, cyan, 1, 1.0, 1, 1);
 }
 
 .title {
-    -fx-fill: white;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 32px;
-    -fx-font-weight: 900;
-    -fx-border-color: black;
-    -fx-stroke: black;
-    -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
+  -fx-fill: white;
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 32px;
+  -fx-font-weight: 900;
+  -fx-border-color: black;
+  -fx-stroke: black;
+  -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
 }
 
 .heading {
-    -fx-fill: white;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 20px;
-    -fx-font-weight: 700;
-    -fx-border-color: black;
-    -fx-stroke: black;
-    -fx-effect: dropshadow(gaussian, aqua, 3, 0, 0, 0);
+  -fx-fill: white;
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 20px;
+  -fx-font-weight: 700;
+  -fx-border-color: black;
+  -fx-stroke: black;
+  -fx-effect: dropshadow(gaussian, aqua, 3, 0, 0, 0);
 }
-.powerUp{
-    -fx-fill: yellow;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 22px;
-    -fx-font-weight: 700;
-    -fx-border-color: black;
-    -fx-stroke: black;
-    -fx-effect: dropshadow(gaussian, white, 3, 0, 0, 0);
+
+.powerUp {
+  -fx-fill: yellow;
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 22px;
+  -fx-font-weight: 700;
+  -fx-border-color: black;
+  -fx-stroke: black;
+  -fx-effect: dropshadow(gaussian, white, 3, 0, 0, 0);
 }
 
 .score {
-    -fx-fill: yellow;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 32px;
-    -fx-font-weight: 700;
-    -fx-border-color: black;
-    -fx-stroke: black;
-    -fx-text-alignment: center;
-    -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
+  -fx-fill: yellow;
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 32px;
+  -fx-font-weight: 700;
+  -fx-border-color: black;
+  -fx-stroke: black;
+  -fx-text-alignment: center;
+  -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
 }
 
 .level {
-    -fx-fill: #ff6600;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 32px;
-    -fx-font-weight: 700;
-    -fx-border-color: black;
-    -fx-stroke: black;
-    -fx-text-alignment: center;
-    -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
+  -fx-fill: #ff6600;
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 32px;
+  -fx-font-weight: 700;
+  -fx-border-color: black;
+  -fx-stroke: black;
+  -fx-text-alignment: center;
+  -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
 }
 
 .hiscore {
-    -fx-fill: orange;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 24px;
-    -fx-font-weight: 700;
-    -fx-border-color: black;
-    -fx-stroke: black;
-    -fx-text-alignment: center;
-    -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
+  -fx-fill: orange;
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 24px;
+  -fx-font-weight: 700;
+  -fx-border-color: black;
+  -fx-stroke: black;
+  -fx-text-alignment: center;
+  -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
 }
+
 .lives {
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 32px;
-    -fx-font-weight: 700;
-    -fx-border-color: black;
-    -fx-stroke: black;
-    -fx-text-alignment: center;
-    -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
-}
-.livesPower{
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 32px;
-    -fx-font-weight: 700;
-    -fx-border-color: black;
-    -fx-stroke: black;
-    -fx-text-alignment: center;
-    -fx-effect: dropshadow(gaussian, white, 10, 0, 0, 0);;
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 32px;
+  -fx-font-weight: 700;
+  -fx-border-color: black;
+  -fx-stroke: black;
+  -fx-text-alignment: center;
+  -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
 }
 
-.noPower{
-    -fx-fill: red;
-    -fx-effect: dropshadow(gaussian, white, 10, 0, 0, 0); /* Aqua glow effect */
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 20px;
+.livesPower {
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 32px;
+  -fx-font-weight: 700;
+  -fx-border-color: black;
+  -fx-stroke: black;
+  -fx-text-alignment: center;
+  -fx-effect: dropshadow(gaussian, white, 10, 0, 0, 0);;
 }
 
-.insufficientScore{
-    -fx-fill: red;
-    -fx-effect: dropshadow(gaussian, white, 10, 0, 0, 0); /* Aqua glow effect */
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 10px;
+.noPower {
+  -fx-fill: red;
+  -fx-effect: dropshadow(gaussian, white, 10, 0, 0, 0); /* Aqua glow effect */
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 20px;
+}
+
+.insufficientScore {
+  -fx-fill: red;
+  -fx-effect: dropshadow(gaussian, white, 10, 0, 0, 0); /* Aqua glow effect */
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 10px;
 }
 
 .scorelist {
-    -fx-font-size: 20px;
-    -fx-font-weight: 700;;
-    -fx-text-fill: white !important;
-    -fx-font-family: 'Orbitron';
+  -fx-font-size: 20px;
+  -fx-font-weight: 700;;
+  -fx-text-fill: white !important;
+  -fx-font-family: 'Orbitron';
 }
 
 .scoreitem {
@@ -160,11 +193,11 @@
 }
 
 .myscore {
-    -fx-font-weight: 700;
+  -fx-font-weight: 700;
 }
 
 .deadscore {
-    -fx-strikethrough: true;
+  -fx-strikethrough: true;
 }
 
 .points {
@@ -175,220 +208,237 @@
 }
 
 .channelItem {
-    -fx-fill: white;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 16px;
-    -fx-font-weight: 700;
-    -fx-border-color: black;
-    -fx-stroke: black;
+  -fx-fill: white;
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 16px;
+  -fx-font-weight: 700;
+  -fx-border-color: black;
+  -fx-stroke: black;
 }
+
 .channelItem:hover {
-    -fx-fill: grey;
+  -fx-fill: grey;
 }
+
 .channelItem.selected {
-    -fx-fill: yellow;
+  -fx-fill: yellow;
 }
 
 .leaderboard {
-    -fx-font-size: 16px;
+  -fx-font-size: 16px;
 }
 
 .gameBox {
-    -fx-padding: 10;
-    -fx-background-color: rgba(0, 0, 0, 0.5);
-    -fx-border-color: white;
-    -fx-border-width: 1;
+  -fx-padding: 10;
+  -fx-background-color: rgba(0, 0, 0, 0.5);
+  -fx-border-color: white;
+  -fx-border-width: 1;
 }
 
 .scroller {
-    -fx-background-color: transparent;
+  -fx-background-color: transparent;
 }
 
 .scroller .viewport {
-    -fx-background-color: transparent;
+  -fx-background-color: transparent;
 }
 
 .messages {
-    -fx-background-color: transparent;
-    -fx-font-size: 12px;
-    -fx-font-family: 'Orbitron';
+  -fx-background-color: transparent;
+  -fx-font-size: 12px;
+  -fx-font-family: 'Orbitron';
 }
 
 .messages Text {
-    -fx-fill: white;
+  -fx-fill: white;
 }
 
-.channelLabel{
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 12px;
+.channelLabel {
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 12px;
 }
 
 TextField {
-    -fx-border-color: white;
-    -fx-border-width: 1px;
-    -fx-background-color: rgba(0,0,0,0.5);
-    -fx-text-fill: white;
-    -fx-prompt-text-fill: grey;
+  -fx-border-color: white;
+  -fx-border-width: 1px;
+  -fx-background-color: rgba(0, 0, 0, 0.5);
+  -fx-text-fill: white;
+  -fx-prompt-text-fill: grey;
 }
 
 .playerBox {
-    -fx-font-size: 14px;
-    -fx-font-family: 'Orbitron';
+  -fx-font-size: 14px;
+  -fx-font-family: 'Orbitron';
 }
 
 .playerBox Text {
-    -fx-fill: white;
+  -fx-fill: white;
 }
 
 .myname {
-    -fx-font-weight: 700;
+  -fx-font-weight: 700;
 }
 
 .instructions {
-    -fx-font-size: 10px;
-    -fx-font-family: 'Orbitron';
-    -fx-fill: white;
+  -fx-font-size: 10px;
+  -fx-font-family: 'Orbitron';
+  -fx-fill: white;
 }
 
 /* additional */
-.play-button{
-    -fx-background-color: purple;
-    -fx-text-fill: white;
-    -fx-font-size: 20px;
-    -fx-pref-height:40px ;
-    -fx-pref-width:100px;
+.play-button {
+  -fx-background-color: purple;
+  -fx-text-fill: white;
+  -fx-font-size: 20px;
+  -fx-pref-height: 40px;
+  -fx-pref-width: 100px;
 }
 
-.play-button:hover{
-    -fx-background-color: aqua;
-    -fx-text-fill: black;
-}
-.menu-button{
-    -fx-background-color: aqua;
-    -fx-text-fill: white;
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
-    -fx-pref-height:40px ;
-    -fx-pref-width:100px;
-    -fx-border-color: black;
-}
-.menu-button:hover{
-    -fx-background-color: white;
-    -fx-text-fill: black;
+.play-button:hover {
+  -fx-background-color: aqua;
+  -fx-text-fill: black;
 }
 
-.option-button{
-    -fx-fill: white; /* White text color */
-    -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 26px;
-}
-.option-button:hover{
-    -fx-effect: dropshadow(gaussian, magenta, 10, 0, 0, 0); /* Change glow to magenta on hover */
-}
-
-.option1-button{
-    -fx-fill: white; /* White text color */
-    -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 20px;
-}
-.option1-button:hover{
-    -fx-effect: dropshadow(gaussian, magenta, 10, 0, 0, 0); /* Change glow to magenta on hover */
-}
-.option3-button{
-    -fx-fill: white; /* White text color */
-    -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 14px;
-}
-.option2-button{
-    -fx-fill: white; /* White text color */
-    -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 20px;
-}
-.option2-button:hover{
-    -fx-effect: dropshadow(gaussian, magenta, 10, 0, 0, 0); /* Change glow to magenta on hover */
-}
-.score-title{
-    -fx-fill:pink;
-    -fx-effect:dropshadow(gaussian, aqua, 10, 0, 0, 0);
-    -fx-font-family: 'PressStart2P-Regular';
-    -fx-font-size: 30px;
+.menu-button {
+  -fx-background-color: aqua;
+  -fx-text-fill: white;
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+  -fx-pref-height: 40px;
+  -fx-pref-width: 100px;
+  -fx-border-color: black;
 }
 
-.player-score{
-    -fx-fill: white;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 18px;
-    -fx-stroke: black;
-    -fx-stroke-width: 1;
-}
-.player-score-dead{
-    -fx-fill: red;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 18px;
-    -fx-stroke: black;
-    -fx-stroke-width: 1;
+.menu-button:hover {
+  -fx-background-color: white;
+  -fx-text-fill: black;
 }
 
-.player-name{
-    -fx-fill: #dcdcdc;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 18px;
-    -fx-stroke: black;
-    -fx-stroke-width: 1;
-}
-.player-name-dead{
-    -fx-fill: #ff0000;
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 18px;
-    -fx-stroke: black;
-    -fx-stroke-width: 1;
+.option-button {
+  -fx-fill: white; /* White text color */
+  -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 26px;
 }
 
-.lobby-button{
-    -fx-background-color: black;
-    -fx-text-fill: white;
-    -fx-font-size: 13px;
-    -fx-font-weight: bold;
-    -fx-border-color: white;
-}
-.multiplayer-game-label{
-    -fx-fill: white; /* White text color */
-    -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 12px;
+.option-button:hover {
+  -fx-effect: dropshadow(gaussian, magenta, 10, 0, 0, 0); /* Change glow to magenta on hover */
 }
 
-.multiplayer-button{
-    -fx-background-color: black;
-    -fx-text-fill: white;
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-    -fx-border-color: white;
+.option1-button {
+  -fx-fill: white; /* White text color */
+  -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 20px;
 }
 
-.slider .track{
-    -fx-background-color: linear-gradient(to left, cyan,magenta);
+.option1-button:hover {
+  -fx-effect: dropshadow(gaussian, magenta, 10, 0, 0, 0); /* Change glow to magenta on hover */
+}
+
+.option3-button {
+  -fx-fill: white; /* White text color */
+  -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 14px;
+}
+
+.option2-button {
+  -fx-fill: white; /* White text color */
+  -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 16px;
+}
+
+.option2-button:hover {
+  -fx-effect: dropshadow(gaussian, magenta, 10, 0, 0, 0); /* Change glow to magenta on hover */
+}
+
+.score-title {
+  -fx-fill: pink;
+  -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0);
+  -fx-font-family: 'PressStart2P-Regular';
+  -fx-font-size: 30px;
+}
+
+.player-score {
+  -fx-fill: white;
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 18px;
+  -fx-stroke: black;
+  -fx-stroke-width: 1;
+}
+
+.player-score-dead {
+  -fx-fill: red;
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 18px;
+  -fx-stroke: black;
+  -fx-stroke-width: 1;
+}
+
+.player-name {
+  -fx-fill: #dcdcdc;
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 18px;
+  -fx-stroke: black;
+  -fx-stroke-width: 1;
+}
+
+.player-name-dead {
+  -fx-fill: #ff0000;
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 18px;
+  -fx-stroke: black;
+  -fx-stroke-width: 1;
+}
+
+.lobby-button {
+  -fx-background-color: black;
+  -fx-text-fill: white;
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+  -fx-border-color: white;
+}
+
+.multiplayer-game-label {
+  -fx-fill: white; /* White text color */
+  -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 12px;
+}
+
+.multiplayer-button {
+  -fx-background-color: black;
+  -fx-text-fill: white;
+  -fx-font-size: 12px;
+  -fx-font-weight: bold;
+  -fx-border-color: white;
+}
+
+.slier{
+  -fx-max-height: 10px;
+}
+.slider .track {
+  -fx-background-color: linear-gradient(to left, cyan, magenta);
 
 }
 
-.slider .thumb{
-    -fx-background-color: linear-gradient(to top, royalblue,cyan);
+.slider .thumb {
+  -fx-background-color: linear-gradient(to top, royalblue, cyan);
 
 }
+
 /*.slider .axis .tick-mark{*/
 /*    -fx-stroke: white;*/
 /*}*/
 
 
-.setting{
-    -fx-fill: white; /* White text color */
-    -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
-    -fx-font-family: 'Orbitron';
-    -fx-font-size: 20px;
+.setting {
+  -fx-fill: white; /* White text color */
+  -fx-effect: dropshadow(gaussian, aqua, 10, 0, 0, 0); /* Aqua glow effect */
+  -fx-font-family: 'Orbitron';
+  -fx-font-size: 20px;
 }
