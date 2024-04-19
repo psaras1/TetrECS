@@ -71,7 +71,7 @@ public class InstructionsScene extends BaseScene {
     logger.info("Building " + this.getClass().getName());
     //Create the instructions scene
     imageView = new ImageView(
-        InstructionsScene.class.getResource("/images/suggestedControls.png").toExternalForm());
+        InstructionsScene.class.getResource("/images/instructions-tbg.png").toExternalForm());
     //Set the image to fit the top half of the window
     imageView.setPreserveRatio(true);
     imageView.setFitHeight(gameWindow.getHeight() / 2 - 40);
