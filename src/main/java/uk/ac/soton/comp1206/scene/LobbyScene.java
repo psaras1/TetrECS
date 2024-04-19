@@ -40,15 +40,12 @@ public class LobbyScene extends BaseScene {
   private TextField sendText;
   private ArrayList<String> channels = new ArrayList<>();
   private String userTemp = "";
-  private boolean joinedChannel = false;
   private VBox messages = new VBox();
   private VBox rightPane;
   private ScrollPane scroller;
-  private TextField messageField;
   protected static String currentChannel;
   private StringProperty channelInfo = new SimpleStringProperty();
   private VBox buttons;
-  private VBox mainBox;
   private boolean inChannel = false;
   private BorderPane mainPane;
   private TextField nameField;
@@ -69,7 +66,10 @@ public class LobbyScene extends BaseScene {
     startChannelTimer();
     keyboardControls();
     communicator.send("LIST");
-    communicator.addListener(this::listenForList);
+    communicator.addListener((e) -> {
+      Platform.runLater(() ->
+          listenForComms(e));
+    });
   }
 
   /**
@@ -122,22 +122,24 @@ public class LobbyScene extends BaseScene {
   /*
   Handles server communication
    */
-  public void listenForList(String message) {
-    logger.info("Received list: " + message);
+  public void listenForComms(String message) {
     String[] parts = message.split(" ", 2);
     String command = parts[0];
-    String data = parts[1];
     if (command.equals("CHANNELS")) {
-      Platform.runLater(() ->
-          getChannels(data));
+      String data = parts[1];
+      getChannels(data);
     }
     if (command.equals("USERS")) {
-      Platform.runLater(() ->
-          getUsers(data));
+      String data = parts[1];
+      getUsers(data);
     }
     if (command.equals("MSG")) {
-      Platform.runLater(() ->
-          getMessage(data));
+      String data = parts[1];
+      getMessage(data);
+    }
+    if (command.equals("START")) {
+      logger.info("received start command");
+      gameWindow.startMultiplayer();
     }
   }
 
@@ -219,7 +221,7 @@ public class LobbyScene extends BaseScene {
       rightPane = new VBox();
       mainPane.setRight(rightPane);
       communicator.send("USERS");
-      logger.info("USers testing " + userTemp.length());
+      logger.info("Users testing " + userTemp.length());
       Text channelInfoLabel = new Text();
       channelInfoLabel.getStyleClass().add("messages");
       channelInfoLabel.setStyle("-fx-fill: white;");
@@ -286,7 +288,6 @@ public class LobbyScene extends BaseScene {
         chatButtons.setAlignment(Pos.CENTER);
         chatButtons.setSpacing(10);
       }
-
     } else {
       alreadyChanneled();
     }
@@ -327,7 +328,7 @@ public class LobbyScene extends BaseScene {
       buttons.getChildren().add(nameField);
       nameField.setOnKeyPressed(e -> {
         if (e.getCode().getName().equals("Enter")) {
-          if(nameField.getText().isEmpty()){
+          if (nameField.getText().isEmpty()) {
             return;
           }
           communicator.send("CREATE " + nameField.getText());
