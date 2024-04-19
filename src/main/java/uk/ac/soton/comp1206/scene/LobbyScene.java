@@ -327,6 +327,9 @@ public class LobbyScene extends BaseScene {
       buttons.getChildren().add(nameField);
       nameField.setOnKeyPressed(e -> {
         if (e.getCode().getName().equals("Enter")) {
+          if(nameField.getText().isEmpty()){
+            return;
+          }
           communicator.send("CREATE " + nameField.getText());
           join(nameField.getText(), true);
           inChannel = true;
