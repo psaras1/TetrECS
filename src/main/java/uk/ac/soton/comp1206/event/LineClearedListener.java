@@ -11,3 +11,4 @@ public interface LineClearedListener {
 
   void linesCleaned(HashSet<GameBlockCoordinate> linesCleared);
 }
+

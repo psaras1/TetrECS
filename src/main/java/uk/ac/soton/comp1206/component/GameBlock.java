@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class GameBlock extends Canvas {
 
+
   private static final Logger logger = LogManager.getLogger(GameBlock.class);
 
 

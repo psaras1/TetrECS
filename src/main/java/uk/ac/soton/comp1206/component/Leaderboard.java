@@ -48,6 +48,7 @@ public class Leaderboard extends ScoreList {
 
   /*
    * Updates the list of scores displayed in the component. It loops through the scores and creates
+
    * Makes the names and scores of dead players red
    */
   @Override

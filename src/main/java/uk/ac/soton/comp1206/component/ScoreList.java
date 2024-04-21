@@ -85,6 +85,7 @@ public class ScoreList extends VBox {
     }
     reveal();
 
+
   }
 
   /**

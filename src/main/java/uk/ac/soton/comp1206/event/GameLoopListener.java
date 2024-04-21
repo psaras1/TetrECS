@@ -7,3 +7,4 @@ public interface GameLoopListener {
 
   void setOnGameLoop();
 }
+

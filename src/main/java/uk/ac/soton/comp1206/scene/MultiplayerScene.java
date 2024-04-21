@@ -1,7 +1,6 @@
 package uk.ac.soton.comp1206.scene;
 
 import java.util.ArrayList;
-import java.util.Timer;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;

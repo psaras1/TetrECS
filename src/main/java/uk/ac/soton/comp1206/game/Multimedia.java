@@ -1,10 +1,7 @@
 package uk.ac.soton.comp1206.game;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
 
 /**
  * A utility class for playing sounds

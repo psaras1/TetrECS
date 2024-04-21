@@ -3,7 +3,6 @@ package uk.ac.soton.comp1206;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

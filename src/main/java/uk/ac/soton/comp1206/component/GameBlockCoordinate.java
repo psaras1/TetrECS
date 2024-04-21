@@ -2,6 +2,7 @@ package uk.ac.soton.comp1206.component;
 
 import javafx.beans.NamedArg;
 
+
 /**
  * Represents a row and column representation of a block in the grid. Holds the x (column) and y
  * (row).
@@ -109,15 +110,15 @@ public class GameBlockCoordinate {
    */
   @Override
   public boolean equals(Object obj) {
-      if (obj == this) {
-          return true;
-      }
-      if (obj instanceof GameBlockCoordinate) {
-          GameBlockCoordinate other = (GameBlockCoordinate) obj;
-          return getX() == other.getX() && getY() == other.getY();
-      } else {
-          return false;
-      }
+    if (obj == this) {
+      return true;
+    }
+    if (obj instanceof GameBlockCoordinate) {
+      GameBlockCoordinate other = (GameBlockCoordinate) obj;
+      return getX() == other.getX() && getY() == other.getY();
+    } else {
+      return false;
+    }
   }
 
   /**

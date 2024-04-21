@@ -204,7 +204,7 @@ public class SettingsScene extends BaseScene {
 
     /*menu button, top left*/
     var escape = new Text("Menu");
-    escape.setOnMouseClicked(e->exit());
+    escape.setOnMouseClicked(e -> exit());
     escape.getStyleClass().add("option1-button");
     AnchorPane menuButton = new AnchorPane();
     menuButton.getChildren().add(escape);
@@ -226,9 +226,10 @@ public class SettingsScene extends BaseScene {
       }
     });
   }
-/**
- * Save the current configuration to a file called settings.txt
- */
+
+  /**
+   * Save the current configuration to a file called settings.txt
+   */
   public static void writeSettings() {
     logger.info("Writing settings to file");
     try {
@@ -252,8 +253,7 @@ public class SettingsScene extends BaseScene {
   }
 
   /**
-   * Read the settings from the file settings.txt
-   * Called when building the MenuScene
+   * Read the settings from the file settings.txt Called when building the MenuScene
    */
   public static void readSettings() {
     logger.info("Reading settings from file");

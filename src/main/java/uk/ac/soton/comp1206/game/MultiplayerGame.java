@@ -117,6 +117,7 @@ public class MultiplayerGame extends Game {
     super.score(lines, blocks);
     logger.info("Sending score");
     this.communicator.send("SCORE " + newScore);
+    this.communicator.send("LIVES " + lives.get());
   }
 
 }

@@ -1,23 +1,16 @@
 package uk.ac.soton.comp1206.scene;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.PieceBoard;
 import uk.ac.soton.comp1206.game.GamePiece;
-import uk.ac.soton.comp1206.game.Grid;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -79,7 +72,7 @@ public class InstructionsScene extends BaseScene {
     root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
     mainPane.setMaxWidth(gameWindow.getWidth());
     mainPane.setMaxHeight(gameWindow.getHeight());
-    mainPane.getStyleClass().add(SettingsScene.theme.get() );
+    mainPane.getStyleClass().add(SettingsScene.theme.get());
 
     VBox top = new VBox();
     top.setAlignment(Pos.CENTER);

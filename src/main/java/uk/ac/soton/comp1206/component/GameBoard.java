@@ -20,6 +20,7 @@ import uk.ac.soton.comp1206.game.Grid;
  * The GameBoard is only a visual representation and should not contain game logic or model logic in
  * it, which should take place in the Grid.
  */
+
 public class GameBoard extends GridPane {
 
   private static final Logger logger = LogManager.getLogger(GameBoard.class);

@@ -338,9 +338,6 @@ public class Game {
   }
 
 
-
-
-
   /**
    * Get the grid model inside this game representing the game state of the board
    *

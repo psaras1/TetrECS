@@ -12,3 +12,4 @@ public interface CommunicationsListener {
    */
   public void receiveCommunication(String communication);
 }
+
