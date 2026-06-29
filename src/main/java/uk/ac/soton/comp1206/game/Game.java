@@ -65,7 +65,7 @@ public class Game {
   /**
    * GameLoop for the game
    */
-  protected ScheduledFuture<?> gameLoop;
+  public ScheduledFuture<?> gameLoop;
   /**
    * Game loop listener
    */
